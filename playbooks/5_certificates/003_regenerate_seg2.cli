@@ -1,0 +1,8 @@
+config global
+    config certificate local
+        edit "seg2"
+            set auto-regenerate-days 90
+            set auto-regenerate-days-warning 60
+        next
+    end
+end

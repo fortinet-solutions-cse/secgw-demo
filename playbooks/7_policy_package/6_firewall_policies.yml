@@ -1,0 +1,96 @@
+- name: Firewall Policies
+  fmgr_generic:
+    access_token: '{{ fmg_access_token }}'
+    method: set
+    params:
+      - url: 'pm/config/adom/{{ fmg_adom_secgw }}/pkg/{{ secgw_policy_package }}/firewall/policy'
+        data:
+          -
+            name: 'Allow RAN VPN'
+            policyid: 10
+            action: 'accept'
+            srcaddr: 'all'
+            srcaddr6: 'all'
+            srcintf: 'SZ_RAN-UNTRUST'
+            dstaddr6: 'all'
+            dstaddr: 'all'
+            dstintf: 'Lo1-IPSecGW'
+            logtraffic: 'disable'
+            schedule: 'always'
+            service:
+              - 'IKE'
+              - 'ESP'
+              - 'ALL_ICMP6'
+              - 'ALL_ICMP'
+          -
+            name: 'Allow gNodeB inner to 5GC'
+            policyid: 30
+            action: 'accept'
+            srcintf: 'SecGW'
+            srcaddr: 'N2N3-ran'
+            dstintf: 'SZ_RAN-TRUST'
+            dstaddr: 'N2N3-core'
+            logtraffic: 'all'
+            logtraffic-start: 'enable'
+            schedule: 'always'
+            service: 'LTE-5G-Services'
+          -
+            name: 'Allow 5GC to inner gNodeB'
+            policyid: 40
+            action: 'accept'
+            srcintf: 'SZ_RAN-TRUST'
+            srcaddr: 'N2N3-core'
+            dstintf: 'SecGW'
+            dstaddr: 'N2N3-ran'
+            logtraffic: 'all'
+            logtraffic-start: 'enable'
+            schedule: 'always'
+            service: 'LTE-5G-Services'
+          -
+            name: 'Allow Xn gNodeB to gNodeB'
+            policyid: 50
+            action: 'accept'
+            srcintf: 'SecGW'
+            srcaddr: 'N2N3-ran'
+            dstintf: 'SecGW'
+            dstaddr: 'N2N3-ran'
+            logtraffic: 'all'
+            logtraffic-start: 'enable'
+            schedule: 'always'
+            service: 'LTE-5G-Services'
+          -
+            name: 'Allow gNodeB inner to 5GC IPv6'
+            policyid: 630
+            action: 'accept'
+            srcintf: 'IPSecGW6'
+            srcaddr6: 'N2N3-ran-ipv6'
+            dstintf: 'SZ_RAN-TRUST'
+            dstaddr6: 'N2N3-core-ipv6'
+            logtraffic: 'all'
+            logtraffic-start: 'enable'
+            schedule: 'always'
+            service: 'LTE-5G-Services'
+          -
+            name: 'Allow 5GC to inner gNodeB IPv6'
+            policyid: 640
+            action: 'accept'
+            srcintf: 'SZ_RAN-TRUST'
+            srcaddr6: 'N2N3-core-ipv6'
+            dstintf: 'IPSecGW6'
+            dstaddr6: 'N2N3-ran-ipv6'
+            logtraffic: 'all'
+            logtraffic-start: 'enable'
+            schedule: 'always'
+            service: 'LTE-5G-Services'
+          -
+            name: 'Allow Xn gNodeB to gNodeB IPv6'
+            policyid: 650
+            action: 'accept'
+            srcintf: 'IPSecGW6'
+            srcaddr6: 'N2N3-ran-ipv6'
+            dstintf: 'IPSecGW6'
+            dstaddr6: 'N2N3-ran-ipv6'
+            logtraffic: 'all'
+            logtraffic-start: 'enable'
+            schedule: 'always'
+            service: 'LTE-5G-Services'

@@ -1,0 +1,17 @@
+- name: Configure FAZ settings in SecGWs
+  fmgr_generic:
+    method: 'set'
+    params:
+      - url: "pm/config/device/{{ item.name }}/global/log/fortianalyzer/setting"
+        data:
+          reliable: 'enable'
+          server: '{{ faz_host }}'
+          status: 'enable'
+          serial: '{{faz_sn}}'
+          certificate-verification: 'disable'
+          upload-option: 'realtime'
+  loop:
+    - '{{ secgws.seg1 }}'
+    - '{{ secgws.seg2 }}'
+  loop_control:
+    label: '{{ item.name }}'

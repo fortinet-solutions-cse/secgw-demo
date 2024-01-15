@@ -1,0 +1,57 @@
+# Add CLI scripts to FMG
+
+---
+
+- name: Replace seg1sn with actual serial number
+  ansible.builtin.replace:
+    path: '/fortipoc/ansible/playbooks/5_certificates/{{ secgws.seg1.mgmtip }}.ssh'
+    regexp: '\b(serialnumber)\b'
+    replace: '{{ secgws.seg1.sn }}'
+
+- name: Set certificate name '{{ secgws.seg1.certname }}'
+  ansible.builtin.replace:
+    path: '/fortipoc/ansible/playbooks/5_certificates/{{ secgws.seg1.mgmtip }}.ssh'
+    regexp: '\b(certname)\b'
+    replace: '{{ secgws.seg1.certname }}'
+
+- name: Replace seg2sn with actual serial number
+  ansible.builtin.replace:
+    path: '/fortipoc/ansible/playbooks/5_certificates/{{ secgws.seg2.mgmtip }}.ssh'
+    regexp: '\b(serialnumber)\b'
+    replace: '{{ secgws.seg2.sn }}'
+
+- name: Set certificate name '{{ secgws.seg2.certname }}'
+  ansible.builtin.replace:
+    path: '/fortipoc/ansible/playbooks/5_certificates/{{ secgws.seg2.mgmtip }}.ssh'
+    regexp: '\b(certname)\b'
+    replace: '{{ secgws.seg2.certname }}'
+
+
+- name: Add scripts
+  fmgr_dvmdb_script:
+    adom: '{{ fmg_adom_secgw }}'
+    access_token: '{{ fmg_access_token }}'
+    state: present
+    dvmdb_script:
+      content: "{% include item.content %}"
+      name: "{{ item.name }}"
+      type: "{{ item.type }}"
+      target: "{{ item.target }}"
+  with_items:
+    - name: "001_certificates.cli"
+      content: "001_certificates.cli"
+      type: "cli"
+      target: "remote_device"
+    - name: "002_retrieve_config.cli"
+      content: "002_retrieve_config.cli"
+      type: "cli"
+      target: "remote_device"
+    - name: "003_regenerate_seg1.cli"
+      content: "003_regenerate_seg1.cli"
+      type: "cli"
+      target: "remote_device"
+    - name: "003_regenerate_seg2.cli"
+      content: "003_regenerate_seg2.cli"
+      type: "cli"
+      target: "remote_device"
+

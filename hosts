@@ -1,0 +1,11 @@
+[fortimanagers]
+fortimanager01 ansible_host=192.168.252.60 
+
+[fortianalyzers]
+fortianalyzer01 ansible_host=192.168.252.70
+
+[fortimanagers:vars]
+ansible_network_os=fortinet.fortimanager.fortimanager
+
+[fortianalyzers:vars]
+ansible_network_os=fortinet.fortianalyzer.fortianalyzer

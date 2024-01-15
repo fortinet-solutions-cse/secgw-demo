@@ -1,0 +1,25 @@
+- name: 6.0 VPN
+  hosts: fortimanagers
+  collections:
+    - fortinet.fortimanager
+  connection: httpapi
+  vars:
+    # define installation scope, device and vdoms
+    scope_device_vdom:
+      - name: '{{ secgws.seg1.name }}'
+        vdom: '{{ secgws_region1_traffic_vdom }}'
+      - name: '{{ secgws.seg2.name }}'
+        vdom: '{{ secgws_region1_traffic_vdom }}'
+  vars_files:
+    - ../../vars/global.yml
+  tasks:
+    - name: 6.1 Objects
+      ansible.builtin.include_tasks: '1_objects.yml'
+    - name: 6.2 Objects6
+      ansible.builtin.include_tasks: '2_objects6.yml'
+    - name: 6.3 User Peer
+      ansible.builtin.include_tasks: '3_user_peer.yml'
+    - name: 6.4 IPsec
+      ansible.builtin.include_tasks: '4_ipsec.yml'
+    - name: 6.5 Install devices
+      ansible.builtin.include_tasks: '../common/install_device.yml'

@@ -1,0 +1,252 @@
+
+- name: Firewall DoS Policies IPv6
+  fmgr_generic:
+    access_token: '{{ fmg_access_token }}'
+    method: set
+    params:
+      - url: "pm/config/adom/{{ fmg_adom_secgw }}/pkg/{{ secgw_policy_package }}/firewall/DoS-policy6"
+        data:
+          -
+            anomaly:
+              -
+                action: "block"
+                log: "enable"
+                name: "tcp_syn_flood"
+                status: "enable"
+                threshold: "1000"
+              -
+                action: "block"
+                log: "enable"
+                name: "tcp_port_scan"
+                status: "enable"
+                threshold: "1000"
+              -
+                action: "block"
+                log: "enable"
+                name: "tcp_src_session"
+                status: "enable"
+                threshold: "1000"
+              -
+                action: "block"
+                log: "enable"
+                name: "tcp_dst_session"
+                status: "enable"
+                threshold: "1000"
+              -
+                action: "pass"
+                log: "enable"
+                name: "udp_flood"
+                status: "enable"
+                threshold: "4000"
+              -
+                action: "pass"
+                log: "enable"
+                name: "udp_scan"
+                status: "enable"
+                threshold: "4000"
+              -
+                action: "pass"
+                log: "enable"
+                name: "udp_src_session"
+                status: "enable"
+                threshold: "4000"
+              -
+                action: "pass"
+                log: "enable"
+                name: "udp_dst_session"
+                status: "enable"
+                threshold: "4000"
+              -
+                action: "block"
+                log: "enable"
+                name: "icmp_flood"
+                status: "enable"
+                threshold: "250"
+              -
+                action: "block"
+                log: "enable"
+                name: "icmp_sweep"
+                status: "enable"
+                threshold: "100"
+              -
+                action: "block"
+                log: "enable"
+                name: "icmp_src_session"
+                status: "enable"
+                threshold: "300"
+              -
+                action: "block"
+                log: "enable"
+                name: "icmp_dst_session"
+                status: "enable"
+                threshold: "1000"
+              -
+                action: 0
+                log: "enable"
+                name: "ip_src_session"
+                status: "enable"
+                threshold: "1000"
+              -
+                action: 0
+                log: "enable"
+                name: "ip_dst_session"
+                status: "enable"
+                threshold: "50000"
+              -
+                action: "block"
+                log: "enable"
+                name: "sctp_flood"
+                status: "enable"
+                threshold: "1000"
+              -
+                action: "block"
+                log: "enable"
+                name: "sctp_scan"
+                status: "enable"
+                threshold: "1000"
+              -
+                action: "block"
+                log: "enable"
+                name: "sctp_src_session"
+                status: "enable"
+                threshold: "1000"
+              -
+                action: "block"
+                log: "enable"
+                name: "sctp_dst_session"
+                status: "enable"
+                threshold: "1000"
+            dstaddr: "all"
+            interface: "IPSecGW6"
+            name: "RAN Untrust DoS-6"
+            policyid: 600
+            service: "ALL"
+            srcaddr: "all"
+            status: "enable"
+
+
+- name: Firewall DoS Policies
+  fmgr_generic:
+    access_token: '{{ fmg_access_token }}'
+    method: set
+    params:
+      - url: "pm/config/adom/{{ fmg_adom_secgw }}/pkg/{{ secgw_policy_package }}/firewall/DoS-policy"
+        data:
+          -
+            anomaly:
+              -
+                action: "block"
+                log: "enable"
+                name: "tcp_syn_flood"
+                status: "enable"
+                threshold: "1000"
+              -
+                action: "block"
+                log: "enable"
+                name: "tcp_port_scan"
+                status: "enable"
+                threshold: "1000"
+              -
+                action: "block"
+                log: "enable"
+                name: "tcp_src_session"
+                status: "enable"
+                threshold: "1000"
+              -
+                action: "block"
+                log: "enable"
+                name: "tcp_dst_session"
+                status: "enable"
+                threshold: "1000"
+              -
+                action: "pass"
+                log: "enable"
+                name: "udp_flood"
+                status: "enable"
+                threshold: "4000"
+              -
+                action: "pass"
+                log: "enable"
+                name: "udp_scan"
+                status: "enable"
+                threshold: "4000"
+              -
+                action: "pass"
+                log: "enable"
+                name: "udp_src_session"
+                status: "enable"
+                threshold: "4000"
+              -
+                action: "pass"
+                log: "enable"
+                name: "udp_dst_session"
+                status: "enable"
+                threshold: "4000"
+              -
+                action: "block"
+                log: "enable"
+                name: "icmp_flood"
+                status: "enable"
+                threshold: "250"
+              -
+                action: "block"
+                log: "enable"
+                name: "icmp_sweep"
+                status: "enable"
+                threshold: "100"
+              -
+                action: "block"
+                log: "enable"
+                name: "icmp_src_session"
+                status: "enable"
+                threshold: "300"
+              -
+                action: "block"
+                log: "enable"
+                name: "icmp_dst_session"
+                status: "enable"
+                threshold: "1000"
+              -
+                action: 0
+                log: "enable"
+                name: "ip_src_session"
+                status: "enable"
+                threshold: "1000"
+              -
+                action: 0
+                log: "enable"
+                name: "ip_dst_session"
+                status: "enable"
+                threshold: "50000"
+              -
+                action: "block"
+                log: "enable"
+                name: "sctp_flood"
+                status: "enable"
+                threshold: "1000"
+              -
+                action: "block"
+                log: "enable"
+                name: "sctp_scan"
+                status: "enable"
+                threshold: "1000"
+              -
+                action: "block"
+                log: "enable"
+                name: "sctp_src_session"
+                status: "enable"
+                threshold: "1000"
+              -
+                action: "block"
+                log: "enable"
+                name: "sctp_dst_session"
+                status: "enable"
+                threshold: "1000"
+            dstaddr: "all"
+            interface: "SecGW"
+            name: "RAN Untrust DoS"
+            policyid: 400
+            service: "ALL"
+            srcaddr: "all"
+            status: "enable"
+

@@ -1,0 +1,27 @@
+- name: Move unused interfaces
+  fmgr_generic:
+    access_token: '{{ fmg_access_token }}'
+    method: 'set'
+    params:
+      - url: "pm/config/device/{{ item.name }}/global/system/ntp"
+        data:
+          ntpserver:
+            -
+              id: 1
+              server: '216.239.35.0'
+            -
+              id: 2
+              server: '216.239.35.4'
+            -
+              id: 3
+              server: '216.239.35.8'
+            -
+              id: 4
+              server: '216.239.35.12'
+          server-mode: 'disable'
+          type: 'custom'
+  loop:
+    - '{{ secgws.seg1 }}'
+    - '{{ secgws.seg2 }}'
+  loop_control:
+    label: '{{ item.name }}'

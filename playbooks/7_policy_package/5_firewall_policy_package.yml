@@ -1,0 +1,18 @@
+- name: Firewall Policy Package '{{ secgw_policy_package }}'
+  fmgr_generic:
+    access_token: '{{ fmg_access_token }}'
+    method: set
+    params:
+      - url: "pm/pkg/adom/{{ fmg_adom_secgw }}"
+        data:
+          -
+            name: '{{ secgw_policy_package }}'
+            package settings: 
+              central-nat: "disable"
+              consolidated-firewall-mode: "disable"
+              fwpolicy-implicit-log: "disable"
+              fwpolicy6-implicit-log: "disable"
+              ngfw-mode: "profile-based"
+            scope member: 
+                name: '{{ secgw_region1_group }}'
+            type: "pkg"

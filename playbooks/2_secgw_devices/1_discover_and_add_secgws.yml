@@ -1,0 +1,8 @@
+- name: Discover and add secgws to FMG
+  ansible.builtin.include_tasks: "../common/fmg_discover_and_add_device.yml"
+
+  loop:
+    - '{{ secgws.seg1 }}'
+    - '{{ secgws.seg2 }}'
+  loop_control:
+    label: '{{ item.name }}'

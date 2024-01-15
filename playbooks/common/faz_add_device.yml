@@ -1,0 +1,31 @@
+- name: FAZ Add device '{{ item.name }}'
+  faz_dvm_cmd_add_device :
+    access_token: "{{ faz_access_token }}"
+    bypass_validation: true
+    dvm_cmd_add_device:
+      adom: '{{ fmg_adom_secgw }}'
+      flags:
+        - 'create_task'
+        - 'nonblocking'
+      device:
+        adm_usr: '{{ username }}'
+        adm_pass: '{{ password }}'
+        desc: 'The device is added via Ansible'
+        ip: '{{ item.mgmtip }}'
+        mgmt_mode: 'faz'
+        name: '{{ item.name }}'
+        sn: '{{ item.sn }}'
+
+  register: installing_task
+
+- name: Poll installing task
+  faz_fact:
+    facts:
+      selector: 'task_task'
+      params:
+        task: '{{ installing_task.meta.response_data.taskid }}'
+  register: taskinfo
+  until: taskinfo.meta.response_data.percent == 100
+  retries: 30
+  delay: 5
+  failed_when: taskinfo.meta.response_data.state == 'error' and 'devsnexist' not in taskinfo.meta.response_data.line[0].detail

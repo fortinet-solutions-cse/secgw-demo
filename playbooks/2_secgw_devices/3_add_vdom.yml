@@ -1,0 +1,17 @@
+- name: Add '{{ secgws_region1_traffic_vdom}}' vdom to SecGWs
+  fmgr_dvmdb_device_vdom:
+    access_token: '{{ fmg_access_token }}'
+    bypass_validation: true
+    adom: '{{ fmg_adom_secgw }}'
+    device: '{{ item.name }}'
+    state: present
+    dvmdb_device_vdom:
+      comments: 'SecGW VDOM Region1'
+      name: '{{ secgws_region1_traffic_vdom }}'
+      opmode: 'nat'
+      vdom_type: 'traffic'
+  loop:
+    - '{{ secgws.seg1 }}'
+    - '{{ secgws.seg2 }}'
+  loop_control:
+    label: "{{ item.name }}"

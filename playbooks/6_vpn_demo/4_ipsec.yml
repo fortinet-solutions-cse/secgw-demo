@@ -1,0 +1,82 @@
+- name: IPsec phase1
+  fmgr_generic:
+    access_token: '{{ fmg_access_token }}'
+    method: set
+    params:
+      - url: "pm/config/device/{{ item.name }}/vdom/{{ secgws_region1_traffic_vdom }}/vpn/ipsec/phase1-interface"
+        data:
+          -
+            name: "SecGW"
+            authmethod: "signature"
+            certificate: '{{ item.certname }}'
+            ike-version: 2
+            interface: "Lo1-IPSecGW"
+            ip-version: "4"
+            ipv4-start-ip: "10.30.255.1"
+            ipv4-end-ip: "10.30.255.63"
+            default-gw: "10.20.255.1"
+            ipv4-netmask: "255.255.255.192"
+            ipv4-split-include:
+              - "5G-Networks"
+            mode-cfg: "enable"
+            peertype: "peer"
+            peer: "mno_CA"
+            dhgrp: "31"
+            proposal: "aes128gcm-prfsha256"
+            type: "dynamic"
+            fgsp-sync: "enable"
+            dpd: "on-idle"
+            dpd-retryinterval: 20
+          -
+            name: "IPSecGW6"
+            authmethod: "signature"
+            certificate: '{{ item.certname }}'
+            ike-version: 2
+            interface: "Lo1-IPSecGW"
+            ip-version: "6"
+            ipv6-end-ip: "fd00::30:cafe:ffff"
+            ipv6-prefix: 112
+            ipv6-split-include: "5G-Networks-ipv6"
+            ipv6-start-ip: "fd00::30:cafe:1"
+            local-gw6: "fd00::20:ff:1"
+            mode-cfg: "enable"
+            peertype: "peer"
+            peer: "mno_CA6"
+            dhgrp: "31"
+            proposal: "aes128gcm-prfsha256"
+            type: "dynamic"
+            fgsp-sync: "enable"
+            dpd: "on-idle"
+            dpd-retryinterval: 20
+
+  loop:
+    - '{{ secgws.seg1 }}'
+    - '{{ secgws.seg2 }}'
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: IPsec phase2
+  fmgr_generic:
+    access_token: '{{ fmg_access_token }}'
+    method: set
+    params:
+      - url: "pm/config/device/{{ item.name }}/vdom/{{ secgws_region1_traffic_vdom }}/vpn/ipsec/phase2-interface"
+        data:
+          -
+            name: "SecGW"
+            phase1name: "SecGW"
+            proposal: "aes128gcm"
+            dhgrp: "31"
+          -
+            name: "IPSecGW6"
+            phase1name: "IPSecGW6"
+            src-addr-type: "subnet6"
+            dst-addr-type: "subnet6"
+            proposal: "aes128gcm"
+            dhgrp: "31"
+  loop:
+    - '{{ secgws.seg1 }}'
+    - '{{ secgws.seg2 }}'
+  loop_control:
+    label: "{{ item.name }}"
+

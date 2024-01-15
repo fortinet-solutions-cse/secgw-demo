@@ -1,0 +1,27 @@
+- name: 3.0 FGSP
+  hosts: fortimanagers
+  collections:
+    - fortinet.fortimanager
+  connection: httpapi
+  vars:
+    # vars for install device. set device and vdoms to be installed
+    scope_device_vdom:
+      - name: '{{ secgws.seg1.name }}'
+        vdom: 'root'
+      - name: '{{ secgws.seg1.name }}'
+        vdom: '{{ secgws_region1_traffic_vdom }}'
+      - name: '{{ secgws.seg2.name }}'
+        vdom: 'root'
+      - name: '{{ secgws.seg2.name }}'
+        vdom: '{{ secgws_region1_traffic_vdom }}'
+  vars_files:
+    - ../../vars/global.yml
+  tasks:
+    - name: 3.1 FGSP Static Routes
+      ansible.builtin.include_tasks: '1_fgsp_static_routes.yml'
+    - name: 3.2 FGSP Standalone cluster
+      ansible.builtin.include_tasks: '2_fgsp_standalone_cluster.yml'
+    - name: 3.3 FGSP Session Pickup
+      ansible.builtin.include_tasks: '3_session_pickup.yml'
+    - name: 3.4 Install devices
+      ansible.builtin.include_tasks: '../common/install_device.yml'

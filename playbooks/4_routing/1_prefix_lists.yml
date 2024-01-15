@@ -1,0 +1,80 @@
+- name: Prefix List6
+  fmgr_generic:
+    access_token: '{{ fmg_access_token }}'
+    method: set
+    params:
+      - url: "pm/config/device/{{ item.name }}/vdom/{{ secgws_region1_traffic_vdom }}/router/prefix-list6"
+        data:
+          -
+            name: "Client6-inner-addresses"
+            rule:
+              -
+                id: 1
+                le: 128
+                prefix6: "fd00::30:cafe:0/112"
+                unset attrs:
+                  - "ge"
+          -
+            name: "IPSecGW6-loopback-addresses"
+            rule:
+              -
+                id: 1
+                prefix6: "fd00::20:ff:1/128"
+                unset attrs:
+                  - "ge"
+                  - "le"
+          -
+            name: "5G-IPv6-addresses"
+            rule:
+              -
+                id: 1
+                le: 128
+                prefix6: "fd00::30:1:6/127"
+                unset attrs:
+                  - "ge"
+  loop:
+    - '{{ secgws.seg1 }}'
+    - '{{ secgws.seg2 }}'
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: Prefix List
+  fmgr_generic:
+    access_token: '{{ fmg_access_token }}'
+    method: set
+    params:
+      - url: "pm/config/device/{{ item.name }}/vdom/{{ secgws_region1_traffic_vdom }}/router/prefix-list"
+        data:
+          -
+            name: "Client-inner-addresses"
+            rule:
+              -
+                id: 1
+                le: 32
+                prefix: "10.30.255.0/24"
+                unset attrs:
+                  - "ge"
+          -
+            name: "IPSecGW-loopback-addresses"
+            rule:
+              -
+                id: 1
+                prefix: "10.20.255.1/32"
+                unset attrs:
+                  - "ge"
+                  - "le"
+          -
+            name: "5G-IP-addresses"
+            rule:
+              -
+                id: 1
+                le: 32
+                prefix: "10.30.0.0/16"
+                unset attrs:
+                  - "ge"
+  loop:
+    - '{{ secgws.seg1 }}'
+    - '{{ secgws.seg2 }}'
+  loop_control:
+    label: "{{ item.name }}"
+

@@ -1,0 +1,6 @@
+- name: FAZ Create adom '{{ fmg_adom_secgw }}'
+  faz_dvmdb_adom:
+    access_token: '{{ faz_access_token }}'
+    state: present
+    dvmdb_adom:
+        name: '{{ fmg_adom_secgw }}'

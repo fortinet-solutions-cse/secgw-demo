@@ -1,0 +1,27 @@
+# tasks to install a remote cli script
+# required vars: access_token, adom, scope, script
+
+---
+
+- name: Execute script '{{ script }}'
+  fmgr_dvmdb_script_execute:
+    bypass_validation: true
+    adom: '{{ fmg_adom_secgw }}'
+    access_token: '{{ fmg_access_token }}'
+    dvmdb_script_execute:
+      adom: '{{ fmg_adom_secgw }}'
+      scope: '{{ scope_device_vdom }}'
+      script: '{{ script }}'
+  register: installing_task
+
+- name: Inspect the Task Status
+  fmgr_fact:
+    facts:
+      selector: 'task_task'
+      params:
+        task: '{{ installing_task.meta.response_data.task }}'
+  register: taskinfo
+  until: taskinfo.meta.response_data.percent == 100
+  retries: 30
+  delay: 3
+  failed_when: taskinfo.meta.response_data.state == 'error'

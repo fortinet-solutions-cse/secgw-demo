@@ -1,0 +1,27 @@
+- name: 4.0 SecGW Routing
+  hosts: fortimanagers
+  collections:
+    - fortinet.fortimanager
+  connection: httpapi
+  vars:
+    # define the scope of devices and vdoms to install device settings
+    scope_device_vdom:
+      - name: '{{ secgws.seg1.name }}'
+        vdom: 'root'
+      - name: '{{ secgws.seg1.name }}'
+        vdom: '{{ secgws_region1_traffic_vdom }}'
+      - name: '{{ secgws.seg2.name }}'
+        vdom: 'root'
+      - name: '{{ secgws.seg2.name }}'
+        vdom: '{{ secgws_region1_traffic_vdom }}'
+  vars_files:
+    - ../../vars/global.yml
+  tasks:
+    - name: 4.1 Prefix Lists IPv4 & IPv6
+      ansible.builtin.include_tasks: '1_prefix_lists.yml'
+    - name: 4.2 Route Maps
+      ansible.builtin.include_tasks: '2_route_maps.yml'
+    - name: 4.3 BGP
+      ansible.builtin.include_tasks: '3_ebgp.yml'
+    - name: 4.4 Install devices
+      ansible.builtin.include_tasks: '../common/install_device.yml'

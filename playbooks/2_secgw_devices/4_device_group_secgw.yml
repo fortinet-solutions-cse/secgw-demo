@@ -1,0 +1,26 @@
+- name: Create device group
+  fmgr_dvmdb_group:
+    access_token: '{{ fmg_access_token }}'
+    bypass_validation: true
+    adom: '{{ fmg_adom_secgw }}'
+    state: present
+    dvmdb_group:
+      desc: '{{ secgw_region1_group }}'
+      name: '{{ secgw_region1_group }}'
+      os_type: 'fos'
+      type: 'normal'
+
+- name: Add SecGW vdoms to group
+  fmgr_dvmdb_group_objectmember:
+    access_token: '{{ fmg_access_token }}'
+    bypass_validation: true
+    adom: '{{ fmg_adom_secgw }}'
+    state: present
+    group: '{{ secgw_region1_group }}'
+    dvmdb_group_objectmember:
+      -
+        name: '{{ secgws.seg1.name }}'
+        vdom: '{{ secgws_region1_traffic_vdom }}'
+      -
+        name: '{{ secgws.seg2.name }}'
+        vdom: '{{ secgws_region1_traffic_vdom }}'

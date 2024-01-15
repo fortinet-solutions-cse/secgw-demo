@@ -1,0 +1,38 @@
+- name: Installing policy package
+  fmgr_securityconsole_install_package:
+    bypass_validation: false
+    access_token: "{{ fmg_access_token }}"
+    securityconsole_install_package:
+      adom: '{{ adom }}'
+      adom_rev_comments: ansible-comment
+      adom_rev_name: ansible-test
+      dev_rev_comments: ansible-comment
+      flags:
+        - none
+        # - cp_all_objs
+        # - preview
+        # - generate_rev
+        # - copy_assigned_pkg
+        # - unassign
+        # - ifpolicy_only
+        # - no_ifpolicy
+        # - objs_only
+        # - auto_lock_ws
+        # - check_pkg_st
+        # - copy_only
+      pkg: '{{ package }}'
+      scope:
+        '{{ scope_device_vdom }}'
+  register: installing_task
+
+- name: Poll the task
+  fmgr_fact:
+    facts:
+      selector: 'task_task'
+      params:
+        task: '{{ installing_task.meta.response_data.task }}'
+  register: taskinfo
+  until: taskinfo.meta.response_data.percent == 100
+  retries: 30
+  delay: 3
+  failed_when: taskinfo.meta.response_data.state == 'error'

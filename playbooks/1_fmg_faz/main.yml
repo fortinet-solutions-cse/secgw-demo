@@ -1,0 +1,29 @@
+- name: 1.0 FMG Setup
+  hosts: fortimanagers
+  collections:
+    - fortinet.fortimanager
+  connection: httpapi
+  vars_files:
+    - ../../vars/global.yml
+  tasks:
+    - name: 1.1 FMG admin settings
+      ansible.builtin.include_tasks: "1_fmg_admin_settings.yml"
+    - name: 1.2 FMG system global
+      ansible.builtin.include_tasks: "2_fmg_system_global.yml"
+    - name: 1.3 FMG create ADOMs
+      ansible.builtin.include_tasks: "3_fmg_create_adoms.yml"
+
+- name: 1.0 FAZ Setup
+  hosts: fortianalyzers
+  collections:
+    - fortinet.fortianalyzer
+  connection: httpapi
+  vars_files:
+    - ../../vars/global.yml
+  tasks:
+    - name: 1.4 FAZ admin settings
+      ansible.builtin.include_tasks: "4_faz_admin_settings.yml"
+    - name: 1.5 FAZ system global
+      ansible.builtin.include_tasks: "5_faz_system_global.yml"
+    - name: 1.6 FAZ create ADOMs
+      ansible.builtin.include_tasks: "6_faz_create_adoms.yml"

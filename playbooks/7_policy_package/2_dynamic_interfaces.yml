@@ -1,0 +1,37 @@
+- name: Dynamic Interfaces
+  fmgr_generic:
+    access_token: '{{ fmg_access_token }}'
+    method: set
+    params:
+      - url: "pm/config/adom/{{ fmg_adom_secgw }}/obj/dynamic/interface"
+        data:
+          -
+            default-mapping: "enable"
+            defmap-intf: "SecGW"
+            description: "IPSec Tunnel"
+            name: "SecGW"
+            single-intf: "enable"
+          -
+            default-mapping: "enable"
+            defmap-intf: "IPSecGW6"
+            description: "IPSec Tunnel"
+            name: "IPSecGW6"
+            single-intf: "enable"
+          -
+            default-mapping: "enable"
+            defmap-intf: "Lo1-IPSecGW"
+            description: "IPSec Termination"
+            name: "Lo1-IPSecGW"
+            single-intf: "enable"
+          -
+            default-mapping: "enable"
+            defmap-intf: "SZ_RAN-TRUST"
+            description: "RAN Trusted"
+            name: "SZ_RAN-TRUST"
+            single-intf: "enable"
+          -
+            default-mapping: "enable"
+            defmap-intf: "SZ_RAN-UNTRUST"
+            description: "RAN Untrusted"
+            name: "SZ_RAN-UNTRUST"
+            single-intf: "enable"

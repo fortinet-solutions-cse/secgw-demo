@@ -1,0 +1,16 @@
+---
+# tasks file for run all playbooks to demo
+- name: Initialize FortiManager and FortiAnalyzer
+  ansible.builtin.import_playbook: playbooks/1_fmg_faz/main.yml
+- name: 
+  ansible.builtin.import_playbook: playbooks/2_secgw_devices/main.yml
+- name: 
+  ansible.builtin.import_playbook: playbooks/3_fgsp/main.yml
+- name: 
+  ansible.builtin.import_playbook: playbooks/4_routing/main.yml
+- name: 
+  ansible.builtin.import_playbook: playbooks/5_certificates/main.yml
+- name: 
+  ansible.builtin.import_playbook: playbooks/6_vpn_demo/main.yml
+- name: 
+  ansible.builtin.import_playbook: playbooks/7_policy_package/main.yml

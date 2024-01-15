@@ -1,0 +1,19 @@
+---
+- name: Test Fortimanager connection
+  hosts: fortimanagers
+  connection: httpapi
+  collections:
+    - fortinet.fortimanager
+  vars_files:
+    - 'vars/global.yml'
+  tasks:
+    - name: Get fact
+      fmgr_fact:
+        access_token: '{{ fmg_access_token }}'
+        enable_log: true
+        facts:
+          selector: 'sys_status'
+      register: result
+    - name: Display response
+      debug:
+        var: result

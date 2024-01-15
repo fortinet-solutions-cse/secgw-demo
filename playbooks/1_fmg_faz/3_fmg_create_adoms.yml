@@ -1,0 +1,18 @@
+- name: "FMG Create adom root"
+  fmgr_dvmdb_adom:
+      access_token: "{{ fmg_access_token }}"
+      state: present
+      dvmdb_adom:
+         name: "root"
+         flags:
+            - no_vpn_console
+            #- per_device_wtp
+            #- per_device_fsw
+- name: FMG Create adom "{{ fmg_adom_secgw }}"
+  fmgr_dvmdb_adom:
+      access_token: "{{ fmg_access_token }}"
+      state: present
+      dvmdb_adom:
+         name: "{{ fmg_adom_secgw }}"
+         flags:
+            - no_vpn_console

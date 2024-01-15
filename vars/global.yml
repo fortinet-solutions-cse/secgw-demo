@@ -1,0 +1,326 @@
+---
+
+# Global variables used in SEG HoL
+ansible_httpapi_port: 443
+ansible_httpapi_use_ssl: true
+ansible_httpapi_validate_certs: false
+ssh_port: 22
+username: admin
+password: 
+timezone: 28
+
+# FortiManager vars
+fmg_access_token:  
+fmg_adom_client: eNodeB
+fmg_adom_secgw: SecGW
+fmg_host: '192.168.252.60'
+fmg_hostname: 'FortiManager'
+fmg_sn: 
+
+#FortiAnalyzer vars
+faz_access_token: 
+faz_host: '192.168.252.70'
+faz_hostname: 'FortiAnalyzer'
+faz_sn: 
+
+#SecGW Vars
+secgws_region1_traffic_vdom: 'SecGW-R1'
+secgw_region1_group: 'SecGW-R1'
+secgw_system_template_name: 'Template SecGW'
+secgw_policy_package: 'PP_SecGW'
+
+secgws:
+  seg1:
+    name: 'FGT-SEG-1'
+    mgmtip: '192.168.252.101'
+    certname: 'seg1'
+    sn: 
+    static_routes:
+      - 
+        device: port1.10
+        dst: 
+          - 10.10.2.1
+          - 255.255.255.255
+        gateway: 10.10.1.0
+        comment: 'fgsp peering via rpe11'
+      - 
+        device: port2.10
+        dst: 
+          - 10.10.2.3
+          - 255.255.255.255
+        gateway: 10.10.1.2
+        comment: 'fgsp peering via rpe12'
+    interfaces:
+      - 
+        name: 'port1'
+        allowaccess: ''
+        mode: 'static'
+      - 
+        name: 'fortilink'
+        status: 'down'
+      - 
+        name: 'Unused-Ports'
+        status: 'down'
+      -
+        name: 'Lo1-IPSecGW'
+        alias: 'IPSEC'
+        description: 'IPSec Termination Endpoint'
+        type: 'loopback'
+        allowaccess: 'ping'
+        ip: 
+            - '10.20.255.1'
+            - '255.255.255.255'
+        ipv6: 
+            ip6-allowaccess: 'ping'
+            ip6-address: 'fd00::20:ff:1/128'
+        vdom: 'SecGW-R1'
+      - 
+        name: 'port1.10'
+        alias: 'FGSP1'
+        allowaccess: 'ping'
+        description: "FGT-SEG1 port1.10 to site1-PE1 port1.10 vr: fgspsync"
+        interface: 'port1'
+        ip: 
+          - '10.10.1.1'
+          - '255.255.255.254'
+        vdom: 'root'
+        vlanid: 10
+      - 
+        name: 'port2.10'
+        alias: 'FGSP2'
+        allowaccess: 'ping'
+        description: "FGT-SEG1 port2.10 to site1-PE2 port1.10 vrf: fgspsync"
+        interface: 'port2'
+        ip: 
+            - '10.10.1.3'
+            - '255.255.255.254'
+        vdom: 'root'
+        vlanid: 10
+      - 
+        name: "port1.20"
+        alias: "RAN_UNTRUST1"
+        allowaccess: "ping"
+        description: "FGT-SEG1 port1.20 to site1-PE1 eth1.20 vrf: ran-untrust"
+        interface: "port1"
+        ip: 
+            - "10.20.1.1"
+            - "255.255.255.254"
+        ipv6: 
+            ip6-allowaccess: "ping"
+            ip6-address: "fd00::20:1:1/127"
+        vdom: "SecGW-R1"
+        vlanid: 20
+      - 
+        name: "port2.20"
+        alias: "RAN_UNTRUST2"
+        description: "FGT-SEG1 port2.2000 to site1-PE2 eth1.20 vrf: ran-untrust"
+        allowaccess: "ping"
+        interface: "port2"
+        ip:
+            - "10.20.1.3"
+            - "255.255.255.254"
+        ipv6: 
+            ip6-allowaccess: "ping"
+            ip6-address: "fd00::20:1:3/127"
+        vdom: "SecGW-R1"
+        vlanid: 20
+      - 
+        name: port1.30
+        alias: "RAN_TRUST1"
+        description: "FGT-SEG1 port1.3000 to site1-PE1 eth1.30 vrf: ran-trust"
+        interface: "port1"
+        allowaccess: "ping"
+        ip: 
+            - "10.30.1.1"
+            - "255.255.255.254"
+        ipv6: 
+            ip6-allowaccess: "ping"
+            ip6-address: "fd00::30:1:1/127"
+        vdom: "SecGW-R1"
+        vlanid: 30 
+      - 
+        name: "port2.30"
+        alias: "RAN_TRUST2"
+        description: "FGT-SEG1 port2.3000 to site1-PE2 eth1.30 vrf: ran-trust"
+        interface: "port2"
+        allowaccess: "ping"
+        ip: 
+            - "10.30.1.3"
+            - "255.255.255.254"
+        ipv6: 
+            ip6-allowaccess: "ping"
+            ip6-address: "fd00::30:1:3/127"
+        vdom: "SecGW-R1"
+        vlanid: 30
+      -
+        name: "port1.11"
+        alias: "PKI1"
+        description: "FGT-SEG1 port1.11 to site1-PE1 eth1.11 vrf: pki"
+        interface: "port1"
+        allowaccess: "ping"
+        ip:
+            - "10.11.1.1"
+            - "255.255.255.254"
+        vdom: "root"
+        vlanid: 11
+      -
+        name: "port2.11"
+        alias: "PKI2"
+        vdom: "root"
+        vlanid: 11
+        description: "FGT-SEG1 port2.11 to site1-PE2 port1.11 vrf: pki"
+        interface: "port2"
+        allowaccess: "ping"
+        ip: 
+            - "10.11.1.3"
+            - "255.255.255.254"
+  seg2:
+    name: 'FGT-SEG-2'
+    mgmtip: '192.168.252.102'
+    sn: 
+    certname: 'seg2'
+    static_routes:
+      - 
+        device: port1.10
+        dst: 
+          - 10.10.1.1
+          - 255.255.255.255
+        gateway: 10.10.2.0
+        comment: 'fgsp peering via rpe21'
+      - 
+        device: port2.10
+        dst: 
+          - 10.10.1.3
+          - 255.255.255.255
+        gateway: 10.10.2.2
+        comment: 'fgsp peering via rpe22'
+    interfaces:
+      - 
+        name: 'port1'
+        allowaccess: ''
+        mode: 'static'
+      - 
+        name: 'fortilink'
+        status: 'down'
+      - 
+        name: 'Unused-Ports'
+        status: 'down'
+      -
+        name: 'Lo1-IPSecGW'
+        alias: 'IPSEC'
+        description: 'IPSec Termination Endpoint'
+        type: 'loopback'
+        allowaccess: 'ping'
+        ip: 
+            - '10.20.255.1'
+            - '255.255.255.255'
+        ipv6: 
+            ip6-allowaccess: 'ping'
+            ip6-address: 'fd00::20:ff:1/128'
+        vdom: 'SecGW-R1'
+      -
+        name: "port1.10"
+        alias: "FGSP1"
+        description: "FGT-SEG2 port1.10 to site2-PE1 port1.10 vrf: fgspsync"
+        interface: "port1"
+        allowaccess: "ping"
+        ip:
+            - "10.10.2.1"
+            - "255.255.255.254"
+
+        vdom: "root"
+        vlanid: 10
+      -
+        name: "port2.10"
+        alias: "FGSP2"
+        description: "FGT-SEG2 port2.10 to site2-PE2 port1.10 vrf: fgspsync"
+        interface: "port2"
+        allowaccess: "ping"
+        ip:
+            - "10.10.2.3"
+            - "255.255.255.254"
+        vdom: "root"
+        vlanid: 10
+      -
+        name: "port1.20"
+        alias: "RAN_UNTRUST1"
+        description: "FGT-SEG2 port1.20 to site2-PE1 port1.20 vrf: ran-untrust"
+        interface: "port1"
+        allowaccess: "ping"
+        ip:
+            - "10.20.2.1"
+            - "255.255.255.254"
+        ipv6: 
+            ip6-allowaccess: "ping"
+            ip6-address: "fd00::20:2:1/127"
+        vdom: "SecGW-R1"
+        vlanid: 20
+      -
+        name: "port2.20"
+        alias: "RAN_UNTRUST2"
+        description: "FGT-SEG2 port2.20 to site2-PE2 eth1.20 vrf: ran-untrust"
+        interface: "port2"
+        allowaccess: "ping"
+        ip:
+            - "10.20.2.3"
+            - "255.255.255.254"
+        ipv6: 
+            ip6-allowaccess: "ping"
+            ip6-address: "fd00::20:2:3/127"
+        vdom: "SecGW-R1"
+        vlanid: 20
+      -
+        name: "port1.30"
+        alias: "RAN_TRUST1"
+        description: "FGT-SEG2 port1.30 to site2-PE1 eth1.30 vrf: ran-trust"
+        interface: "port1"
+        allowaccess: "ping"
+        ip:
+            - "10.30.2.1"
+            - "255.255.255.254"
+        ipv6: 
+            ip6-allowaccess: "ping"
+            ip6-address: "fd00::30:2:1/127"
+        vdom: "SecGW-R1"
+        vlanid: 30
+      -
+        name: "port2.30"
+        alias: "RAN_TRUST2"
+        description: "FGT-SEG2 port2.30 to site2-PE2 port1.30 vrf: ran-trust"
+        interface: "port2"
+        allowaccess: "ping"
+        ip:
+            - "10.30.2.3"
+            - "255.255.255.254"
+        ipv6: 
+            ip6-allowaccess: "ping"
+            ip6-address: "fd00::30:2:3/127"
+        vdom: "SecGW-R1"
+        vlanid: 30
+      -
+        name: "port1.11"
+        alias: "PKI1"
+        description: "FGT-SEG2 port1.11 to site2-PE1 port1.11 vrf: pki"
+        interface: "port1"
+        allowaccess: "ping"
+        ip:
+            - "10.11.2.1"
+            - "255.255.255.254"
+        vdom: "root"
+        vlanid: 11
+      -
+        name: "port2.11"
+        alias: "PKI2"
+        description: "FGT-SEG2 port2.11 to site2-PE2 port1.11 vrf: pki"
+        interface: "port2"
+        allowaccess: "ping"
+        ip:
+            - "10.11.2.3"
+            - "255.255.255.254"
+        vdom: "root"
+        vlanid: 11
+
+certificates: 
+  mno_ca: "-----BEGIN CERTIFICATE-----\nMIIFeDCCA2CgAwIBAgIICjnBYKLJaIUwDQYJKoZIhvcNAQELBQAwLDELMAkGA1UE\nBhMCQ0ExDDAKBgNVBAoMA21ubzEPMA0GA1UEAwwGbW5vX2NhMB4XDTIzMDIxNDE0\nMDcyMFoXDTMzMDIxMTE0MDcyMFowLDELMAkGA1UEBhMCQ0ExDDAKBgNVBAoMA21u\nbzEPMA0GA1UEAwwGbW5vX2NhMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKC\nAgEAuCXiMo/igy98Pxx2i2MYkeww51uzXHTJRxL3rshCLxbBRbYNcw9l86LOL0zs\nPP7ieKLAMch9WoqfcIOURTYKfh4t2APKbeP1rKnYe674IYHi5GE3i7VKJJfHzkgF\nuOJjjY8f/LEGqQfztRO+xcZ3ueW7h6iWZV1T+tWTsVfOb8yz1MTP2KB9FI4tDHc5\nQ27sa9owPepQy5fvygIKqZoobPV4hChY3lu/fLAqkQOdoExpIaZrikwVpVGU6iCj\nfoA0Vn0ziQJ6POIw3yNN8BU16y4+dv2keajbjUFZLsXs8fJPa7NYmnDfj0A+KIrE\nAU+HeQfRCOXOxB8jdIkQ+pwqN9Ox50n0aVasYUcaujmqiAcTsmX+naR+gBzFpvMI\n/1wCp1GICJjZhth1sCGfhA6i+6l4gkvGTstveFWZ3u5hMbrEO8QyVvgnOJ/SeQZP\nKwxqwODgsWssJvtzQ72tZPvci1eSJXKg64eI9iEMUUOAVGEARqzY8iIQ9Vn7cTGW\nl2VWJBkmmt/neJbpZiEDdlKyBLRuYNyVjSww3HvzLyd37LezE0PVq1uuhKNASNfU\n56SvtmXO/9NByE4CnpQvh1mZjvtMcHzJJGwlPBrHjfXDdpSeghfB1yvk4qtZPCM1\nton8Tld5AbLmXdGnlPUdVitvf/ku+cL7PrD+LjyUgzhLfwcCAwEAAaOBnTCBmjAP\nBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBRWZ0tOnU+qJHv2EzpiPl00HXqnCTBb\nBgNVHSMEVDBSgBRWZ0tOnU+qJHv2EzpiPl00HXqnCaEwpC4wLDELMAkGA1UEBhMC\nQ0ExDDAKBgNVBAoMA21ubzEPMA0GA1UEAwwGbW5vX2NhgggKOcFgoslohTALBgNV\nHQ8EBAMCAYYwDQYJKoZIhvcNAQELBQADggIBAG8cHK7VOMiN3qKvaXRfK9zsZR18\nfdeLAj0BOgj0C4B5cU9jBH+RoYmYDYmgUyIuzVU0TVP9T8pjtIAeInKY7dphL1ho\n63xY+nAUdcr7g4QlfSB+LlPVUlQYBynZpfRjXdWVghYb2bgLZIypd/Y3eA+brmIy\nhMWRV3LieVTajwi71ksUPoXG5gyZX7gULFAJIlYydfLTa1RBT4CQZG8yVSupcWqV\nkTofd8x8HYw60mpisw9oIdmLUv7SpNPpZjOp9eD8zUG9Dfxhsi4p1YoDSuBMUju9\necX17ccESHcrzNke6N6RUd4C0kBgn+g7U5Fa+YrWb62Vh6nFZafTXOxrWVE4qF0S\n84+welQgY7D5o8G/MYUmYpuieKMeDxErc6osQirX+ludUYcOMKyrz34bBUG5/qmp\nAWguCf39QQszz4vGuIAk/sER9s1xWJAVltdGnyYZLBbS9ezaCpyma6+nrwSzeLxQ\n/IXBWABBEfEcnBZbGJD2EfrX1eS/stw8hMg5t8khiqclHx0YL68TF7VP1FaeI2yV\nxqP2WrdWKTfpYQymODy1v1TSKm3cpx2NNhFIyJF/OHTc/CU4LC5hShR+BYpKG7zd\nHzRYCJOG7Nb0BsmWzOErsN2gvudoP54BerKvJu6J46fUbOED5ChS1/FUd+m2Oh4R\nRMoSS35w0sZXw2z/\n-----END CERTIFICATE-----\n"
+  mno_subca: "-----BEGIN CERTIFICATE-----\nMIIFezCCA2OgAwIBAgIIQr+Y3Aovyz8wDQYJKoZIhvcNAQELBQAwLDELMAkGA1UE\nBhMCQ0ExDDAKBgNVBAoMA21ubzEPMA0GA1UEAwwGbW5vX2NhMB4XDTIzMTEyMzEz\nMjE1OVoXDTMzMDIxMTE0MDcxOVowLzELMAkGA1UEBhMCQ0ExDDAKBgNVBAoMA21u\nbzESMBAGA1UEAwwJbW5vX3N1YmNhMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIIC\nCgKCAgEAsAnctVY9cHzzOwRYYOd6Oy7lNcdy8sTPzqUGUKOFt6FGCv8jo2e//ivc\nIzlQSop9GRftmMI5WQmVyPIuSDiwyi7uvqAOQtq6AWwcV0sk10ltYrlUJO9FB4tq\nBp+fWxBi3bjybl52+2by7KBosyAk+FbFcVxxFC6GVmXrayURjbHO3+das61TXixf\nAS57Kw+luQINBJmgtZrw8+gicEyY0TCe24fPDGBZKgibxK7h+yCfugdWmQ6tNXBj\nS1MdovX2TBfn4y6ktdovOfvDQMmfc/Syv+6kdnJOMpgmeenu8KpnYi9Il7cQtdH2\nQBUf5XjKhEIKI+hAZwtxigI3AGjY2kdg9MxMkbCMQs5RxXkKtbCra22HcchjPdOi\n1ayV2o9MKFlAfVbhmTpGgD90PjaUjh2x02peVq/ie9lYo0GW9nhptNWvkwuDJoW5\nGmhAr3NwMxQGAIcy/jdkQ/oMjSbHoJ3Cnhv3illzQLnaiS8gbLKUew9s0VVrUMB5\n3Lk55FNUyhTvRiRXN/61pqFzQta7JW2KpVNp6R3DTjnfRFNHPZg66KQP9Oo4knpA\nCfhUKVAy5GeTXSPCWwCqEGBCWOT58DYMY87vCm/DogL/l54f7D3ICkpRjN987YIz\nQDxtaQv3VwcLdQQVjzDggemBYTHnb9zqlIw6VsQG4xbq8/xHjM8CAwEAAaOBnTCB\nmjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBTAB40Bt5pIw0pWNdfRkfNhdf8w\nwzBbBgNVHSMEVDBSgBRWZ0tOnU+qJHv2EzpiPl00HXqnCaEwpC4wLDELMAkGA1UE\nBhMCQ0ExDDAKBgNVBAoMA21ubzEPMA0GA1UEAwwGbW5vX2NhgggKOcFgoslohTAL\nBgNVHQ8EBAMCAYYwDQYJKoZIhvcNAQELBQADggIBAJyP3rj/VuLZQHFWnSF/CilM\nGDFPkOgWTTwrBC//o370Ack3d/kfD4NQPP5UK2ZmOn0/i9LjhzROCH0CTL4QNZh8\nDUvXNwhO71ySbYuAMm1uYr842ZHSY59Y5J3N+sXXSod+yBMp8Zgw1iKYN+BpOvfx\npatOTvWWhDKc0hBzztSkieXtY4oyvWM6oHgP7EaBF8Fb4+JIybUiMUyosqqby23T\nzzAJY+Uy+zwTe0yIqRr7VQn48/TDuXA/cXXubwSN2VAF2zasnXNl0+LbnnvkAq6h\nSPo/KcYrpjbyKz4UxXmECfgKiVyaA8Nd6Asx1abufwEiVcywIMQlUuifZRXfJ+pU\n1pWQpDp4l4BAphxVkpsJKN0xU4q7LAVtQy4nEslanEWSnAYyVljhvQEj/71A60QE\nBG4l54GezTPX0RaePvJ2BrWR6Qk7mbZkzIsDVYSV29ZxKiqMOU5+REW+qgb2jox9\nxPZH6I4nRIppt/hVAci9DQfRBwqdY9nC41DLdMYISJQIHdXkPLdgyLL57HE/qQaf\nJGkF3kl6kjTUaZR16xg/Nl3I6my1E0zSz3Gjyd7iPWkEK8KRBayN3YMaBrLwTpSm\nzMoz5BoyBc01woqZji4TEZWbn16wu7C1+/aKUUlr/MLG4D/oneWuMG5ZO0VTZsp0\nJnhQA+9IccvarTmYBUnp\n-----END CERTIFICATE-----\n"
+  mno_cmp_server: "-----BEGIN CERTIFICATE-----\nMIIEiDCCAnCgAwIBAgIIN0rIbHCIDPIwDQYJKoZIhvcNAQELBQAwLzELMAkGA1UE\nBhMCQ0ExDDAKBgNVBAoMA21ubzESMBAGA1UEAwwJbW5vX3N1YmNhMB4XDTIzMTEy\nMzEzMjQ1M1oXDTI4MTEyMTEzMjQ1M1owNDELMAkGA1UEBhMCQ0ExDDAKBgNVBAoM\nA21ubzEXMBUGA1UEAwwObW5vX2NtcF9zZXJ2ZXIwggEiMA0GCSqGSIb3DQEBAQUA\nA4IBDwAwggEKAoIBAQDo1by7AtuiQafyNjW6eVvwi/kAdXmDmzWpREtBpudN+xLP\nol4e0fbyLxvMLR2J6I6fhZGD6sTSNz+ATqoEPIStI/Zc1ed6YLstdoeJNYnMByae\nJ5MY2E/sTNciy8y5Qw8Rhlq8hJDZhHMkv3GedPH+g1YHSx3Ub2RsarclrQTASHfk\nOkiDL0EE6E/7llb/qIKHsu/iqS1QeVoM5wPRhmmN8PdQXohnUr3pnDRtGXdM0xzN\num+MOWhJV+Qc/6o4zfLF7jF0wy19l1tAlPSMuGMmq8+vVqaMYJ6HpxeVtrf8zqcV\n2+Z59BMt/+gPjY4+JPG1xX6WifX64qzqTWg9YhPPAgMBAAGjgaIwgZ8wDAYDVR0T\nAQH/BAIwADAdBgNVHQ4EFgQUzvK7TOE3lJs1yiW5pP/NG/629hgwWwYDVR0jBFQw\nUoAUwAeNAbeaSMNKVjXX0ZHzYXX/MMOhMKQuMCwxCzAJBgNVBAYTAkNBMQwwCgYD\nVQQKDANtbm8xDzANBgNVBAMMBm1ub19jYYIIQr+Y3Aovyz8wEwYDVR0lBAwwCgYI\nKwYBBQUHAwEwDQYJKoZIhvcNAQELBQADggIBAAD6S8Cv3fnbqxtslrT+52CfHFE/\nf02Sdf31vpu7NGdcodseEr2+lt3VSJHT9NcswsHD4BM6h80WoOy2SYZKGBwmu0cF\nr1CdZm7rmgzPKuN1dzECeYjK5pvz9OSb0oVx0Fj36UZA4noyCRTVyGCmCYTeJpO+\n7FlgS0sqWIYU2woQgZwDeQIH8u/8QWvMX1v/HDfYW9r2jQRbX+TLiYnp8Rzwd6kC\nh/NBwIMQi7TpfD+E8h47KaVqFbVDS3zNMfLblzdWAUnUBolbmahwS0paukyjeXn3\ncpnh7LNjyEntw5bjEXUnmygLv9qI69TjsVX+w9PxnCttZGiBU2UhcFGGyCHzWx0W\n++t3f9Hdy18AoOrYvGDYlvFgPfgOfZyOMfODFTGJosLnnGjg1H5drbEQQO0sqhRc\ntwBNlIfIizGDWCsZRJ4cay74z5qjRozhRKjseYswoIfo+2NEccQgfK/LMfGHss+I\nq/wYHrI54S4dPB/BGYRpcccf6guQ91s6yfXwvB1aeJ9w9MPOpNzciQarMK1JN1sM\nezF2yyURHJBFmMsxo7DdkTXmza+/Brk1mi1lcFWyAPQF1AVUrpCYZ3vJMccjT2i/\nbxfLAZQsZfmKNb9w7dA5Ley14ypkKIpG3wSd6pFFHc0cyAnyc0TyA1dZJe8SWnXR\nUbKA1w2rEriOHqZm\n-----END CERTIFICATE-----\n"

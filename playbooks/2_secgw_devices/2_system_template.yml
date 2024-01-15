@@ -1,0 +1,60 @@
+- name: 'Create system template: {{ secgw_system_template_name }}'
+  fmgr_pm_devprof_adom:
+    adom: '{{ fmg_adom_secgw }}'
+    access_token: '{{ fmg_access_token }}'
+    pm_devprof_adom:
+      description: 'System Template for SecGW'
+      name: '{{ secgw_system_template_name }}'
+      type: 'devprof'
+      enabled options:
+        - dns
+        - ntp
+        - admin
+        - log
+      scope member:
+        -
+          name: '{{ secgws.seg1.name }}'
+          #vdom: 'root'
+        -
+          name: '{{ secgws.seg2.name }}'
+          #vdom: 'root'
+
+
+- name: 'System Template configure Global Attributes'
+  fmgr_devprof_system_global:
+    access_token: '{{ fmg_access_token }}'
+    bypass_validation: true
+    adom: '{{ fmg_adom_secgw }}'
+    devprof: '{{ secgw_system_template_name }}'
+    devprof_system_global:
+      gui-ipv6: 'enable'
+      gui-theme: 'mariner'
+      admintimeout: 480
+
+- name: 'System Template NTP'
+  fmgr_devprof_system_ntp:
+    adom: '{{ fmg_adom_secgw }}'
+    access_token: '{{ fmg_access_token }}'
+    bypass_validation: true
+    devprof: '{{ secgw_system_template_name }}'
+    devprof_system_ntp:
+      type: 'fortiguard'
+      ntpsync: 'enable'
+
+- name: 'System Template FAZ'
+  fmgr_devprof_device_profile_fortianalyzer:
+    adom: '{{ fmg_adom_secgw }}'
+    devprof: '{{ secgw_system_template_name }}'
+    devprof_device_profile_fortianalyzer:
+      target-sn: '{{ faz_sn }}'
+      target-ip: '{{ faz_host }}'
+      target: 'others'
+
+- name: 'System Template FAZ settings'
+  fmgr_devprof_log_fortianalyzer_setting:
+    adom: '{{ fmg_adom_secgw }}'
+    devprof: '{{ secgw_system_template_name }}'
+    devprof_log_fortianalyzer_setting:
+      reliable: 'disable'
+      upload-option: 'realtime'
+      access-config: 'enable'

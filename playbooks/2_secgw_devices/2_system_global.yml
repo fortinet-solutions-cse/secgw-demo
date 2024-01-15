@@ -1,0 +1,18 @@
+- name: System Global
+  fmgr_generic:
+    method: update
+    access_token: '{{ fmg_access_token }}'
+    params:
+      - url: "pm/config/device/{{ item.name }}/global/system/global"
+        data:
+          vdom-mode: 'multi-vdom'
+          hostname: '{{ item.name }}'
+          timezone: '{{ timezone }}'
+          gui-ipv6: 'enable'
+          gui-theme: 'graphite'
+          admintimeout: 480
+  loop:
+    - '{{ secgws.seg1 }}'
+    - '{{ secgws.seg2 }}'
+  loop_control:
+    label: "{{ item.name }}"

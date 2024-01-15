@@ -1,0 +1,33 @@
+- name: 7.0 Policy Package
+  hosts: fortimanagers
+  collections:
+    - fortinet.fortimanager
+  connection: httpapi
+  vars:
+    # vars to define installation of policy packages
+    adom: '{{ fmg_adom_secgw }}'
+    package: '{{ secgw_policy_package }}'
+    scope_device_vdom:
+      - name: '{{ secgws.seg1.name }}'
+        vdom: '{{ secgws_region1_traffic_vdom }}'
+      - name: '{{ secgws.seg2.name }}'
+        vdom: '{{ secgws_region1_traffic_vdom }}'
+  vars_files:
+    - ../../vars/global.yml
+  tasks:
+    - name: 7.1 Zones
+      ansible.builtin.include_tasks: '1_zones.yml'
+    - name: 7.2 Dynamic Interfaces
+      ansible.builtin.include_tasks: '2_dynamic_interfaces.yml'
+    - name: 7.3 Service Custom
+      ansible.builtin.include_tasks: '3_service_custom.yml'
+    - name: 7.4 Service Groups
+      ansible.builtin.include_tasks: '4_service_groups.yml'
+    - name: 7.5 Firewall Policy Packages
+      ansible.builtin.include_tasks: '5_firewall_policy_package.yml'
+    - name: 7.6 Firewall Policies
+      ansible.builtin.include_tasks: '6_firewall_policies.yml'
+    - name: 7.7 Firewall DoS Policies
+      ansible.builtin.include_tasks: '7_firewall_dospolicies.yml'
+    - name: 7.8 Install Policy Package '{{ secgw_policy_package }}'
+      ansible.builtin.include_tasks: '../common/install_policy_package.yml'

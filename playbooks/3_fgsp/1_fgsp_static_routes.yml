@@ -1,0 +1,24 @@
+- name: FGSP Static routes
+  fmgr_generic:
+    access_token: '{{ fmg_access_token }}'
+    method: set
+    params:
+      - url: "pm/config/device/{{ item.name }}/vdom/root/router/static"
+        data:
+          -
+            device: '{{ item.static_routes[0].device }}'
+            comment: '{{ item.static_routes[0].comment }}'
+            bfd: 'enable'
+            dst: '{{ item.static_routes[0].dst }}'
+            gateway: '{{ item.static_routes[0].gateway }}'
+          -
+            device: '{{ item.static_routes[1].device }}'
+            comment: '{{ item.static_routes[1].comment }}'
+            bfd: 'enable'
+            dst: '{{ item.static_routes[1].dst }}'
+            gateway: '{{ item.static_routes[1].gateway }}'
+  loop:
+    - '{{ secgws.seg1 }}'
+    - '{{ secgws.seg2 }}'
+  loop_control:
+    label: "{{ item.name }}"

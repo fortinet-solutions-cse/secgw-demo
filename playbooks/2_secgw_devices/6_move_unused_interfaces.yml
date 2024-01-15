@@ -1,0 +1,23 @@
+- name: Move unused interfaces
+  fmgr_generic:
+    method: set
+    access_token: '{{ fmg_access_token }}'
+    params:
+      - url: "pm/config/device/{{ item.name }}/global/system/switch-interface"
+        data:
+          member:
+            - "port3"
+            - "port4"
+            - "port5"
+            - "port6"
+            - "port7"
+            - "port8"
+            - "port9"
+          name: "Unused-Ports"
+          vdom: "root"
+  loop:
+    - '{{ secgws.seg1 }}'
+    - '{{ secgws.seg2 }}'
+  loop_control:
+    label: "{{ item.name }}"
+

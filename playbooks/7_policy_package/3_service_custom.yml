@@ -1,0 +1,23 @@
+- name: Service Custom
+  fmgr_generic:
+    access_token: '{{ fmg_access_token }}'
+    method: set
+    params:
+      - url: "pm/config/adom/{{ fmg_adom_secgw }}/obj/firewall/service/custom"
+        data:
+          -
+            comment: "GTP User Plane"
+            name: "GTP-U"
+            udp-portrange: "2152"
+          -
+            comment: "S1-AP Control Plane"
+            name: "S1-AP"
+            sctp-portrange: "36412"
+          -
+            comment: "NG-AP Control Plane"
+            name: "NG-AP"
+            sctp-portrange: "38412"
+          -
+            comment: "F1-AP Control Plane"
+            name: "F1-AP"
+            sctp-portrange: "38472"

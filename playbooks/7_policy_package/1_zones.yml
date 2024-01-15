@@ -1,0 +1,26 @@
+- name: Zones
+  fmgr_generic:
+    access_token: '{{ fmg_access_token }}'
+    method: set
+    params:
+      - url: "pm/config/device/{{ item.name }}/vdom/{{ secgws_region1_traffic_vdom }}/system/zone"
+        data:
+          -
+            name: "SZ_RAN-UNTRUST"
+            description: "RAN-UNTRUST Security Zone"
+            interface:
+              - "port1.20"
+              - "port2.20"
+            intrazone: "allow"
+          -
+            name: "SZ_RAN-TRUST"
+            description: "RAN-TRUST Security Zone"
+            interface:
+              - "port1.30"
+              - "port2.30"
+            intrazone: "allow"
+  loop:
+    - '{{ secgws.seg1 }}'
+    - '{{ secgws.seg2 }}'
+  loop_control:
+    label: "{{ item.name }}"

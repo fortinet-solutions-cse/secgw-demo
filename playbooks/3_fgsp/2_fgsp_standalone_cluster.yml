@@ -1,0 +1,57 @@
+- name: FGSP Standalone-cluster '{{ secgws.seg1.name }}'
+  fmgr_generic:
+    access_token: '{{ fmg_access_token }}'
+    method: set
+    params:
+      - url: "pm/config/device/{{ secgws.seg1.name }}/global/sys/standalone-cluster"
+        data:
+          standalone-group-id: 200
+          group-member-id: 1
+          cluster-peer:
+            -
+              sync-id: 1
+              peerip: '10.10.2.1'
+              syncvd: 'SecGW-R1'
+              down-intfs-before-sess-sync:
+                - 'port1.20'
+                - 'port2.20'
+              ipsec-tunnel-sync: 'enable'
+              secondary-add-ipsec-routes: 'disable'
+            -
+              sync-id: 2
+              peerip: '10.10.2.3'
+              syncvd: 'SecGW-R1'
+              down-intfs-before-sess-sync:
+                - 'port1.20'
+                - 'port2.20'
+              ipsec-tunnel-sync: 'enable'
+              secondary-add-ipsec-routes: 'disable'
+
+- name: FGSP Standalone-cluster '{{ secgws.seg2.name }}'
+  fmgr_generic:
+    access_token: '{{ fmg_access_token }}'
+    method: set
+    params:
+      - url: "pm/config/device/{{ secgws.seg2.name }}/global/sys/standalone-cluster"
+        data:
+          standalone-group-id: 200
+          group-member-id: 2
+          cluster-peer:
+            -
+              sync-id: 1
+              peerip: '10.10.1.1'
+              down-intfs-before-sess-sync:
+                - 'port1.20'
+                - 'port2.20'
+              syncvd: 'SecGW-R1'
+              ipsec-tunnel-sync: 'enable'
+              secondary-add-ipsec-routes: 'disable'
+            -
+              sync-id: 2
+              peerip: '10.10.1.3'
+              syncvd: 'SecGW-R1'
+              down-intfs-before-sess-sync:
+                - 'port1.20'
+                - 'port2.20'
+              ipsec-tunnel-sync: 'enable'
+              secondary-add-ipsec-routes: 'disable'

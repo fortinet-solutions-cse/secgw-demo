@@ -1,0 +1,15 @@
+- name: "Configure SecGW Interfaces {{ secgws.seg1.name }}"
+  fmgr_generic:
+    method: set
+    access_token: '{{ fmg_access_token }}'
+    params:
+      - url: "pm/config/device/{{ secgws.seg1.name }}/global/system/interface"
+        data: '{{ secgws.seg1.interfaces }}'
+
+- name: "Configure SecGW Interfaces {{ secgws.seg2.name }}"
+  fmgr_generic:
+    method: set
+    access_token: '{{ fmg_access_token }}'
+    params:
+      - url: "pm/config/device/{{ secgws.seg2.name }}/global/system/interface"
+        data: '{{ secgws.seg2.interfaces }}'

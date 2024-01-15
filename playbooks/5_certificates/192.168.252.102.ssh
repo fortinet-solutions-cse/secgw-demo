@@ -1,0 +1,4 @@
+config global
+    execute vpn certificate local generate cmp certname 2048 10.11.2.6:80 /cert/cmp2/ mno_cmp_server Fortinet_Factory "" "" "C=CA,O=mno,OU=FGT,CN=serialnumber" ""
+end
+

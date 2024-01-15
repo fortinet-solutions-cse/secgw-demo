@@ -1,0 +1,16 @@
+- name: Service Groups
+  fmgr_generic:
+    access_token: '{{ fmg_access_token }}'
+    method: set
+    params:
+      - url: "pm/config/adom/{{ fmg_adom_secgw }}/obj/firewall/service/group"
+        data:
+          -
+            name: "LTE-5G-Services"
+            member:
+              - "GTP-U"
+              - "F1-AP"
+              - "NG-AP"
+              - "S1-AP"
+              - "ALL_ICMP6"
+              - "ALL_ICMP"

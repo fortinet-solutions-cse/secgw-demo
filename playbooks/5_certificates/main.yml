@@ -1,0 +1,100 @@
+# Tasks for Certificates
+
+---
+
+- name: 5.0 Certificates
+  hosts: fortimanagers
+  collections:
+    - fortinet.fortimanager
+  connection: httpapi
+  vars_files:
+    - ../../vars/global.yml
+  tasks:
+    - name: 5.1 Add scripts
+      ansible.builtin.include_tasks: '1_add_scripts.yml'
+
+- name: Install ca and remote certs
+  hosts: fortimanagers
+  collections:
+    - fortinet.fortimanager
+  connection: httpapi
+  vars_files:
+    - ../../vars/global.yml
+  vars:
+    script: "001_certificates.cli"
+    scope_device_vdom:
+      -
+        name: '{{ secgws.seg1.name }}'
+        vdom: 'global'
+      -
+        name: '{{ secgws.seg2.name }}'
+        vdom: 'global'
+  tasks:
+    - name: 5.2 Install cert
+      ansible.builtin.include_tasks: '../common/execute_script.yml'
+
+- name: Run local script ir SEG1 and SEG2
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: 5.3 Execute script
+      command: /fortipoc/ansible/playbooks/5_certificates/seg_ir.py
+      register: script_output
+    - name: 5.4 Print script output
+      debug:
+        var: script_output.stdout
+
+- name: Retrieve FGT config
+  hosts: fortimanagers
+  collections:
+    - fortinet.fortimanager
+  connection: httpapi
+  vars_files:
+    - ../../vars/global.yml
+  vars:
+    script: "002_retrieve_config.cli"
+    scope_device_vdom:
+      -
+        name: '{{ secgws.seg1.name }}'
+        vdom: 'global'
+      -
+        name: '{{ secgws.seg2.name }}'
+        vdom: 'global'
+  tasks:
+    - name: 5.5 Retrieve config
+      ansible.builtin.include_tasks: '../common/execute_script.yml'
+
+- name: Key update config seg1
+  hosts: fortimanagers
+  collections:
+    - fortinet.fortimanager
+  connection: httpapi
+  vars_files:
+    - ../../vars/global.yml
+  vars:
+    script: "003_regenerate_seg1.cli"
+    scope_device_vdom:
+      -
+        name: '{{ secgws.seg1.name }}'
+        vdom: 'global'
+  tasks:
+    - name: 5.6 regenerate seg1
+      ansible.builtin.include_tasks: '../common/execute_script.yml'
+
+- name: Key update config seg2
+  hosts: fortimanagers
+  collections:
+    - fortinet.fortimanager
+  connection: httpapi
+  vars_files:
+    - ../../vars/global.yml
+  vars:
+    script: "003_regenerate_seg2.cli"
+    scope_device_vdom:
+      -
+        name: '{{ secgws.seg2.name }}'
+        vdom: 'global'
+  tasks:
+    - name: 5.7 regenerate seg2
+      ansible.builtin.include_tasks: '../common/execute_script.yml'

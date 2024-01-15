@@ -1,0 +1,28 @@
+# Generic task to install on device (FortiGate)
+# required vars: access_token, adom, scope
+
+---
+
+- name: Installing device
+  fmgr_securityconsole_install_device:
+    bypass_validation: true
+    access_token: "{{ fmg_access_token }}"
+    securityconsole_install_device:
+      adom: '{{ fmg_adom_secgw }}'
+      flags:
+        - 'none'
+      scope:
+        '{{ scope_device_vdom }}'
+  register: installing_task
+
+- name: Inspect the Task Status
+  fmgr_fact:
+    facts:
+      selector: 'task_task'
+      params:
+        task: '{{ installing_task.meta.response_data.task }}'
+  register: taskinfo
+  until: taskinfo.meta.response_data.percent == 100
+  retries: 30
+  delay: 3
+  failed_when: taskinfo.meta.response_data.state == 'error'

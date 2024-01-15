@@ -1,0 +1,54 @@
+- name: 2.0 Setup SecGW devices
+  hosts: fortimanagers
+  collections:
+    - fortinet.fortimanager
+  connection: httpapi
+  vars:
+    # define device and vdoms to be installed
+    scope_device_vdom:
+      - name: '{{ secgws.seg1.name }}'
+        vdom: 'root'
+      - name: '{{ secgws.seg1.name }}'
+        vdom: '{{ secgws_region1_traffic_vdom }}'
+      - name: '{{ secgws.seg2.name }}'
+        vdom: 'root'
+      - name: '{{ secgws.seg2.name }}'
+        vdom: '{{ secgws_region1_traffic_vdom }}'
+  vars_files:
+    - ../../vars/global.yml
+  tasks:
+    - name: 2.1 Discover and Add devices
+      ansible.builtin.include_tasks: "1_discover_and_add_secgws.yml"
+    - name: 2.2 System Global
+      ansible.builtin.include_tasks: '2_system_global.yml'
+    - name: 2.3 VDOMs
+      ansible.builtin.include_tasks: '3_add_vdom.yml'
+    - name: 2.4 Device Group
+      ansible.builtin.include_tasks: '4_device_group_secgw.yml'
+    - name: 2.5 Enable BFD
+      ansible.builtin.include_tasks: "5_enable_bfd.yml"
+    - name: 2.6 Install devices
+      ansible.builtin.include_tasks: '../common/install_device.yml'
+    - name: 2.7 Move unused interfaces
+      ansible.builtin.include_tasks: "6_move_unused_interfaces.yml"
+    - name: 2.8 Configure SecGW interfaces
+      ansible.builtin.include_tasks: "7_config_secgw_interfaces.yml"
+    - name: 2.9 Configure SecGW System DNS
+      ansible.builtin.include_tasks: "8_system_dns.yml"
+    - name: 2.10 Configure SecGW System NTP
+      ansible.builtin.include_tasks: "9_system_ntp.yml"
+    - name: 2.11 Configure SecGW FAZ
+      ansible.builtin.include_tasks: "10_faz.yml"
+    - name: 2.12 Install devices
+      ansible.builtin.include_tasks: '../common/install_device.yml'
+
+- name: Add SecGW to FAZ
+  hosts: fortianalyzers
+  collections:
+    - fortinet.fortianalyzer
+  connection: httpapi
+  vars_files:
+    - ../../vars/global.yml
+  tasks:
+    - name: 2.13 FAZ Add device
+      ansible.builtin.include_tasks: "11_add_secgw_to_faz.yml"

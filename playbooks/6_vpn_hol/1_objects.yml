@@ -1,0 +1,30 @@
+- name: Objects Address
+  fmgr_generic:
+    access_token: '{{ fmg_access_token }}'
+    method: set
+    params:
+      - url: "pm/config/adom/{{ fmg_adom_secgw }}/obj/firewall/address"
+        data:
+          -
+            name: "N2N3-core"
+            subnet:
+              - "10.30.0.0"
+              - "255.255.252.0"
+          -
+            name: "N2N3-ran"
+            subnet:
+              - "10.30.255.0"
+              - "255.255.255.0"
+
+- name: Objects Groups
+  fmgr_generic:
+    access_token: '{{ fmg_access_token }}'
+    method: set
+    params:
+      - url: "pm/config/adom/{{ fmg_adom_secgw }}/obj/firewall/addrgrp"
+        data:
+          -
+            member:
+              - "N2N3-core"
+              - "N2N3-ran"
+            name: "5G-Networks"

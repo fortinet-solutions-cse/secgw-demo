@@ -1,0 +1,26 @@
+- name: Objects Address6
+  fmgr_generic:
+    access_token: '{{ fmg_access_token }}'
+    method: set
+    params:
+      - url: "pm/config/adom/{{ fmg_adom_secgw }}/obj/firewall/address6"
+        data:
+          -
+            ip6: "fd00::30:0:0/96"
+            name: "N2N3-core-ipv6"
+          -
+            ip6: "fd00::30:cafe:0/112"
+            name: "N2N3-ran-ipv6"
+
+- name: Objects Groups6
+  fmgr_generic:
+    access_token: '{{ fmg_access_token }}'
+    method: set
+    params:
+      - url: "pm/config/adom/{{ fmg_adom_secgw }}/obj/firewall/addrgrp6"
+        data:
+          -
+            member: 
+              - "N2N3-ran-ipv6"
+              - "N2N3-core-ipv6"
+            name: "5G-Networks-ipv6"

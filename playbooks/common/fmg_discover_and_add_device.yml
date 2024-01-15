@@ -1,0 +1,43 @@
+- name: FMG Discover device '{{ item.name }}'
+  fmgr_dvm_cmd_discover_device:
+    access_token: "{{ fmg_access_token }}"
+    bypass_validation: true
+    dvm_cmd_discover_device:
+      device:
+        adm_pass: '{{ password }}'
+        adm_usr: '{{ username }}'
+        ip: '{{ item.mgmtip }}'
+
+  register: probed_device
+
+- name: FMG Add device '{{ item.name }}'
+  fmgr_dvm_cmd_add_device:
+    access_token: "{{ fmg_access_token }}"
+    bypass_validation: true
+    dvm_cmd_add_device:
+      adom: '{{ fmg_adom_secgw }}'
+      flags:
+        - 'create_task'
+        - 'nonblocking'
+      device:
+        adm_usr: '{{ username }}'
+        adm_pass: '{{ password }}'
+        desc: 'The device is added via FortiManager Ansible'
+        ip: '{{ probed_device.meta.response_data.device.ip }}'
+        mgmt_mode: 'fmg'
+        name: '{{ item.name }}'
+        sn: '{{ probed_device.meta.response_data.device.sn }}'
+
+  register: installing_task
+
+- name: Poll installing task
+  fmgr_fact:
+    facts:
+      selector: 'task_task'
+      params:
+        task: '{{ installing_task.meta.response_data.taskid }}'
+  register: taskinfo
+  until: taskinfo.meta.response_data.percent == 100
+  retries: 30
+  delay: 5
+  failed_when: taskinfo.meta.response_data.state == 'error' and 'devsnexist' not in taskinfo.meta.response_data.line[0].detail
