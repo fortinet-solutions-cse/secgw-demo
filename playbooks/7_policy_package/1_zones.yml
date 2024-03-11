@@ -9,15 +9,15 @@
             name: "SZ_RAN-UNTRUST"
             description: "RAN-UNTRUST Security Zone"
             interface:
-              - "port1.20"
-              - "port2.20"
+              - "agg1.20"
+              - "agg2.20"
             intrazone: "allow"
           -
             name: "SZ_RAN-TRUST"
             description: "RAN-TRUST Security Zone"
             interface:
-              - "port1.30"
-              - "port2.30"
+              - "agg1.30"
+              - "agg2.30"
             intrazone: "allow"
   loop:
     - '{{ secgws.seg1 }}'

@@ -17,14 +17,14 @@
               bfd: 'enable'
               remote-as: 65001
               soft-reconfiguration: 'enable'
-              update-source: 'port1.11'
+              update-source: 'agg1.11'
             -
               ip: '10.11.1.2'
               advertisement-interval: 0
               bfd: 'enable'
               remote-as: 65001
               soft-reconfiguration: 'enable'
-              update-source: 'port2.11'
+              update-source: 'agg2.11'
           redistribute:
             -
               name: 'connected'
@@ -60,7 +60,7 @@
               prefix-list-out: "IPSecGW-loopback-addresses"
               remote-as: 65001
               soft-reconfiguration6: "enable"
-              update-source: "port1.20"
+              update-source: "agg1.20"
             -
               ip: "10.20.1.2"
               advertisement-interval: 0
@@ -78,7 +78,7 @@
               prefix-list-out: "IPSecGW-loopback-addresses"
               remote-as: 65001
               soft-reconfiguration6: "enable"
-              update-source: "port2.20"
+              update-source: "agg2.20"
             -
               ip: "10.30.1.0"
               advertisement-interval: 0
@@ -89,7 +89,7 @@
               prefix-list-out6: "Client6-inner-addresses"
               remote-as: 65001
               soft-reconfiguration6: "enable"
-              update-source: "port1.30"
+              update-source: "agg1.30"
             -
               ip: "10.30.1.2"
               advertisement-interval: 0
@@ -100,7 +100,7 @@
               prefix-list-out6: "Client6-inner-addresses"
               remote-as: 65001
               soft-reconfiguration6: "enable"
-              update-source: "port2.30"
+              update-source: "agg2.30"
           redistribute:
             -
               name: 'connected'
@@ -136,14 +136,14 @@
               bfd: 'enable'
               remote-as: 65001
               soft-reconfiguration: 'enable'
-              update-source: 'port1.11'
+              update-source: 'agg1.11'
             -
               ip: '10.11.2.2'
               advertisement-interval: 0
               bfd: 'enable'
               remote-as: 65001
               soft-reconfiguration: 'enable'
-              update-source: 'port2.11'
+              update-source: 'agg2.11'
           redistribute:
             -
               name: 'connected'
@@ -179,7 +179,7 @@
               prefix-list-out6: "IPSecGW6-loopback-addresses"
               remote-as: 65001
               soft-reconfiguration6: "enable"
-              update-source: "port1.20"
+              update-source: "agg1.20"
             -
               ip: "10.20.2.2"
               advertisement-interval: 0
@@ -197,7 +197,7 @@
               prefix-list-out6: "IPSecGW6-loopback-addresses"
               remote-as: 65001
               soft-reconfiguration6: "enable"
-              update-source: "port2.20"
+              update-source: "agg2.20"
             -
               ip: "10.30.2.0"
               advertisement-interval: 0
@@ -208,7 +208,7 @@
               prefix-list-out6: "Client6-inner-addresses"
               remote-as: 65001
               soft-reconfiguration6: "enable"
-              update-source: "port1.30"
+              update-source: "agg1.30"
             -
               ip: "10.30.2.2"
               advertisement-interval: 0
@@ -219,7 +219,7 @@
               prefix-list-out6: "Client6-inner-addresses"
               remote-as: 65001
               soft-reconfiguration6: "enable"
-              update-source: "port2.30"
+              update-source: "agg2.30"
           redistribute:
             -
               name: 'connected'

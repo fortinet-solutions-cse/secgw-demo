@@ -37,14 +37,14 @@ secgws:
     sn: 
     static_routes:
       - 
-        device: port1.10
+        device: agg1.10
         dst: 
           - 10.10.2.1
           - 255.255.255.255
         gateway: 10.10.1.0
         comment: 'fgsp peering via rpe11'
       - 
-        device: port2.10
+        device: agg2.10
         dst: 
           - 10.10.2.3
           - 255.255.255.255
@@ -74,34 +74,52 @@ secgws:
             ip6-allowaccess: 'ping'
             ip6-address: 'fd00::20:ff:1/128'
         vdom: 'SecGW-R1'
+      -
+        name: 'agg1'
+        alias: 'agg1_rpe11'
+        type: 'aggregate'
+        vdom: 'root'
+        lacp-speed: 'fast'
+        member:
+          - port1
+          - port3
+      -
+        name: 'agg2'
+        alias: 'agg2_rpe12'
+        type: 'aggregate'
+        vdom: 'root'
+        lacp-speed: 'fast'
+        member:
+          - port2
+          - port4  
       - 
-        name: 'port1.10'
+        name: 'agg1.10'
         alias: 'FGSP1'
+        description: "FGT-SEG1 agg1.10 to site1-PE1 agg1.10 vr: fgspsync"
+        interface: 'agg1'
         allowaccess: 'ping'
-        description: "FGT-SEG1 port1.10 to site1-PE1 port1.10 vr: fgspsync"
-        interface: 'port1'
         ip: 
           - '10.10.1.1'
           - '255.255.255.254'
         vdom: 'root'
         vlanid: 10
       - 
-        name: 'port2.10'
+        name: 'agg2.10'
         alias: 'FGSP2'
         allowaccess: 'ping'
-        description: "FGT-SEG1 port2.10 to site1-PE2 port1.10 vrf: fgspsync"
-        interface: 'port2'
+        description: "FGT-SEG1 agg2.10 to site1-PE2 agg1.10 vrf: fgspsync"
+        interface: 'agg2'
         ip: 
             - '10.10.1.3'
             - '255.255.255.254'
         vdom: 'root'
         vlanid: 10
       - 
-        name: "port1.20"
+        name: "agg1.20"
         alias: "RAN_UNTRUST1"
         allowaccess: "ping"
-        description: "FGT-SEG1 port1.20 to site1-PE1 eth1.20 vrf: ran-untrust"
-        interface: "port1"
+        description: "FGT-SEG1 agg1.20 to site1-PE1 eth1.20 vrf: ran-untrust"
+        interface: "agg1"
         ip: 
             - "10.20.1.1"
             - "255.255.255.254"
@@ -111,11 +129,11 @@ secgws:
         vdom: "SecGW-R1"
         vlanid: 20
       - 
-        name: "port2.20"
+        name: "agg2.20"
         alias: "RAN_UNTRUST2"
-        description: "FGT-SEG1 port2.2000 to site1-PE2 eth1.20 vrf: ran-untrust"
+        description: "FGT-SEG1 agg2.20 to site1-PE2 eth1.20 vrf: ran-untrust"
         allowaccess: "ping"
-        interface: "port2"
+        interface: "agg2"
         ip:
             - "10.20.1.3"
             - "255.255.255.254"
@@ -125,10 +143,10 @@ secgws:
         vdom: "SecGW-R1"
         vlanid: 20
       - 
-        name: port1.30
+        name: agg1.30
         alias: "RAN_TRUST1"
-        description: "FGT-SEG1 port1.3000 to site1-PE1 eth1.30 vrf: ran-trust"
-        interface: "port1"
+        description: "FGT-SEG1 agg1.30 to site1-PE1 eth1.30 vrf: ran-trust"
+        interface: "agg1"
         allowaccess: "ping"
         ip: 
             - "10.30.1.1"
@@ -139,10 +157,10 @@ secgws:
         vdom: "SecGW-R1"
         vlanid: 30 
       - 
-        name: "port2.30"
+        name: "agg2.30"
         alias: "RAN_TRUST2"
-        description: "FGT-SEG1 port2.3000 to site1-PE2 eth1.30 vrf: ran-trust"
-        interface: "port2"
+        description: "FGT-SEG1 agg2.30 to site1-PE2 eth1.30 vrf: ran-trust"
+        interface: "agg2"
         allowaccess: "ping"
         ip: 
             - "10.30.1.3"
@@ -153,10 +171,10 @@ secgws:
         vdom: "SecGW-R1"
         vlanid: 30
       -
-        name: "port1.11"
+        name: "agg1.11"
         alias: "PKI1"
-        description: "FGT-SEG1 port1.11 to site1-PE1 eth1.11 vrf: pki"
-        interface: "port1"
+        description: "FGT-SEG1 agg1.11 to site1-PE1 eth1.11 vrf: pki"
+        interface: "agg1"
         allowaccess: "ping"
         ip:
             - "10.11.1.1"
@@ -164,12 +182,12 @@ secgws:
         vdom: "root"
         vlanid: 11
       -
-        name: "port2.11"
+        name: "agg2.11"
         alias: "PKI2"
         vdom: "root"
         vlanid: 11
-        description: "FGT-SEG1 port2.11 to site1-PE2 port1.11 vrf: pki"
-        interface: "port2"
+        description: "FGT-SEG1 agg2.11 to site1-PE2 agg1.11 vrf: pki"
+        interface: "agg2"
         allowaccess: "ping"
         ip: 
             - "10.11.1.3"
@@ -181,14 +199,14 @@ secgws:
     certname: 'seg2'
     static_routes:
       - 
-        device: port1.10
+        device: agg1.10
         dst: 
           - 10.10.1.1
           - 255.255.255.255
         gateway: 10.10.2.0
         comment: 'fgsp peering via rpe21'
       - 
-        device: port2.10
+        device: agg2.10
         dst: 
           - 10.10.1.3
           - 255.255.255.255
@@ -219,33 +237,53 @@ secgws:
             ip6-address: 'fd00::20:ff:1/128'
         vdom: 'SecGW-R1'
       -
-        name: "port1.10"
-        alias: "FGSP1"
-        description: "FGT-SEG2 port1.10 to site2-PE1 port1.10 vrf: fgspsync"
-        interface: "port1"
-        allowaccess: "ping"
+        name: 'agg1'
+        alias: 'agg1_rpe11'
+        type: 'aggregate'
+        vdom: 'root'
+        lacp-speed: 'fast'
+        algorithm: 'L3'
+        member:
+          - port1
+          - port3
+      -
+        name: 'agg2'
+        alias: 'agg2_rpe12'
+        type: 'aggregate'
+        vdom: 'root'
+        lacp-speed: 'fast'
+        algorithm: 'L3'
+        member:
+          - port2
+          - port4  
+      -
+        name: 'agg1.10'
+        alias: 'FGSP1'
+        description: "FGT-SEG2 agg1.10 to site2-PE1 agg1.10 vrf: fgspsync"
+        interface: 'agg1'
+        allowaccess: 'ping'
         ip:
-            - "10.10.2.1"
-            - "255.255.255.254"
+            - '10.10.2.1'
+            - '255.255.255.254'
 
         vdom: "root"
         vlanid: 10
       -
-        name: "port2.10"
-        alias: "FGSP2"
-        description: "FGT-SEG2 port2.10 to site2-PE2 port1.10 vrf: fgspsync"
-        interface: "port2"
-        allowaccess: "ping"
+        name: 'agg2.10'
+        alias: 'FGSP2'
+        description: "FGT-SEG2 agg2.10 to site2-PE2 agg1.10 vrf: fgspsync"
+        interface: 'agg2'
+        allowaccess: 'ping'
         ip:
             - "10.10.2.3"
             - "255.255.255.254"
         vdom: "root"
         vlanid: 10
       -
-        name: "port1.20"
+        name: "agg1.20"
         alias: "RAN_UNTRUST1"
-        description: "FGT-SEG2 port1.20 to site2-PE1 port1.20 vrf: ran-untrust"
-        interface: "port1"
+        description: "FGT-SEG2 agg1.20 to site2-PE1 agg1.20 vrf: ran-untrust"
+        interface: "agg1"
         allowaccess: "ping"
         ip:
             - "10.20.2.1"
@@ -256,10 +294,10 @@ secgws:
         vdom: "SecGW-R1"
         vlanid: 20
       -
-        name: "port2.20"
+        name: "agg2.20"
         alias: "RAN_UNTRUST2"
-        description: "FGT-SEG2 port2.20 to site2-PE2 eth1.20 vrf: ran-untrust"
-        interface: "port2"
+        description: "FGT-SEG2 agg2.20 to site2-PE2 eth1.20 vrf: ran-untrust"
+        interface: "agg2"
         allowaccess: "ping"
         ip:
             - "10.20.2.3"
@@ -270,10 +308,10 @@ secgws:
         vdom: "SecGW-R1"
         vlanid: 20
       -
-        name: "port1.30"
+        name: "agg1.30"
         alias: "RAN_TRUST1"
-        description: "FGT-SEG2 port1.30 to site2-PE1 eth1.30 vrf: ran-trust"
-        interface: "port1"
+        description: "FGT-SEG2 agg1.30 to site2-PE1 eth1.30 vrf: ran-trust"
+        interface: "agg1"
         allowaccess: "ping"
         ip:
             - "10.30.2.1"
@@ -284,10 +322,10 @@ secgws:
         vdom: "SecGW-R1"
         vlanid: 30
       -
-        name: "port2.30"
+        name: "agg2.30"
         alias: "RAN_TRUST2"
-        description: "FGT-SEG2 port2.30 to site2-PE2 port1.30 vrf: ran-trust"
-        interface: "port2"
+        description: "FGT-SEG2 agg2.30 to site2-PE2 agg1.30 vrf: ran-trust"
+        interface: "agg2"
         allowaccess: "ping"
         ip:
             - "10.30.2.3"
@@ -298,10 +336,10 @@ secgws:
         vdom: "SecGW-R1"
         vlanid: 30
       -
-        name: "port1.11"
+        name: "agg1.11"
         alias: "PKI1"
-        description: "FGT-SEG2 port1.11 to site2-PE1 port1.11 vrf: pki"
-        interface: "port1"
+        description: "FGT-SEG2 agg1.11 to site2-PE1 agg1.11 vrf: pki"
+        interface: "agg1"
         allowaccess: "ping"
         ip:
             - "10.11.2.1"
@@ -309,10 +347,10 @@ secgws:
         vdom: "root"
         vlanid: 11
       -
-        name: "port2.11"
+        name: "agg2.11"
         alias: "PKI2"
-        description: "FGT-SEG2 port2.11 to site2-PE2 port1.11 vrf: pki"
-        interface: "port2"
+        description: "FGT-SEG2 agg2.11 to site2-PE2 agg1.11 vrf: pki"
+        interface: "agg2"
         allowaccess: "ping"
         ip:
             - "10.11.2.3"

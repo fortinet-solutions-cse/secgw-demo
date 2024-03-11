@@ -29,7 +29,9 @@
             srcintf: 'SecGW'
             srcaddr: 'N2N3-ran'
             dstintf: 'SZ_RAN-TRUST'
-            dstaddr: 'N2N3-core'
+            dstaddr: 
+              - 'N2N3-core'
+              - 'N2N3-ran'
             logtraffic: 'all'
             logtraffic-start: 'enable'
             schedule: 'always'
@@ -39,7 +41,9 @@
             policyid: 40
             action: 'accept'
             srcintf: 'SZ_RAN-TRUST'
-            srcaddr: 'N2N3-core'
+            srcaddr:
+              - 'N2N3-core'
+              - 'N2N3-ran'
             dstintf: 'SecGW'
             dstaddr: 'N2N3-ran'
             logtraffic: 'all'

@@ -6,8 +6,6 @@
       - url: "pm/config/device/{{ item.name }}/global/system/switch-interface"
         data:
           member:
-            - "port3"
-            - "port4"
             - "port5"
             - "port6"
             - "port7"

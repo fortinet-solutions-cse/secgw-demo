@@ -11,6 +11,8 @@
           gui-ipv6: 'enable'
           gui-theme: 'graphite'
           admintimeout: 480
+          lldp-reception: 'enable'
+          lldp-transmission: 'enable'
   loop:
     - '{{ secgws.seg1 }}'
     - '{{ secgws.seg2 }}'
