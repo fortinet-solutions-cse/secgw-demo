@@ -6,7 +6,7 @@
   fmgr_system_admin_setting:
     access_token: '{{ fmg_access_token }}'
     system_admin_setting:
-      gui-theme: 'technology'
+      gui_theme: 'technology'
       idle_timeout: 28800
-      shell-access: enable
-      shell-password: '{{ password }}'
+      shell_access: enable
+      shell_password: '{{ password }}'
