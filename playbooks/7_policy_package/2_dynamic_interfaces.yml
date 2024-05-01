@@ -25,13 +25,13 @@
             single-intf: "enable"
           -
             default-mapping: "enable"
-            defmap-intf: "SZ_RAN-TRUST"
+            defmap-intf: "SZ_TRUST"
             description: "RAN Trusted"
-            name: "SZ_RAN-TRUST"
+            name: "SZ_TRUST"
             single-intf: "enable"
           -
             default-mapping: "enable"
-            defmap-intf: "SZ_RAN-UNTRUST"
+            defmap-intf: "SZ_UNTRUST"
             description: "RAN Untrusted"
-            name: "SZ_RAN-UNTRUST"
+            name: "SZ_UNTRUST"
             single-intf: "enable"

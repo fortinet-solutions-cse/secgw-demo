@@ -6,15 +6,15 @@
       - url: "pm/config/device/{{ item.name }}/vdom/{{ secgws_region1_traffic_vdom }}/system/zone"
         data:
           -
-            name: "SZ_RAN-UNTRUST"
-            description: "RAN-UNTRUST Security Zone"
+            name: "SZ_UNTRUST"
+            description: "Security Zone Untrust RAN"
             interface:
               - "agg1.20"
               - "agg2.20"
             intrazone: "allow"
           -
-            name: "SZ_RAN-TRUST"
-            description: "RAN-TRUST Security Zone"
+            name: "SZ_TRUST"
+            description: "Security Zone Trust. RAN and Core"
             interface:
               - "agg1.30"
               - "agg2.30"

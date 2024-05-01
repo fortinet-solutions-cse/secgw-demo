@@ -11,7 +11,7 @@
             action: 'accept'
             srcaddr: 'all'
             srcaddr6: 'all'
-            srcintf: 'SZ_RAN-UNTRUST'
+            srcintf: 'SZ_UNTRUST'
             dstaddr6: 'all'
             dstaddr: 'all'
             dstintf: 'Lo1-IPSecGW'
@@ -28,7 +28,7 @@
             action: 'accept'
             srcintf: 'SecGW'
             srcaddr: 'N2N3-ran'
-            dstintf: 'SZ_RAN-TRUST'
+            dstintf: 'SZ_TRUST'
             dstaddr: 
               - 'N2N3-core'
               - 'N2N3-ran'
@@ -40,7 +40,7 @@
             name: 'Allow 5GC to inner gNodeB'
             policyid: 40
             action: 'accept'
-            srcintf: 'SZ_RAN-TRUST'
+            srcintf: 'SZ_TRUST'
             srcaddr:
               - 'N2N3-core'
               - 'N2N3-ran'
@@ -68,7 +68,7 @@
             action: 'accept'
             srcintf: 'IPSecGW6'
             srcaddr6: 'N2N3-ran-ipv6'
-            dstintf: 'SZ_RAN-TRUST'
+            dstintf: 'SZ_TRUST'
             dstaddr6: 'N2N3-core-ipv6'
             logtraffic: 'all'
             logtraffic-start: 'enable'
@@ -78,7 +78,7 @@
             name: 'Allow 5GC to inner gNodeB IPv6'
             policyid: 640
             action: 'accept'
-            srcintf: 'SZ_RAN-TRUST'
+            srcintf: 'SZ_TRUST'
             srcaddr6: 'N2N3-core-ipv6'
             dstintf: 'IPSecGW6'
             dstaddr6: 'N2N3-ran-ipv6'

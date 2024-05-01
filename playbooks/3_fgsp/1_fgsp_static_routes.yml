@@ -5,13 +5,13 @@
     params:
       - url: "pm/config/device/{{ item.name }}/vdom/root/router/static"
         data:
-          -
+          - seq-num: 2
             device: '{{ item.static_routes[0].device }}'
             comment: '{{ item.static_routes[0].comment }}'
             bfd: 'enable'
             dst: '{{ item.static_routes[0].dst }}'
             gateway: '{{ item.static_routes[0].gateway }}'
-          -
+          - seq-num: 3
             device: '{{ item.static_routes[1].device }}'
             comment: '{{ item.static_routes[1].comment }}'
             bfd: 'enable'
