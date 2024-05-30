@@ -1,0 +1,25 @@
+- name: a1.0 eap
+  hosts: fortimanagers
+  collections:
+    - fortinet.fortimanager
+  connection: httpapi
+  vars:
+    # vars to define installation of policy packages
+    adom: '{{ fmg_adom_secgw }}'
+    package: '{{ secgw_policy_package }}'
+    scope_device_vdom:
+      - name: '{{ secgws.seg1.name }}'
+        vdom: '{{ secgws_region1_traffic_vdom }}'
+      - name: '{{ secgws.seg2.name }}'
+        vdom: '{{ secgws_region1_traffic_vdom }}'
+  vars_files:
+    - ../../vars/global.yml
+  tasks:
+    - name: a1.1 eap
+      ansible.builtin.include_tasks: 'a1_user_radius.yml'
+    - name: a1.2 
+      ansible.builtin.include_tasks: 'a2_user_group.yml'
+    - name: a1.3 eap
+      ansible.builtin.include_tasks: 'a3_eap_ipsec.yml'
+    - name: a1.4 Install devices
+      ansible.builtin.include_tasks: '../common/install_device.yml'

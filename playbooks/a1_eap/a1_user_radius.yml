@@ -1,0 +1,16 @@
+- name: user radius
+  fmgr_generic:
+    access_token: '{{ fmg_access_token }}'
+    method: set
+    params:
+      - url: "pm/config/device/{{ item.name }}/vdom/{{ secgws_region1_traffic_vdom }}/user/radius"
+        data:
+          -
+            name: "fac_radius"
+            server: "10.30.2.6"
+            secret: "{{  password  }}"
+  loop:
+    - '{{ secgws.seg1 }}'
+    - '{{ secgws.seg2 }}'
+  loop_control:
+    label: "{{ item.name }}"
