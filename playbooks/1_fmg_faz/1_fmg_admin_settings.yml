@@ -8,5 +8,3 @@
     system_admin_setting:
       gui_theme: 'technology'
       idle_timeout: 28800
-      shell_access: enable
-      shell_password: '{{ password }}'

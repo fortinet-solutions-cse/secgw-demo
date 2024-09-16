@@ -2,7 +2,6 @@
   faz_cli_system_admin_setting:
     access_token: "{{ faz_access_token }}"
     cli_system_admin_setting:
-        gui-theme: "technology"
+        gui_theme: "technology"
         idle_timeout: 28800
-        shell-access: enable
-        shell-password: "{{ password }}"
+        

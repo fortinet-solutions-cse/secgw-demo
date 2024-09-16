@@ -2,6 +2,6 @@
   faz_cli_system_global:
     access_token: "{{ faz_access_token }}"
     cli_system_global:
-      adom-status: enable
+      adom_status: enable
       hostname: '{{ faz_hostname }}'
       timezone: '{{ timezone }}'
