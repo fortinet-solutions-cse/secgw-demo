@@ -7,7 +7,7 @@ The playbooks are designed to be used in a FortiPoC named "MNO-SecGW-HoL.fpoc".
 To get access to the FortiPoC or the Hands-On-Lab Guide contact your local Fortinet SE or Telco SME.
 
 # How to use demo mode
-The demo mode will preconfigure FMG / FAZ / FGT-SEG-1 and FGT-SEG-2 so you quickly can spin up the whole lab. It can be useful as customer demos, self-paced learning, verification of a feature or troubleshooting.
+The demo mode will pre-configure FMG / FAZ / FGT-SEG-1 and FGT-SEG-2 so you quickly can spin up the whole lab. It can be useful as customer demos, self-paced learning, verification of a feature or troubleshooting.
 
 1. Start the poc "MNO SecGW HoL"
 1. When the PoC is started. Log into the LXC device named Runner.
@@ -19,7 +19,7 @@ The demo mode will preconfigure FMG / FAZ / FGT-SEG-1 and FGT-SEG-2 so you quick
 1. Start the demo playbook with
 
         cd /fortipoc/ansible
-        ansible-playbook -i hosts demo.yml
+        ansible-playbook demo.yml
 
     This will configure all Fortinet equipment.
 1. When playbooks have finished check there are no failed plays.

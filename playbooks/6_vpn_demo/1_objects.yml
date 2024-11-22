@@ -15,6 +15,17 @@
             subnet:
               - "10.30.255.0"
               - "255.255.255.0"
+          -
+            name: "UPF"
+            subnet:
+              - "10.30.30.0"
+              - "255.255.255.0"
+          -
+            name: "AMF"
+            subnet:
+              - "10.30.20.0"
+              - "255.255.255.0"
+
 
 - name: Objects Groups
   fmgr_generic:
@@ -27,4 +38,6 @@
             member:
               - "N2N3-core"
               - "N2N3-ran"
+              - "UPF"
+              - "AMF"
             name: "5G-Networks"

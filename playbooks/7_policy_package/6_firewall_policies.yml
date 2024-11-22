@@ -29,9 +29,7 @@
             srcintf: 'SecGW'
             srcaddr: 'N2N3-ran'
             dstintf: 'SZ_TRUST'
-            dstaddr: 
-              - 'N2N3-core'
-              - 'N2N3-ran'
+            dstaddr: '5G-Networks'
             logtraffic: 'all'
             logtraffic-start: 'enable'
             schedule: 'always'
@@ -41,9 +39,7 @@
             policyid: 40
             action: 'accept'
             srcintf: 'SZ_TRUST'
-            srcaddr:
-              - 'N2N3-core'
-              - 'N2N3-ran'
+            srcaddr: '5G-Networks'
             dstintf: 'SecGW'
             dstaddr: 'N2N3-ran'
             logtraffic: 'all'
