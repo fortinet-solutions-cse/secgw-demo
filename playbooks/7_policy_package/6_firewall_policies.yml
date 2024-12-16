@@ -14,7 +14,7 @@
             srcintf: 'SZ_UNTRUST'
             dstaddr6: 'all'
             dstaddr: 'all'
-            dstintf: 'Lo1-IPSecGW'
+            dstintf: 'Lo1-SecGW'
             logtraffic: 'disable'
             schedule: 'always'
             service:
@@ -62,7 +62,7 @@
             name: 'Allow gNodeB inner to 5GC IPv6'
             policyid: 630
             action: 'accept'
-            srcintf: 'IPSecGW6'
+            srcintf: 'SecGW6'
             srcaddr6: 'N2N3-ran-ipv6'
             dstintf: 'SZ_TRUST'
             dstaddr6: 'N2N3-core-ipv6'
@@ -76,7 +76,7 @@
             action: 'accept'
             srcintf: 'SZ_TRUST'
             srcaddr6: 'N2N3-core-ipv6'
-            dstintf: 'IPSecGW6'
+            dstintf: 'SecGW6'
             dstaddr6: 'N2N3-ran-ipv6'
             logtraffic: 'all'
             logtraffic-start: 'enable'
@@ -86,9 +86,9 @@
             name: 'Allow Xn gNodeB to gNodeB IPv6'
             policyid: 650
             action: 'accept'
-            srcintf: 'IPSecGW6'
+            srcintf: 'SecGW6'
             srcaddr6: 'N2N3-ran-ipv6'
-            dstintf: 'IPSecGW6'
+            dstintf: 'SecGW6'
             dstaddr6: 'N2N3-ran-ipv6'
             logtraffic: 'all'
             logtraffic-start: 'enable'

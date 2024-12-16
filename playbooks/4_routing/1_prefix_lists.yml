@@ -15,7 +15,7 @@
                 unset attrs:
                   - "ge"
           -
-            name: "IPSecGW6-loopback-addresses"
+            name: "SecGW6-loopback-addresses"
             rule:
               -
                 id: 1
@@ -55,7 +55,7 @@
                 unset attrs:
                   - "ge"
           -
-            name: "IPSecGW-loopback-addresses"
+            name: "SecGW-loopback-addresses"
             rule:
               -
                 id: 1

@@ -62,7 +62,7 @@ secgws:
         name: 'Unused-Ports'
         status: 'down'
       -
-        name: 'Lo1-IPSecGW'
+        name: 'Lo1-SecGW'
         alias: 'IPSEC'
         description: 'IPSec Termination Endpoint'
         type: 'loopback'
@@ -230,7 +230,7 @@ secgws:
         name: 'Unused-Ports'
         status: 'down'
       -
-        name: 'Lo1-IPSecGW'
+        name: 'Lo1-SecGW'
         alias: 'IPSEC'
         description: 'IPSec Termination Endpoint'
         type: 'loopback'

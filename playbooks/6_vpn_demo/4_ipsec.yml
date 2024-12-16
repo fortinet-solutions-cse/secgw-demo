@@ -10,7 +10,7 @@
             authmethod: "signature"
             certificate: '{{ item.certname }}'
             ike-version: 2
-            interface: "Lo1-IPSecGW"
+            interface: "Lo1-SecGW"
             ip-version: "4"
             ipv4-start-ip: "10.30.255.1"
             ipv4-end-ip: "10.30.255.63"
@@ -28,11 +28,11 @@
             dpd: "on-idle"
             dpd-retryinterval: 20
           -
-            name: "IPSecGW6"
+            name: "SecGW6"
             authmethod: "signature"
             certificate: '{{ item.certname }}'
             ike-version: 2
-            interface: "Lo1-IPSecGW"
+            interface: "Lo1-SecGW"
             ip-version: "6"
             ipv6-end-ip: "fd00::30:cafe:ffff"
             ipv6-prefix: 112
@@ -68,8 +68,8 @@
             proposal: "aes128gcm"
             dhgrp: "31"
           -
-            name: "IPSecGW6"
-            phase1name: "IPSecGW6"
+            name: "SecGW6"
+            phase1name: "SecGW6"
             src-addr-type: "subnet6"
             dst-addr-type: "subnet6"
             proposal: "aes128gcm"

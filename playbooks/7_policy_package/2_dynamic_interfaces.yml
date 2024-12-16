@@ -13,15 +13,15 @@
             single-intf: "enable"
           -
             default-mapping: "enable"
-            defmap-intf: "IPSecGW6"
+            defmap-intf: "SecGW6"
             description: "IPSec Tunnel"
-            name: "IPSecGW6"
+            name: "SecGW6"
             single-intf: "enable"
           -
             default-mapping: "enable"
-            defmap-intf: "Lo1-IPSecGW"
+            defmap-intf: "Lo1-SecGW"
             description: "IPSec Termination"
-            name: "Lo1-IPSecGW"
+            name: "Lo1-SecGW"
             single-intf: "enable"
           -
             default-mapping: "enable"

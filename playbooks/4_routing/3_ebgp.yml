@@ -49,15 +49,15 @@
               bfd: "enable"
               conditional-advertise:
                 -
-                  advertise-routemap: "IPSecGW6-loopback-addresses"
+                  advertise-routemap: "SecGW6-loopback-addresses"
                   condition-routemap: "RAN_TRUST-eBGP-Check6"
                 -
-                  advertise-routemap: "IPSecGW-loopback-addresses"
+                  advertise-routemap: "SecGW-loopback-addresses"
                   condition-routemap: "RAN_TRUST-eBGP-Check"
               capability-route-refresh: "enable"
               soft-reconfiguration: "enable"
-              prefix-list-out6: "IPSecGW6-loopback-addresses"
-              prefix-list-out: "IPSecGW-loopback-addresses"
+              prefix-list-out6: "SecGW6-loopback-addresses"
+              prefix-list-out: "SecGW-loopback-addresses"
               remote-as: 65001
               soft-reconfiguration6: "enable"
               update-source: "agg1.20"
@@ -67,15 +67,15 @@
               bfd: "enable"
               conditional-advertise:
                 -
-                  advertise-routemap: "IPSecGW6-loopback-addresses"
+                  advertise-routemap: "SecGW6-loopback-addresses"
                   condition-routemap: "RAN_TRUST-eBGP-Check6"
                 -
-                  advertise-routemap: "IPSecGW-loopback-addresses"
+                  advertise-routemap: "SecGW-loopback-addresses"
                   condition-routemap: "RAN_TRUST-eBGP-Check"
               capability-route-refresh: "enable"
               soft-reconfiguration: "enable"
-              prefix-list-out6: "IPSecGW6-loopback-addresses"
-              prefix-list-out: "IPSecGW-loopback-addresses"
+              prefix-list-out6: "SecGW6-loopback-addresses"
+              prefix-list-out: "SecGW-loopback-addresses"
               remote-as: 65001
               soft-reconfiguration6: "enable"
               update-source: "agg2.20"
@@ -168,15 +168,15 @@
               bfd: "enable"
               conditional-advertise:
                 -
-                  advertise-routemap: "IPSecGW6-loopback-addresses"
+                  advertise-routemap: "SecGW6-loopback-addresses"
                   condition-routemap: "RAN_TRUST-eBGP-Check6"
                 -
-                  advertise-routemap: "IPSecGW-loopback-addresses"
+                  advertise-routemap: "SecGW-loopback-addresses"
                   condition-routemap: "RAN_TRUST-eBGP-Check"
               capability-route-refresh: "enable"
               soft-reconfiguration: "enable"
-              prefix-list-out: "IPSecGW-loopback-addresses"
-              prefix-list-out6: "IPSecGW6-loopback-addresses"
+              prefix-list-out: "SecGW-loopback-addresses"
+              prefix-list-out6: "SecGW6-loopback-addresses"
               remote-as: 65001
               soft-reconfiguration6: "enable"
               update-source: "agg1.20"
@@ -186,15 +186,15 @@
               bfd: "enable"
               conditional-advertise:
                 -
-                  advertise-routemap: "IPSecGW6-loopback-addresses"
+                  advertise-routemap: "SecGW6-loopback-addresses"
                   condition-routemap: "RAN_TRUST-eBGP-Check6"
                 -
-                  advertise-routemap: "IPSecGW-loopback-addresses"
+                  advertise-routemap: "SecGW-loopback-addresses"
                   condition-routemap: "RAN_TRUST-eBGP-Check"
               capability-route-refresh: "enable"
               soft-reconfiguration: "enable"
-              prefix-list-out: "IPSecGW-loopback-addresses"
-              prefix-list-out6: "IPSecGW6-loopback-addresses"
+              prefix-list-out: "SecGW-loopback-addresses"
+              prefix-list-out6: "SecGW6-loopback-addresses"
               remote-as: 65001
               soft-reconfiguration6: "enable"
               update-source: "agg2.20"

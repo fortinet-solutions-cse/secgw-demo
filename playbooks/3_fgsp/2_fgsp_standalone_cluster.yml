@@ -13,7 +13,7 @@
               peerip: '10.10.2.1'
               syncvd: 'SecGW-R1'
               down-intfs-before-sess-sync:
-                - 'Lo1-IPSecGW'
+                - 'Lo1-SecGW'
               ipsec-tunnel-sync: 'enable'
               secondary-add-ipsec-routes: 'disable'
             -
@@ -21,7 +21,7 @@
               peerip: '10.10.2.3'
               syncvd: 'SecGW-R1'
               down-intfs-before-sess-sync:
-                - 'Lo1-IPSecGW'
+                - 'Lo1-SecGW'
               ipsec-tunnel-sync: 'enable'
               secondary-add-ipsec-routes: 'disable'
 
@@ -39,7 +39,7 @@
               sync-id: 1
               peerip: '10.10.1.1'
               down-intfs-before-sess-sync:
-                - 'Lo1-IPSecGW'
+                - 'Lo1-SecGW'
               syncvd: 'SecGW-R1'
               ipsec-tunnel-sync: 'enable'
               secondary-add-ipsec-routes: 'disable'
@@ -48,6 +48,6 @@
               peerip: '10.10.1.3'
               syncvd: 'SecGW-R1'
               down-intfs-before-sess-sync:
-                - 'Lo1-IPSecGW'
+                - 'Lo1-SecGW'
               ipsec-tunnel-sync: 'enable'
               secondary-add-ipsec-routes: 'disable'

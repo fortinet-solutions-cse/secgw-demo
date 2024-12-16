@@ -11,7 +11,7 @@
             authusrgrp: "nodebs"
             assign-ip-from: "usrgrp"
           -
-            name: "IPSecGW6"
+            name: "SecGW6"
             eap: enable
             authusrgrp: "nodebs"
             assign-ip-from: "usrgrp"
