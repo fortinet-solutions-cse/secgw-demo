@@ -8,19 +8,19 @@
           -
             default-mapping: "enable"
             defmap-intf: "SecGW"
-            description: "IPSec Tunnel"
+            description: "IPsec Tunnel"
             name: "SecGW"
             single-intf: "enable"
           -
             default-mapping: "enable"
             defmap-intf: "SecGW6"
-            description: "IPSec Tunnel"
+            description: "IPsec Tunnel"
             name: "SecGW6"
             single-intf: "enable"
           -
             default-mapping: "enable"
             defmap-intf: "Lo1-SecGW"
-            description: "IPSec Termination"
+            description: "IPsec Termination"
             name: "Lo1-SecGW"
             single-intf: "enable"
           -

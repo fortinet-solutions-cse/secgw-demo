@@ -64,7 +64,7 @@ secgws:
       -
         name: 'Lo1-SecGW'
         alias: 'IPSEC'
-        description: 'IPSec Termination Endpoint'
+        description: 'IPsec Termination Endpoint'
         type: 'loopback'
         allowaccess: 'ping'
         ip: 
@@ -232,7 +232,7 @@ secgws:
       -
         name: 'Lo1-SecGW'
         alias: 'IPSEC'
-        description: 'IPSec Termination Endpoint'
+        description: 'IPsec Termination Endpoint'
         type: 'loopback'
         allowaccess: 'ping'
         ip: 
