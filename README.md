@@ -50,10 +50,10 @@ The `init.py` script mentioned above sets the following variables in `vars/globa
 
 
 # Prerequisites
-- FortiPoC v.1.9.6  
-- FortiManager v.7.2.4 or higher on the 7.2 release train  
-- FortiAnalyzer v.7.2.4 or higher on the 7.2 release train  
-- FortiGate v.7.2.6 or higher on the 7.2 release train  
-- FortiAuthenticator v.6.6.0 or higher on the 6.6 release train  
+- FortiPoC v.1.9.8  
+- FortiManager v.7.2.7 or higher on the 7.2 release train  
+- FortiAnalyzer v.7.2.7 or higher on the 7.2 release train  
+- FortiGate v.7.2.10 or higher on the 7.2 release train  
+- FortiAuthenticator v.6.6.2 or higher on the 6.6 release train  
 
 Enjoy:)
