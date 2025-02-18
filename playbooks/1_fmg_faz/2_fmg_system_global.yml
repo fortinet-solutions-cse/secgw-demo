@@ -5,3 +5,12 @@
       adom_status: enable
       hostname: '{{ fmg_hostname }}'
       timezone: '{{ timezone }}'
+
+- name: Configure System Global Allow FGT-VM
+  fmgr_generic:
+    access_token: '{{ fmg_access_token }}'
+    method: set
+    params:
+      - url: "cli/global/system/global"
+        data:
+          fgfm-allow-vm: enable
