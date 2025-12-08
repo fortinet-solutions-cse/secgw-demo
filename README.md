@@ -1,5 +1,5 @@
-# SecGW Demo
-This is a repo of Ansible playbooks to deploy Fortinet SecGWs in Fortinet Fabric Studio.
+# Fortinet SecGW Solution Stack Demo
+This is a repo of Ansible playbooks to deploy the whole Fortinet SecGW Solution Stack in Fortinet Fabric Studio.
 It can be used to demo automated provisioning of the Fortinet SecGW Solution in a realistic environment, Hands-On-Labs learning or even just as inspirations for Ansible playbooks to configure FortiGates through FortiManager.  
 For details refer to the Hands-On-Lab Guide.  
 
