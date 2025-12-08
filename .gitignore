@@ -3,5 +3,7 @@
 *.html
 fdevsec.yaml
 settings.json
+.env
+ansible_facts_cache/
 
-
+F

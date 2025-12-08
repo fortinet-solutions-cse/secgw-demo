@@ -1,0 +1,38 @@
+# Internal task: Do not call directly.
+# This task extracts a task ID from a registered variable, checks for initial
+# failure, and then polls the task until it is complete (FAZ variant).
+# Required variables:
+# - fmgr_raw_task_result: The entire variable registered from a FortiAnalyzer task.
+---
+- name: Extract FortiAnalyzer task ID and check initial response
+  ansible.builtin.set_fact:
+    common_fmgr_task_id: "{{ fmgr_raw_task_result.meta.response_data.task | default('') | string }}"
+    common_fmgr_initial_ok: "{{ fmgr_raw_task_result.rc | default(1) | int == 0 }}"
+
+- name: Fail if FortiAnalyzer did not return a task ID
+  ansible.builtin.fail:
+    msg: "Could not determine FortiAnalyzer task ID. Response: {{ fmgr_raw_task_result }}"
+  when: "common_fmgr_task_id == '' and not common_fmgr_initial_ok"
+
+- name: "Poll FortiAnalyzer task status for task {{ common_fmgr_task_id }}"
+  fortinet.fortianalyzer.faz_fact:
+    access_token: "{{ access_token }}"
+    facts:
+      selector: "task_task"
+      params:
+        task: "{{ common_fmgr_task_id }}"
+  register: common_taskinfo
+  retries: 60
+  delay: 2
+  until: common_fmgr_is_success
+  failed_when: common_fmgr_is_failed
+  when: "common_fmgr_task_id != ''"
+  vars:
+    # This logic robustly handles cases where the API returns a dict, a list of dicts, or an empty list.
+    _task_data_list: "{{ [common_taskinfo.meta.response_data | default([])] | flatten }}"
+    _task_details: "{{ _task_data_list | first | default({}) }}"
+    common_fmgr_percent: "{{ _task_details.percent | default(0) | int }}"
+    common_fmgr_state: "{{ _task_details.state | default('') }}"
+    common_fmgr_num_err: "{{ _task_details.num_err | default(0) | int }}"
+    common_fmgr_is_success: "{{ common_fmgr_percent >= 100 or common_fmgr_state in ['finished', 'success', 'done'] }}"
+    common_fmgr_is_failed: "{{ common_fmgr_state in ['error', 'failed', 'exception'] or common_fmgr_num_err > 0 }}"

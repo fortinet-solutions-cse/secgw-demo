@@ -1,0 +1,16 @@
+---
+- name: 7.1 Prefix Lists IPv4 & IPv6
+  ansible.builtin.include_tasks: "1_prefix_lists.yml"
+
+- name: 7.2 Route Maps
+  ansible.builtin.include_tasks: "2_route_maps.yml"
+
+- name: 7.3 BGP
+  ansible.builtin.include_tasks: "3_ebgp.yml"
+
+- name: Install devices
+  ansible.builtin.include_role:
+    name: common
+    tasks_from: install_device.yml
+  vars:
+    scope_device_vdom: "{{ routing_scope_device_vdom }}"

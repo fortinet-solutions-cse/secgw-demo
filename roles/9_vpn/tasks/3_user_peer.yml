@@ -1,0 +1,31 @@
+---
+- name: User Peer6
+  fortinet.fortimanager.fmgr_generic:
+    access_token: "{{ access_token }}"
+    method: set
+    params:
+      - url: "pm/config/device/{{ item.name }}/vdom/{{ secgws.region1_traffic_vdom }}/user/peer"
+        data:
+          - ca: "mno_ca"
+            name: "mno_ca6"
+  loop:
+    - "{{ secgws.seg1 }}"
+    - "{{ secgws.seg2 }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: User Peer
+  fortinet.fortimanager.fmgr_generic:
+    access_token: "{{ access_token }}"
+    method: set
+    params:
+      - url: "pm/config/device/{{ item.name }}/vdom/{{ secgws.region1_traffic_vdom }}/user/peer"
+        data:
+          - ca: "mno_ca"
+            name: "mno_ca"
+  loop:
+    - "{{ secgws.seg1 }}"
+    - "{{ secgws.seg2 }}"
+  loop_control:
+    label: "{{ item.name }}"
+

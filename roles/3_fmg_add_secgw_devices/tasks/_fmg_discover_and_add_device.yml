@@ -1,0 +1,34 @@
+- name: "Discover device {{ item.name }}"
+  fortinet.fortimanager.fmgr_dvm_cmd_discover_device:
+    access_token: "{{ access_token }}"
+    bypass_validation: false
+    dvm_cmd_discover_device:
+      device:
+        adm_pass: "{{ password }}"
+        adm_usr: "{{ username }}"
+        ip: "{{ item.mgmtip }}"
+  register: fmg_add_secgw_devices_probed_device
+
+- name: "Add device {{ item.name }}"
+  fortinet.fortimanager.fmgr_dvm_cmd_add_device:
+    access_token: "{{ access_token }}"
+    bypass_validation: false
+    dvm_cmd_add_device:
+      adom: "{{ adom_secgw }}"
+      flags:
+        - create_task
+        - nonblocking
+      device:
+        adm_usr: "{{ username }}"
+        adm_pass: "{{ password }}"
+        desc: 'The device is added via FortiManager Ansible'
+        ip: "{{ fmg_add_secgw_devices_probed_device.meta.response_data.device.ip }}"
+        mgmt_mode: 'fmg'
+        name: "{{ item.name }}"
+        sn: "{{ fmg_add_secgw_devices_probed_device.meta.response_data.device.sn }}"
+  register: fmg_add_secgw_devices_installing_task
+
+- name: Poll installing task
+  ansible.builtin.include_tasks: "../common/tasks/_monitor_task.yml"
+  vars:
+    fmgr_raw_task_result: "{{ fmg_add_secgw_devices_installing_task }}"

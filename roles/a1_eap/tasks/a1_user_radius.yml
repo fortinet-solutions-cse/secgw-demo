@@ -1,0 +1,14 @@
+- name: user radius
+  fortinet.fortimanager.fmgr_generic:
+    method: set
+    params:
+      - url: "pm/config/device/{{ item.name }}/vdom/{{ secgws_region1_traffic_vdom }}/user/radius"
+        data:
+          - name: 'fac_radius'
+            server: "{{ cmp_server_ip }}"
+            secret: "{{ password }}"
+  loop:
+    - "{{ secgws.seg1 }}"
+    - "{{ secgws.seg2 }}"
+  loop_control:
+    label: "{{ item.name }}"

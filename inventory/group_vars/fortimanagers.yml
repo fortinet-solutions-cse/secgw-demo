@@ -1,0 +1,10 @@
+# NOTE: Dynamic credentials for this host are managed by the 'init' play.
+# The 'access_token' and 'sn' variables are populated via the Ansible
+# fact cache after running `ansible-playbook hol.yml --tags init`.
+# They are intentionally not defined in this file.
+
+host: '10.254.1.60'
+hostname: 'FortiManager'
+gui_theme: 'jade'
+# access_token: # Populated dynamically by 'init' play
+# sn: # Populated dynamically by 'init' play

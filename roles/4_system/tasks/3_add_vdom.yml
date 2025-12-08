@@ -1,0 +1,16 @@
+- name: "Add {{ secgws.region1_traffic_vdom }} vdom to SecGWs"
+  fortinet.fortimanager.fmgr_dvmdb_device_vdom:
+    access_token: "{{ access_token }}"
+    adom: "{{ adom_secgw }}"
+    device: "{{ item.name }}"
+    state: present
+    dvmdb_device_vdom:
+      comments: 'SecGW VDOM Region1'
+      name: "{{ secgws.region1_traffic_vdom }}"
+      opmode: 'nat'
+      vdom_type: 'traffic'
+  loop:
+    - "{{ secgws.seg1 }}"
+    - "{{ secgws.seg2 }}"
+  loop_control:
+    label: "{{ item.name }}"

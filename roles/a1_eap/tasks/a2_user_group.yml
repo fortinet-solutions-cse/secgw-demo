@@ -1,0 +1,13 @@
+- name: user group
+  fortinet.fortimanager.fmgr_generic:
+    method: set
+    params:
+      - url: "pm/config/device/{{ item.name }}/vdom/{{ secgws_region1_traffic_vdom }}/user/group"
+        data:
+          - name: 'nodebs'
+            member: 'fac_radius'
+  loop:
+    - "{{ secgws.seg1 }}"
+    - "{{ secgws.seg2 }}"
+  loop_control:
+    label: "{{ item.name }}"

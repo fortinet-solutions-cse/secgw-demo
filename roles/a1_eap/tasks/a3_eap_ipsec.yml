@@ -1,0 +1,19 @@
+- name: EAP IPsec phase1
+  fortinet.fortimanager.fmgr_generic:
+    method: set
+    params:
+      - url: "pm/config/device/{{ item.name }}/vdom/{{ secgws_region1_traffic_vdom }}/vpn/ipsec/phase1-interface"
+        data:
+          - name: 'SecGW'
+            eap: 'enable'
+            authusrgrp: 'nodebs'
+            'assign-ip-from': 'usrgrp'
+          - name: 'SecGW6'
+            eap: 'enable'
+            authusrgrp: 'nodebs'
+            'assign-ip-from': 'usrgrp'
+  loop:
+    - "{{ secgws.seg1 }}"
+    - "{{ secgws.seg2 }}"
+  loop_control:
+    label: "{{ item.name }}"

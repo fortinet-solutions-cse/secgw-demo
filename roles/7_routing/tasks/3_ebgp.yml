@@ -1,0 +1,204 @@
+- name: "BGP {{ secgws.seg1.name }} VDOM root"
+  fortinet.fortimanager.fmgr_generic:
+    access_token: "{{ access_token }}"
+    method: update
+    params:
+      - url: "pm/config/device/{{ secgws.seg1.name }}/vdom/root/router/bgp"
+        data:
+          router-id: "{{ secgws.seg1.bgp.router_id }}"
+          as: "{{ secgws.seg1.bgp.as }}"
+          ebgp-multipath: "{{ secgws.seg1.bgp.ebgp_multipath }}"
+          holdtime-timer: "{{ secgws.seg1.bgp.holdtime_timer }}"
+          keepalive-timer: "{{ secgws.seg1.bgp.keepalive_timer }}"
+          neighbor:
+            - ip: '10.11.1.0'
+              advertisement-interval: 0
+              bfd: 'enable'
+              remote-as: '65001'
+              soft-reconfiguration: 'enable'
+              update-source: 'agg1.11'
+            - ip: '10.11.1.2'
+              advertisement-interval: 0
+              bfd: 'enable'
+              remote-as: '65001'
+              soft-reconfiguration: 'enable'
+              update-source: 'agg2.11'
+          redistribute:
+            - name: 'connected'
+              status: 'enable'
+
+- name: "BGP {{ secgws.seg1.name }} VDOM {{ secgws.region1_traffic_vdom }}"
+  fortinet.fortimanager.fmgr_generic:
+    access_token: "{{ access_token }}"
+    method: update
+    params:
+      - url: "pm/config/device/{{ secgws.seg1.name }}/vdom/{{ secgws.region1_traffic_vdom }}/router/bgp"
+        data:
+          router-id: "{{ secgws.seg1.bgp.router_id }}"
+          as: "{{ secgws.seg1.bgp.as }}"
+          ebgp-multipath: "{{ secgws.seg1.bgp.ebgp_multipath }}"
+          holdtime-timer: "{{ secgws.seg1.bgp.holdtime_timer }}"
+          keepalive-timer: "{{ secgws.seg1.bgp.keepalive_timer }}"
+          neighbor:
+            - ip: '10.20.1.0'
+              advertisement-interval: 0
+              bfd: 'enable'
+              conditional-advertise:
+                - advertise-routemap: 'SecGW6-loopback-addresses'
+                  condition-routemap: 'RAN_TRUST-eBGP-Check6'
+                - advertise-routemap: 'SecGW-loopback-addresses'
+                  condition-routemap: 'RAN_TRUST-eBGP-Check'
+              capability-route-refresh: 'enable'
+              soft-reconfiguration: 'enable'
+              prefix-list-out6: 'SecGW6-loopback-addresses'
+              prefix-list-out: 'SecGW-loopback-addresses'
+              remote-as: '65001'
+              soft-reconfiguration6: 'enable'
+              update-source: 'agg1.20'
+            - ip: '10.20.1.2'
+              advertisement-interval: 0
+              bfd: 'enable'
+              conditional-advertise:
+                - advertise-routemap: 'SecGW6-loopback-addresses'
+                  condition-routemap: 'RAN_TRUST-eBGP-Check6'
+                - advertise-routemap: 'SecGW-loopback-addresses'
+                  condition-routemap: 'RAN_TRUST-eBGP-Check'
+              capability-route-refresh: 'enable'
+              soft-reconfiguration: 'enable'
+              prefix-list-out6: 'SecGW6-loopback-addresses'
+              prefix-list-out: 'SecGW-loopback-addresses'
+              remote-as: '65001'
+              soft-reconfiguration6: 'enable'
+              update-source: 'agg2.20'
+            - ip: '10.30.1.0'
+              advertisement-interval: 0
+              bfd: 'enable'
+              capability-route-refresh: 'enable'
+              soft-reconfiguration: 'enable'
+              prefix-list-out: 'Client-inner-addresses'
+              prefix-list-out6: 'Client6-inner-addresses'
+              remote-as: '65001'
+              soft-reconfiguration6: 'enable'
+              update-source: 'agg1.30'
+            - ip: '10.30.1.2'
+              advertisement-interval: 0
+              bfd: 'enable'
+              capability-route-refresh: 'enable'
+              soft-reconfiguration: 'enable'
+              prefix-list-out: 'Client-inner-addresses'
+              prefix-list-out6: 'Client6-inner-addresses'
+              remote-as: '65001'
+              soft-reconfiguration6: 'enable'
+              update-source: 'agg2.30'
+          redistribute:
+            - name: 'connected'
+              status: 'enable'
+            - name: 'static'
+              status: 'enable'
+          redistribute6:
+            - name: 'connected'
+              status: 'enable'
+            - name: 'static'
+              status: 'enable'
+
+- name: "BGP {{ secgws.seg2.name }} vdom: root"
+  fortinet.fortimanager.fmgr_generic:
+    access_token: "{{ access_token }}"
+    method: update
+    params:
+      - url: "pm/config/device/{{ secgws.seg2.name }}/vdom/root/router/bgp"
+        data:
+          router-id: "{{ secgws.seg2.bgp.router_id }}"
+          as: "{{ secgws.seg2.bgp.as }}"
+          ebgp-multipath: "{{ secgws.seg2.bgp.ebgp_multipath }}"
+          holdtime-timer: "{{ secgws.seg2.bgp.holdtime_timer }}"
+          keepalive-timer: "{{ secgws.seg2.bgp.keepalive_timer }}"
+          neighbor:
+            - ip: '10.11.2.0'
+              advertisement-interval: 0
+              bfd: 'enable'
+              remote-as: '65001'
+              soft-reconfiguration: 'enable'
+              update-source: 'agg1.11'
+            - ip: '10.11.2.2'
+              advertisement-interval: 0
+              bfd: 'enable'
+              remote-as: '65001'
+              soft-reconfiguration: 'enable'
+              update-source: 'agg2.11'
+          redistribute:
+            - name: 'connected'
+              status: 'enable'
+
+- name: "BGP {{ secgws.seg2.name }} vdom: {{ secgws.region1_traffic_vdom }}"
+  fortinet.fortimanager.fmgr_generic:
+    method: update
+    params:
+      - url: "pm/config/device/{{ secgws.seg2.name }}/vdom/{{ secgws.region1_traffic_vdom }}/router/bgp"
+        data:
+          router-id: "{{ secgws.seg2.bgp.router_id }}"
+          as: "{{ secgws.seg2.bgp.as }}"
+          ebgp-multipath: "{{ secgws.seg2.bgp.ebgp_multipath }}"
+          holdtime-timer: "{{ secgws.seg2.bgp.holdtime_timer }}"
+          keepalive-timer: "{{ secgws.seg2.bgp.keepalive_timer }}"
+          neighbor:
+            - ip: '10.20.2.0'
+              advertisement-interval: 0
+              bfd: 'enable'
+              conditional-advertise:
+                - advertise-routemap: 'SecGW6-loopback-addresses'
+                  condition-routemap: 'RAN_TRUST-eBGP-Check6'
+                - advertise-routemap: 'SecGW-loopback-addresses'
+                  condition-routemap: 'RAN_TRUST-eBGP-Check'
+              capability-route-refresh: 'enable'
+              soft-reconfiguration: 'enable'
+              prefix-list-out: 'SecGW-loopback-addresses'
+              prefix-list-out6: 'SecGW6-loopback-addresses'
+              remote-as: '65001'
+              soft-reconfiguration6: 'enable'
+              update-source: 'agg1.20'
+            - ip: '10.20.2.2'
+              advertisement-interval: 0
+              bfd: 'enable'
+              conditional-advertise:
+                - advertise-routemap: 'SecGW6-loopback-addresses'
+                  condition-routemap: 'RAN_TRUST-eBGP-Check6'
+                - advertise-routemap: 'SecGW-loopback-addresses'
+                  condition-routemap: 'RAN_TRUST-eBGP-Check'
+              capability-route-refresh: 'enable'
+              soft-reconfiguration: 'enable'
+              prefix-list-out: 'SecGW-loopback-addresses'
+              prefix-list-out6: 'SecGW6-loopback-addresses'
+              remote-as: '65001'
+              soft-reconfiguration6: 'enable'
+              update-source: 'agg2.20'
+            - ip: '10.30.2.0'
+              advertisement-interval: 0
+              bfd: 'enable'
+              capability-route-refresh: 'enable'
+              soft-reconfiguration: 'enable'
+              prefix-list-out: 'Client-inner-addresses'
+              prefix-list-out6: 'Client6-inner-addresses'
+              remote-as: '65001'
+              soft-reconfiguration6: 'enable'
+              update-source: 'agg1.30'
+            - ip: '10.30.2.2'
+              advertisement-interval: 0
+              bfd: 'enable'
+              capability-route-refresh: 'enable'
+              soft-reconfiguration: 'enable'
+              prefix-list-out: 'Client-inner-addresses'
+              prefix-list-out6: 'Client6-inner-addresses'
+              remote-as: '65001'
+              soft-reconfiguration6: 'enable'
+              update-source: 'agg2.30'
+          redistribute:
+            - name: 'connected'
+              status: 'enable'
+            - name: 'static'
+              status: 'enable'
+          redistribute6:
+            - name: 'connected'
+              status: 'enable'
+            - name: 'static'
+              status: 'enable'

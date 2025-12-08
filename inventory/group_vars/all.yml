@@ -1,0 +1,450 @@
+---
+
+# NOTE: Certain credentials are set and overridden by the 'init' play.
+# After running `ansible-playbook hol.yml --tags init`, the 'password'
+# and device-specific serial numbers ('sn') will be populated from the
+# Ansible fact cache for subsequent playbook runs.
+
+# Global variables used in SEG HoL
+ansible_httpapi_port: 443
+ansible_httpapi_use_ssl: true
+ansible_httpapi_validate_certs: false
+ssh_port: 22
+username: 'admin'
+fmc_timezone: 28
+
+# FMC vars (FMG and FAZ)
+adom_status: 'enable'
+adom_secgw: 'SecGW'
+idle_timeout: 28800
+idle_timeout_gui: 28800
+
+
+# SecGW vars
+secgws:
+  # common secgw settings
+  admintimeout: 480
+  region1_traffic_vdom: 'SecGW-R1'
+  region1_group: 'SecGW-R1'
+  system_template_name: 'SecGW'
+  policy_package: 'PP_SecGW'
+  timezone: '28'
+  cmp_server_ip: 10.30.2.6
+  vlans:
+    fgspsync: 10
+    pki: 11
+    ran_untrust: 20
+    ran_trust: 30
+
+  seg1:
+    name: 'FGT-SEG-1'
+    mgmtip: '10.254.1.101'
+    certname: 'seg1'
+    #sn: Populated by init play 
+    static_routes:
+      - device: 'agg1.10'
+        dst: 
+          - '10.10.2.1'
+          - '255.255.255.255'
+        gateway: '10.10.1.0'
+        comment: 'fgsp peering via pe11'
+      - device: 'agg2.10'
+        dst: 
+          - '10.10.2.3'
+          - '255.255.255.255'
+        gateway: '10.10.1.2'
+        comment: 'fgsp peering via pe12'
+    bgp:
+        router_id: '10.0.1.3'
+        as: '65100'
+        ebgp_multipath: 'enable'
+        holdtime_timer: 30
+        keepalive_timer: 10  
+    interfaces:
+      - name: 'port1'
+        allowaccess: ''
+        mode: 'static'
+      - name: 'fortilink'
+        status: 'down'
+      - name: 'Unused-Ports'
+        status: 'down'
+      - name: 'Lo1-SecGW'
+        alias: 'IPSEC'
+        description: 'IPsec Termination Endpoint'
+        type: 'loopback'
+        allowaccess: 'ping'
+        ip: 
+            - '10.20.255.1'
+            - '255.255.255.255'
+        ipv6:
+            ip6-allowaccess: 'ping'
+            ip6-address: 'fd00::20:ff:1/128'
+        vdom: "{{ secgws.region1_traffic_vdom }}"
+      - name: 'agg1'
+        alias: 'agg1_pe11'
+        description: 'FGT-SEG1 agg1 to pe11 bond1'
+        type: 'aggregate'
+        vdom: 'root'
+        lacp-speed: 'fast'
+        algorithm: 'L3'
+        min-links: '2'
+        member:
+            - 'port1'
+            - 'port3'
+      - name: 'agg2'
+        alias: 'agg2_pe12'
+        description: 'FGT-SEG1 agg1 to pe12 bond1'
+        type: 'aggregate'
+        vdom: 'root'
+        lacp-speed: 'fast'
+        algorithm: 'L3'
+        min-links: '2'
+        member:
+            - 'port2'
+            - 'port4'
+      - name: 'agg1.10'
+        alias: 'FGSP1'
+        description: 'FGT-SEG1 agg1.10 to pe11 vrf: fgspsync'
+        interface: 'agg1'
+        allowaccess: 'ping'
+        ip: 
+            - '10.10.1.1'
+            - '255.255.255.254'
+        vdom: 'root'
+        vlanid: "{{ secgws.vlans.fgspsync }}"
+      - name: 'agg2.10'
+        alias: 'FGSP2'
+        allowaccess: 'ping'
+        description: 'FGT-SEG1 agg2.10 to pe12 vrf: fgspsync'
+        interface: 'agg2'
+        ip: 
+            - '10.10.1.3'
+            - '255.255.255.254'
+        vdom: 'root'
+        vlanid: "{{ secgws.vlans.fgspsync }}"
+      - name: 'agg1.20'
+        alias: 'RAN_UNTRUST1'
+        allowaccess: 'ping'
+        description: 'FGT-SEG1 agg1.20 to pe11 eth1.20 vrf: ran-untrust'
+        interface: 'agg1'
+        ip: 
+            - '10.20.1.1'
+            - '255.255.255.254'
+        ipv6:
+            ip6-allowaccess: 'ping'
+            ip6-address: 'fd00::20:1:1/127'
+        vdom: "{{ secgws.region1_traffic_vdom }}"
+        vlanid: "{{ secgws.vlans.ran_untrust }}"
+      - name: 'agg2.20'
+        alias: 'RAN_UNTRUST2'
+        description: 'FGT-SEG1 agg2.20 to pe12 eth1.20 vrf: ran-untrust'
+        allowaccess: 'ping'
+        interface: 'agg2'
+        ip: 
+            - '10.20.1.3'
+            - '255.255.255.254'
+        ipv6:
+            ip6-allowaccess: 'ping'
+            ip6-address: 'fd00::20:1:3/127'
+        vdom: "{{ secgws.region1_traffic_vdom }}"
+        vlanid: "{{ secgws.vlans.ran_untrust }}"
+      - name: 'agg1.30'
+        alias: 'RAN_TRUST1'
+        description: 'FGT-SEG1 agg1.30 to pe11 eth1.30 vrf: ran-trust'
+        interface: 'agg1'
+        allowaccess: 'ping'
+        ip: 
+            - '10.30.1.1'
+            - '255.255.255.254'
+        ipv6:
+            ip6-allowaccess: 'ping'
+            ip6-address: 'fd00::30:1:1/127'
+        vdom: "{{ secgws.region1_traffic_vdom }}"
+        vlanid: "{{ secgws.vlans.ran_trust }}"
+      - name: 'agg2.30'
+        alias: 'RAN_TRUST2'
+        description: 'FGT-SEG1 agg2.30 to pe12 eth1.30 vrf: ran-trust'
+        interface: 'agg2'
+        allowaccess: 'ping'
+        ip: 
+            - '10.30.1.3'
+            - '255.255.255.254'
+        ipv6:
+            ip6-allowaccess: 'ping'
+            ip6-address: 'fd00::30:1:3/127'
+        vdom: "{{ secgws.region1_traffic_vdom }}"
+        vlanid: "{{ secgws.vlans.ran_trust }}"
+      - name: "agg1.{{ secgws.vlans.pki }}"
+        alias: 'PKI1'
+        description: "FGT-SEG1 agg1.{{ secgws.vlans.pki }} to pe11 eth1.{{ secgws.vlans.pki }} vrf: pki"
+        interface: 'agg1'
+        allowaccess: 'ping'
+        ip: 
+            - '10.11.1.1'
+            - '255.255.255.254'
+        vdom: 'root'
+        vlanid: "{{ secgws.vlans.pki }}"
+      - name: "agg2.{{ secgws.vlans.pki }}"
+        alias: 'PKI2'
+        vdom: 'root'
+        vlanid: "{{ secgws.vlans.pki }}"
+        description: "FGT-SEG1 agg2.{{ secgws.vlans.pki }} to pe12 agg1.{{ secgws.vlans.pki }} vrf: pki"
+        interface: 'agg2'
+        allowaccess: 'ping'
+        ip: 
+            - '10.11.1.3'
+            - '255.255.255.254'
+  seg2:
+    name: 'FGT-SEG-2'
+    mgmtip: '10.254.1.102'
+    certname: 'seg2'
+    #sn: Populated by init play 
+    static_routes:
+      - device: 'agg1.10'
+        dst: 
+          - '10.10.1.1'
+          - '255.255.255.255'
+        gateway: '10.10.2.0'
+        comment: 'fgsp peering via pe21'
+      - device: 'agg2.10'
+        dst: 
+          - '10.10.1.3'
+          - '255.255.255.255'
+        gateway: '10.10.2.2'
+        comment: 'fgsp peering via pe22'
+    bgp:
+        router_id: '10.0.2.3'
+        as: '65200'
+        ebgp_multipath: 'enable'
+        holdtime_timer: 30
+        keepalive_timer: 10
+    interfaces:
+      - name: 'port1'
+        allowaccess: ''
+        mode: 'static'
+      - name: 'fortilink'
+        status: 'down'
+      - name: 'Unused-Ports'
+        status: 'down'
+      - name: 'Lo1-SecGW'
+        alias: 'IPSEC'
+        description: 'IPsec Termination Endpoint'
+        type: 'loopback'
+        allowaccess: 'ping'
+        ip: 
+            - '10.20.255.1'
+            - '255.255.255.255'
+        ipv6:
+            ip6-allowaccess: 'ping'
+            ip6-address: 'fd00::20:ff:1/128'
+        vdom: "{{ secgws.region1_traffic_vdom }}"
+      - name: 'agg1'
+        alias: 'agg1_pe21'
+        description: 'FGT-SEG2 agg1 to pe21 bond1'
+        type: 'aggregate'
+        vdom: 'root'
+        lacp-speed: 'fast'
+        algorithm: 'L3'
+        min-links: '2'
+        member:
+            - 'port1'
+            - 'port3'
+      - name: 'agg2'
+        alias: 'agg2_pe22'
+        description: 'FGT-SEG2 agg2 to pe22 bond1'
+        type: 'aggregate'
+        vdom: 'root'
+        lacp-speed: 'fast'
+        algorithm: 'L3'
+        min-links: '2'
+        member:
+            - 'port2'
+            - 'port4'
+      - name: "agg1.{{ secgws.vlans.fgspsync }}"
+        alias: 'FGSP1'
+        description: "FGT-SEG2 agg1.{{ secgws.vlans.fgspsync }} to pe21 bond1.{{ secgws.vlans.fgspsync }} vrf: fgspsync"
+        interface: 'agg1'
+        allowaccess: 'ping'
+        ip: 
+            - '10.10.2.1'
+            - '255.255.255.254'
+        vdom: 'root'
+        vlanid: "{{ secgws.vlans.fgspsync }}"
+      - name: "agg2.{{ secgws.vlans.fgspsync }}"
+        alias: 'FGSP2'
+        description: "FGT-SEG2 agg2.{{ secgws.vlans.fgspsync }} to pe22 bond1.{{ secgws.vlans.fgspsync }} vrf: fgspsync"
+        interface: 'agg2'
+        allowaccess: 'ping'
+        ip: 
+            - '10.10.2.3'
+            - '255.255.255.254'
+        vdom: 'root'
+        vlanid: "{{ secgws.vlans.fgspsync }}"
+      - name: "agg1.{{ secgws.vlans.ran_untrust }}"
+        alias: 'RAN_UNTRUST1'
+        description: "FGT-SEG2 agg1.{{ secgws.vlans.ran_untrust }} to pe21 bond1.{{ secgws.vlans.ran_untrust }} vrf: ran-untrust"
+        interface: 'agg1'
+        allowaccess: 'ping'
+        ip: 
+            - '10.20.2.1'
+            - '255.255.255.254'
+        ipv6:
+            ip6-allowaccess: 'ping'
+            ip6-address: 'fd00::20:2:1/127'
+        vdom: "{{ secgws.region1_traffic_vdom }}"
+        vlanid: "{{ secgws.vlans.ran_untrust }}"
+      - name: "agg2.{{ secgws.vlans.ran_untrust }}"
+        alias: 'RAN_UNTRUST2'
+        description: "FGT-SEG2 agg2.{{ secgws.vlans.ran_untrust }} to pe22 bond1.{{ secgws.vlans.ran_untrust }} vrf: ran-untrust"
+        interface: 'agg2'
+        allowaccess: 'ping'
+        ip: 
+            - '10.20.2.3'
+            - '255.255.255.254'
+        ipv6:
+            ip6-allowaccess: 'ping'
+            ip6-address: 'fd00::20:2:3/127'
+        vdom: "{{ secgws.region1_traffic_vdom }}"
+        vlanid: "{{ secgws.vlans.ran_untrust }}"
+      - name: "agg1.{{ secgws.vlans.ran_trust }}"
+        alias: 'RAN_TRUST1'
+        description: "FGT-SEG2 agg1.{{ secgws.vlans.ran_trust }} to pe21 bond1.{{ secgws.vlans.ran_trust }} vrf: ran-trust"
+        interface: 'agg1'
+        allowaccess: 'ping'
+        ip: 
+            - '10.30.2.1'
+            - '255.255.255.254'
+        ipv6:
+            ip6-allowaccess: 'ping'
+            ip6-address: 'fd00::30:2:1/127'
+        vdom: "{{ secgws.region1_traffic_vdom }}"
+        vlanid: "{{ secgws.vlans.ran_trust }}"
+      - name: "agg2.{{ secgws.vlans.ran_trust }}"
+        alias: 'RAN_TRUST2'
+        description: "FGT-SEG2 agg2.{{ secgws.vlans.ran_trust }} to pe22 bond1.{{ secgws.vlans.ran_trust }} vrf: ran-trust"
+        interface: 'agg2'
+        allowaccess: 'ping'
+        ip: 
+            - '10.30.2.3'
+            - '255.255.255.254'
+        ipv6:
+            ip6-allowaccess: 'ping'
+            ip6-address: 'fd00::30:2:3/127'
+        vdom: "{{ secgws.region1_traffic_vdom }}"
+        vlanid: "{{ secgws.vlans.ran_trust }}"
+      - name: "agg1.{{ secgws.vlans.pki }}"
+        alias: 'PKI1'
+        description: "FGT-SEG2 agg1.{{ secgws.vlans.pki }} to pe21 bond1.{{ secgws.vlans.pki }} vrf: pki"
+        interface: 'agg1'
+        allowaccess: 'ping'
+        ip: 
+            - '10.11.2.1'
+            - '255.255.255.254'
+        vdom: 'root'
+        vlanid: "{{ secgws.vlans.pki }}"
+      - name: "agg2.{{ secgws.vlans.pki }}"
+        alias: 'PKI2'
+        description: "FGT-SEG2 agg2.{{ secgws.vlans.pki }} to pe22 bond1.{{ secgws.vlans.pki }} vrf: pki"
+        interface: 'agg2'
+        allowaccess: 'ping'
+        ip: 
+            - '10.11.2.3'
+            - '255.255.255.254'
+        vdom: 'root'
+        vlanid: "{{ secgws.vlans.pki }}"
+
+certificates: 
+  mno_ca:  |
+          -----BEGIN CERTIFICATE-----
+          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
+          RMoSS35w0sZXw2z/
+          -----END CERTIFICATE-----
+  mno_subca: |
+          -----BEGIN CERTIFICATE-----
+          MIIFezCCA2OgAwIBAgIIQr+Y3Aovyz8wDQYJKoZIhvcNAQELBQAwLDELMAkGA1UE
+          BhMCQ0ExDDAKBgNVBAoMA21ubzEPMA0GA1UEAwwGbW5vX2NhMB4XDTIzMTEyMzEz
+          MjE1OVoXDTMzMDIxMTE0MDcxOVowLzELMAkGA1UEBhMCQ0ExDDAKBgNVBAoMA21u
+          bzESMBAGA1UEAwwJbW5vX3N1YmNhMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIIC
+          CgKCAgEAsAnctVY9cHzzOwRYYOd6Oy7lNcdy8sTPzqUGUKOFt6FGCv8jo2e//ivc
+          IzlQSop9GRftmMI5WQmVyPIuSDiwyi7uvqAOQtq6AWwcV0sk10ltYrlUJO9FB4tq
+          Bp+fWxBi3bjybl52+2by7KBosyAk+FbFcVxxFC6GVmXrayURjbHO3+das61TXixf
+          AS57Kw+luQINBJmgtZrw8+gicEyY0TCe24fPDGBZKgibxK7h+yCfugdWmQ6tNXBj
+          S1MdovX2TBfn4y6ktdovOfvDQMmfc/Syv+6kdnJOMpgmeenu8KpnYi9Il7cQtdH2
+          QBUf5XjKhEIKI+hAZwtxigI3AGjY2kdg9MxMkbCMQs5RxXkKtbCra22HcchjPdOi
+          1ayV2o9MKFlAfVbhmTpGgD90PjaUjh2x02peVq/ie9lYo0GW9nhptNWvkwuDJoW5
+          GmhAr3NwMxQGAIcy/jdkQ/oMjSbHoJ3Cnhv3illzQLnaiS8gbLKUew9s0VVrUMB5
+          3Lk55FNUyhTvRiRXN/61pqFzQta7JW2KpVNp6R3DTjnfRFNHPZg66KQP9Oo4knpA
+          CfhUKVAy5GeTXSPCWwCqEGBCWOT58DYMY87vCm/DogL/l54f7D3ICkpRjN987YIz
+          QDxtaQv3VwcLdQQVjzDggemBYTHnb9zqlIw6VsQG4xbq8/xHjM8CAwEAAaOBnTCB
+          mjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBTAB40Bt5pIw0pWNdfRkfNhdf8w
+          wzBbBgNVHSMEVDBSgBRWZ0tOnU+qJHv2EzpiPl00HXqnCaEwpC4wLDELMAkGA1UE
+          BhMCQ0ExDDAKBgNVBAoMA21ubzEPMA0GA1UEAwwGbW5vX2NhgggKOcFgoslohTAL
+          BgNVHQ8EBAMCAYYwDQYJKoZIhvcNAQELBQADggIBAJyP3rj/VuLZQHFWnSF/CilM
+          GDFPkOgWTTwrBC//o370Ack3d/kfD4NQPP5UK2ZmOn0/i9LjhzROCH0CTL4QNZh8
+          DUvXNwhO71ySbYuAMm1uYr842ZHSY59Y5J3N+sXXSod+yBMp8Zgw1iKYN+BpOvfx
+          patOTvWWhDKc0hBzztSkieXtY4oyvWM6oHgP7EaBF8Fb4+JIybUiMUyosqqby23T
+          zzAJY+Uy+zwTe0yIqRr7VQn48/TDuXA/cXXubwSN2VAF2zasnXNl0+LbnnvkAq6h
+          SPo/KcYrpjbyKz4UxXmECfgKiVyaA8Nd6Asx1abufwEiVcywIMQlUuifZRXfJ+pU
+          1pWQpDp4l4BAphxVkpsJKN0xU4q7LAVtQy4nEslanEWSnAYyVljhvQEj/71A60QE
+          BG4l54GezTPX0RaePvJ2BrWR6Qk7mbZkzIsDVYSV29ZxKiqMOU5+REW+qgb2jox9
+          xPZH6I4nRIppt/hVAci9DQfRBwqdY9nC41DLdMYISJQIHdXkPLdgyLL57HE/qQaf
+          JGkF3kl6kjTUaZR16xg/Nl3I6my1E0zSz3Gjyd7iPWkEK8KRBayN3YMaBrLwTpSm
+          zMoz5BoyBc01woqZji4TEZWbn16wu7C1+/aKUUlr/MLG4D/oneWuMG5ZO0VTZsp0
+          JnhQA+9IccvarTmYBUnp
+          -----END CERTIFICATE-----
+  mno_cmp_server: |
+          -----BEGIN CERTIFICATE-----
+          MIIEiDCCAnCgAwIBAgIIN0rIbHCIDPIwDQYJKoZIhvcNAQELBQAwLzELMAkGA1UE
+          BhMCQ0ExDDAKBgNVBAoMA21ubzESMBAGA1UEAwwJbW5vX3N1YmNhMB4XDTIzMTEy
+          MzEzMjQ1M1oXDTI4MTEyMTEzMjQ1M1owNDELMAkGA1UEBhMCQ0ExDDAKBgNVBAoM
+          A21ubzEXMBUGA1UEAwwObW5vX2NtcF9zZXJ2ZXIwggEiMA0GCSqGSIb3DQEBAQUA
+          A4IBDwAwggEKAoIBAQDo1by7AtuiQafyNjW6eVvwi/kAdXmDmzWpREtBpudN+xLP
+          ol4e0fbyLxvMLR2J6I6fhZGD6sTSNz+ATqoEPIStI/Zc1ed6YLstdoeJNYnMByae
+          J5MY2E/sTNciy8y5Qw8Rhlq8hJDZhHMkv3GedPH+g1YHSx3Ub2RsarclrQTASHfk
+          OkiDL0EE6E/7llb/qIKHsu/iqS1QeVoM5wPRhmmN8PdQXohnUr3pnDRtGXdM0xzN
+          um+MOWhJV+Qc/6o4zfLF7jF0wy19l1tAlPSMuGMmq8+vVqaMYJ6HpxeVtrf8zqcV
+          2+Z59BMt/+gPjY4+JPG1xX6WifX64qzqTWg9YhPPAgMBAAGjgaIwgZ8wDAYDVR0T
+          AQH/BAIwADAdBgNVHQ4EFgQUzvK7TOE3lJs1yiW5pP/NG/629hgwWwYDVR0jBFQw
+          UoAUwAeNAbeaSMNKVjXX0ZHzYXX/MMOhMKQuMCwxCzAJBgNVBAYTAkNBMQwwCgYD
+          VQQKDANtbm8xDzANBgNVBAMMBm1ub19jYYIIQr+Y3Aovyz8wEwYDVR0lBAwwCgYI
+          KwYBBQUHAwEwDQYJKoZIhvcNAQELBQADggIBAAD6S8Cv3fnbqxtslrT+52CfHFE/
+          f02Sdf31vpu7NGdcodseEr2+lt3VSJHT9NcswsHD4BM6h80WoOy2SYZKGBwmu0cF
+          r1CdZm7rmgzPKuN1dzECeYjK5pvz9OSb0oVx0Fj36UZA4noyCRTVyGCmCYTeJpO+
+          7FlgS0sqWIYU2woQgZwDeQIH8u/8QWvMX1v/HDfYW9r2jQRbX+TLiYnp8Rzwd6kC
+          h/NBwIMQi7TpfD+E8h47KaVqFbVDS3zNMfLblzdWAUnUBolbmahwS0paukyjeXn3
+          cpnh7LNjyEntw5bjEXUnmygLv9qI69TjsVX+w9PxnCttZGiBU2UhcFGGyCHzWx0W
+          ++t3f9Hdy18AoOrYvGDYlvFgPfgOfZyOMfODFTGJosLnnGjg1H5drbEQQO0sqhRc
+          twBNlIfIizGDWCsZRJ4cay74z5qjRozhRKjseYswoIfo+2NEccQgfK/LMfGHss+I
+          q/wYHrI54S4dPB/BGYRpcccf6guQ91s6yfXwvB1aeJ9w9MPOpNzciQarMK1JN1sM
+          ezF2yyURHJBFmMsxo7DdkTXmza+/Brk1mi1lcFWyAPQF1AVUrpCYZ3vJMccjT2i/
+          bxfLAZQsZfmKNb9w7dA5Ley14ypkKIpG3wSd6pFFHc0cyAnyc0TyA1dZJe8SWnXR
+          UbKA1w2rEriOHqZm
+          -----END CERTIFICATE-----

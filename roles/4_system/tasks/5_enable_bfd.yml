@@ -1,0 +1,33 @@
+- name: Enable bfd in vdom root
+  fortinet.fortimanager.fmgr_generic:
+    access_token: "{{ access_token }}"
+    method: set
+    params:
+      - url: "pm/config/device/{{ item.name }}/vdom/root/system/settings"
+        data:
+          bfd: 'enable'
+          bfd-desired-min-tx: 750
+          bfd-required-min-rx: 750
+          bfd-detect-mult: 3
+  loop:
+    - "{{ secgws.seg1 }}"
+    - "{{ secgws.seg2 }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: "Enable bfd in vdom {{ secgws.region1_traffic_vdom }}"
+  fortinet.fortimanager.fmgr_generic:
+    access_token: "{{ access_token }}"
+    method: set
+    params:
+      - url: "/pm/config/device/{{ item.name }}/vdom/{{ secgws.region1_traffic_vdom }}/system/settings"
+        data:
+          bfd: 'enable'
+          bfd-desired-min-tx: 750
+          bfd-required-min-rx: 750
+          bfd-detect-mult: 3
+  loop:
+    - "{{ secgws.seg1 }}"
+    - "{{ secgws.seg2 }}"
+  loop_control:
+    label: "{{ item.name }}"

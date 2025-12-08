@@ -1,0 +1,152 @@
+---
+- name: Gather Credentials and Set Host Facts
+  hosts: localhost
+  gather_facts: false
+  tags:
+    - init
+  tasks:
+    - name: Run init.py to fetch all credentials
+      ansible.builtin.command: >
+        ./init.py
+      args:
+        chdir: "{{ playbook_dir }}/scripts"
+        stdin: "{{ script_vars | to_json }}"
+      changed_when: false
+      vars:
+        # Assemble all the variables the script needs into a single dictionary
+        script_vars:
+          fmg_host: "{{ hostvars[groups['fortimanagers'][0]]['host'] }}"
+          faz_host: "{{ hostvars[groups['fortianalyzers'][0]]['host'] }}"
+          seg1_ip: "{{ hostvars[groups['fortimanagers'][0]]['secgws']['seg1']['mgmtip'] }}"
+          seg2_ip: "{{ hostvars[groups['fortimanagers'][0]]['secgws']['seg2']['mgmtip'] }}"
+          ssh_port: "{{ ssh_port }}"
+          username: "{{ username }}"
+      register: init_script_output
+
+    - name: Display fetched credentials
+      ansible.builtin.debug:
+        msg: |-
+          Fetched Credentials Summary:
+            - FMG Token: {{ fetched_credentials['FMG_ACCESS_TOKEN'] }}
+            - FMG Serial Number: {{ fetched_credentials['FMG_SN'] }}
+            - FAZ Token: {{ fetched_credentials['FAZ_ACCESS_TOKEN'] }}
+            - FAZ Serial Number: {{ fetched_credentials['FAZ_SN'] }}
+            - SEG1 Serial Number: {{ fetched_credentials['SEG1_SN'] }}
+            - SEG2 Serial Number: {{ fetched_credentials['SEG2_SN'] }}
+      vars:
+        fetched_credentials: "{{ init_script_output.stdout | from_json }}"
+
+    - name: Parse script output and set facts for all relevant hosts
+      ansible.builtin.set_fact:
+        access_token: "{{ fetched_credentials[_cred_prefix + '_ACCESS_TOKEN'] }}"
+        sn: "{{ fetched_credentials[_cred_prefix + '_SN'] }}"
+        password: "{{ fetched_credentials['DEVICE_PASSWORD'] }}"
+        secgws: >
+          {{
+            secgws | combine({
+              'seg1': {'sn': fetched_credentials['SEG1_SN']},
+              'seg2': {'sn': fetched_credentials['SEG2_SN']}
+            },
+            recursive=true
+          )
+          }}
+        cacheable: true
+      vars:
+        fetched_credentials: "{{ init_script_output.stdout | from_json }}"
+        _cred_prefix: "{{ 'FMG' if item in groups['fortimanagers'] else 'FAZ' }}"
+      delegate_to: "{{ item }}"
+      delegate_facts: true
+      loop: "{{ groups['fortimanagers'] + groups['fortianalyzers'] }}"
+      loop_control:
+        loop_var: item
+
+
+- name: FMG Initialization
+  hosts: fortimanagers
+  gather_facts: false
+  connection: httpapi
+  tags:
+    - init
+  roles:
+    - role: 1_fmg_initialize
+
+- name: FAZ Initialization
+  hosts: fortianalyzers
+  gather_facts: false
+  connection: httpapi
+  tags:
+    - init
+  roles:
+    - role: 2_faz_initialize
+
+- name: FMG Add Devices
+  hosts: fortimanagers
+  gather_facts: false
+  connection: httpapi
+  tags:
+    - add_devices_fmg
+  roles:
+    - role: 3_fmg_add_secgw_devices
+
+- name: Device Provisioning
+  hosts: fortimanagers
+  gather_facts: false
+  connection: httpapi
+  tags:
+    - system
+  roles:
+    - role: 4_system
+
+- name: FAZ Add Devices
+  hosts: fortianalyzers
+  gather_facts: false
+  connection: httpapi
+  tags:
+    - add_devices_faz
+  roles:
+    - role: 5_faz_add_secgw_devices
+
+- name: FGSP
+  hosts: fortimanagers
+  gather_facts: false
+  connection: httpapi
+  tags:
+    - fgsp
+  roles:
+    - role: 6_fgsp
+
+- name: Routing
+  hosts: fortimanagers
+  gather_facts: false
+  connection: httpapi
+  tags:
+    - routing
+  roles:
+    - role: 7_routing
+
+- name: Certificates
+  hosts: fortimanagers
+  gather_facts: false
+  connection: httpapi
+  tags:
+    - certificates
+  roles:
+    - role: 8_certificates
+
+- name: VPN
+  hosts: fortimanagers
+  gather_facts: false
+  connection: httpapi
+  tags:
+    - vpn
+  roles:
+    - role: 9_vpn
+
+- name: Policy Packages
+  hosts: fortimanagers
+  gather_facts: false
+  connection: httpapi
+  tags:
+    - policy_packages
+  roles:
+    - role: 10_policy_packages

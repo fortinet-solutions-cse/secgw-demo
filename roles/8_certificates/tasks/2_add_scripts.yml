@@ -1,0 +1,21 @@
+---
+- name: Add scripts to generate CMP IR RSA certificates
+  fortinet.fortimanager.fmgr_dvmdb_script:
+    access_token: "{{ access_token }}"
+    adom: "{{ adom_secgw }}"
+    state: present
+    dvmdb_script:
+      name: "{{ item.name }}_cmp_ir"
+      type: 'cli'
+      target: 'remote_device'
+      content: |
+        config vdom
+            edit {{ secgws.region1_traffic_vdom }}
+                execute vpn certificate local generate cmp-rsa {{ item.certname }} 2048 {{ cmp_server_ip }}:80 /cert/cmp2/ mno_cmp_server Fortinet_Factory "" "" "C=CA,O=mno,OU=FGT,CN={{ item.sn }}" ""
+            end
+  loop:
+    - "{{ secgws.seg1 }}"
+    - "{{ secgws.seg2 }}"
+  loop_control:
+    label: "{{ item.name }}"
+

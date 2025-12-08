@@ -1,0 +1,21 @@
+- name: Installing policy package
+  fortinet.fortimanager.fmgr_securityconsole_install_package:
+    access_token: "{{ access_token }}"
+    bypass_validation: false
+    securityconsole_install_package:
+      adom: "{{ adom_secgw }}"
+      adom_rev_comments: "ansible-adom-rev-comment"
+      adom_rev_name: "ansible-adom-rev-name"
+      dev_rev_comments: "ansible-dev-rev-comment"
+      flags:
+        - none
+      pkg: "{{ policy_package }}"
+      scope: "{{ scope_device_vdom }}"
+  register: common_installing_task
+
+- name: Monitor FortiManager policy package installation task until completion
+  ansible.builtin.include_tasks: _monitor_task.yml
+  vars:
+    fmgr_raw_task_result: "{{ common_installing_task }}"
+
+

@@ -1,0 +1,17 @@
+- name: System Global
+  fortinet.fortimanager.fmgr_generic:
+    access_token: "{{ access_token }}"
+    method: update
+    params:
+      - url: "pm/config/device/{{ item.name }}/global/system/global"
+        data:
+          hostname: "{{ item.name }}"
+          vdom-mode: 'multi-vdom'
+          lldp-reception: 'enable'
+          lldp-transmission: 'enable'
+          admin-sport: 443
+  loop:
+    - "{{ secgws.seg1 }}"
+    - "{{ secgws.seg2 }}"
+  loop_control:
+    label: "{{ item.name }}"

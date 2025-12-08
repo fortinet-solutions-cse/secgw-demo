@@ -1,0 +1,22 @@
+# tasks to install a remote cli script
+# required vars: access_token, adom, scope, script
+
+---
+- name: "Execute script '{{ common_script }}'"
+  fortinet.fortimanager.fmgr_dvmdb_script_execute:
+    access_token: "{{ access_token }}"
+    bypass_validation: false
+    adom: "{{ adom_secgw }}"
+    dvmdb_script_execute:
+      adom: "{{ adom_secgw }}"
+      scope: "{{ common_scope_device_vdom }}"
+      script: "{{ common_script }}"
+  register: common_installing_task
+
+- name: Monitor FortiManager script execution task until completion
+  ansible.builtin.include_tasks: _monitor_task.yml
+  vars:
+    fmgr_raw_task_result: "{{ common_installing_task }}"
+
+
+

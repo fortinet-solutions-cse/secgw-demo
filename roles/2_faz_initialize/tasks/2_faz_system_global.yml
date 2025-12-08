@@ -1,0 +1,7 @@
+- name: 'FAZ Configure System Global'
+  fortinet.fortianalyzer.faz_cli_system_global:
+    access_token: "{{ access_token }}"
+    cli_system_global:
+      adom_status: "{{ adom_status }}"
+      hostname: "{{ hostname }}"
+      timezone: "{{ fmc_timezone }}"

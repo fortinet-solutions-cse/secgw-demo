@@ -1,0 +1,77 @@
+- name: "Create system template: {{ secgws.system_template_name }}"
+  fortinet.fortimanager.fmgr_pm_devprof_adom:
+    access_token: "{{ access_token }}"
+    adom: "{{ adom_secgw }}"
+    pm_devprof_adom:
+      name: "{{ secgws.system_template_name }}"
+      description: 'System Template for SecGW'
+      enabled_options:
+        - 'dns'
+        - 'log'
+        - 'ntp'
+        - 'admin'
+      type: 'devprof'
+      scope_member:
+        - name: "{{ secgws.seg1.name }}"
+        - name: "{{ secgws.seg2.name }}"
+
+- name: "Set Template parameters: {{ secgws.system_template_name }}"
+  fortinet.fortimanager.fmgr_devprof_system_global:
+    access_token: "{{ access_token }}"
+    adom: "{{ adom_secgw }}"
+    devprof: "{{ secgws.system_template_name }}"
+    devprof_system_global:
+      #vdom_mode: 'multi-vdom' #not currently working in FMG module
+      #lldp_reception: 'enable'
+      #lldp_transmission: 'enable'
+      #admin_sport: 443
+      timezone: "{{ secgws.timezone }}"
+      admin_ssh_port: "{{ ssh_port }}"
+      admintimeout: "{{ secgws.admintimeout }}"
+      gui_ipv6: 'enable'
+      gui_theme: 'graphite'
+
+- name: "Add DNS settings to system template: {{ secgws.system_template_name }}"
+  fortinet.fortimanager.fmgr_generic:
+    access_token: "{{ access_token }}"
+    method: set
+    params:
+      - url: "pm/config/adom/{{ adom_secgw }}/devprof/{{ secgws.system_template_name }}/device/template/widget/dns/action-list"
+        data:
+          seq: 1
+          action: 'conf-sys-dns'
+          model: 'all'
+          value:
+            primary: '10.254.1.254'
+            secondary: '96.45.45.45'
+            domain: 'mno.com'
+            protocol: 'cleartext'
+
+- name: "Add NTP settings to system template: {{ secgws.system_template_name }}"
+  fortinet.fortimanager.fmgr_generic:
+    access_token: "{{ access_token }}"
+    method: set
+    params:
+      - url: "pm/config/adom/{{ adom_secgw }}/devprof/{{ secgws.system_template_name }}/system/ntp"
+        data:
+          ntpsync: 1
+
+- name: 'System Template FAZ'
+  fortinet.fortimanager.fmgr_devprof_device_profile_fortianalyzer:
+    access_token: "{{ access_token }}"
+    adom: "{{ adom_secgw }}"
+    devprof: "{{ secgws.system_template_name }}"
+    devprof_device_profile_fortianalyzer:
+      target_sn: "{{ hostvars[groups['fortianalyzers'][0]]['sn'] }}"
+      target_ip: "{{ hostvars[groups['fortianalyzers'][0]]['host'] }}"
+      target: 'others'
+
+- name: 'System Template FAZ settings'
+  fortinet.fortimanager.fmgr_devprof_log_fortianalyzer_setting:
+    access_token: "{{ access_token }}"
+    adom: "{{ adom_secgw }}"
+    devprof: "{{ secgws.system_template_name }}"
+    devprof_log_fortianalyzer_setting:
+      reliable: 'disable'
+      upload_option: 'realtime'
+      access_config: 'enable'

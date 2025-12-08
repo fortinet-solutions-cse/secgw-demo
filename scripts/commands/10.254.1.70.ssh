@@ -1,0 +1,27 @@
+config system interface
+ edit "port1"
+  set allowaccess ping https ssh http fgfm
+ next
+end
+
+config system admin user
+ edit "api_user"
+  set profileid "Super_User"
+  set user_type api
+  set rpc-permit read-write
+ next
+ edit "admin"
+  set rpc-permit read-write
+ next
+end
+
+exe api-user generate-key api_user
+
+config system route
+    edit 1
+        set device "port1"
+        set gateway 10.254.1.254
+    next
+end
+
+get system status

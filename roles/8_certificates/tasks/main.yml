@@ -1,0 +1,28 @@
+---
+- name: 8.1 Add Certificates
+  ansible.builtin.include_tasks: "1_add_certificates.yml"
+
+- name: 8.1 Add Scripts
+  ansible.builtin.include_tasks: "2_add_scripts.yml"
+
+- name: Install devices
+  ansible.builtin.include_role:
+    name: common
+    tasks_from: install_device.yml
+  vars:
+    scope_device_vdom: "{{ certificates_scope_device_vdom }}"
+
+- name: Execute CMP IR for each security gateway
+  ansible.builtin.include_role:
+    name: common
+    tasks_from: execute_script.yml
+  vars:
+    common_scope_device_vdom:
+      - name: "{{ item.name }}"
+        vdom: "{{ secgws.region1_traffic_vdom }}"
+    common_script: "{{ item.name }}_cmp_ir"
+  loop:
+    - "{{ secgws.seg1 }}"
+    - "{{ secgws.seg2 }}"
+  loop_control:
+    label: "{{ item.name }}"  

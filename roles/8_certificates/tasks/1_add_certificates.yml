@@ -1,0 +1,48 @@
+- name: "Set remote certificate mno_cmp_server in vdom {{ secgws.region1_traffic_vdom }}"
+  fortinet.fortimanager.fmgr_generic:
+    access_token: "{{ access_token }}"
+    method: set
+    params:
+      - url: "pm/config/device/{{ item.name }}/vdom/{{ secgws.region1_traffic_vdom }}/vpn/certificate/remote"
+        data:
+          - name: 'mno_cmp_server'
+            remote: "{{ certificates.mno_cmp_server }}"
+            range: 'vdom'
+            source: 'user'
+  loop:
+    - "{{ secgws.seg1 }}"
+    - "{{ secgws.seg2 }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: "Set remote certificate mno_ca in vdom {{ secgws.region1_traffic_vdom }}"
+  fortinet.fortimanager.fmgr_generic:
+    access_token: "{{ access_token }}"
+    method: set
+    params:
+      - url: "pm/config/device/{{ item.name }}/vdom/{{ secgws.region1_traffic_vdom }}/vpn/certificate/ca"
+        data:
+          - name: 'mno_ca'
+            ca: "{{ certificates.mno_ca }}"
+            source: 'user'
+  loop:
+    - "{{ secgws.seg1 }}"
+    - "{{ secgws.seg2 }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: "Set remote certificate mno_subca in vdom {{ secgws.region1_traffic_vdom }}"
+  fortinet.fortimanager.fmgr_generic:
+    access_token: "{{ access_token }}"
+    method: set
+    params:
+      - url: "pm/config/device/{{ item.name }}/vdom/{{ secgws.region1_traffic_vdom }}/vpn/certificate/ca"
+        data:
+          - name: 'mno_subca'
+            ca: "{{ certificates.mno_subca }}"
+            source: 'user'
+  loop:
+    - "{{ secgws.seg1 }}"
+    - "{{ secgws.seg2 }}"
+  loop_control:
+    label: "{{ item.name }}"

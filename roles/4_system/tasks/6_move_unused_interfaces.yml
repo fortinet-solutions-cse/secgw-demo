@@ -1,0 +1,20 @@
+- name: 'Move unused interfaces'
+  fortinet.fortimanager.fmgr_generic:
+    access_token: "{{ access_token }}"
+    method: set
+    params:
+      - url: "pm/config/device/{{ item.name }}/global/system/switch-interface"
+        data:
+          member:
+            - 'port5'
+            - 'port6'
+            - 'port7'
+            - 'port8'
+            - 'port9'
+          name: 'Unused-Ports'
+          vdom: 'root'
+  loop:
+    - "{{ secgws.seg1 }}"
+    - "{{ secgws.seg2 }}"
+  loop_control:
+    label: "{{ item.name }}"

@@ -1,0 +1,7 @@
+- name: 'FMG Admin settings'
+  fortinet.fortimanager.fmgr_system_admin_setting:
+    access_token: "{{ access_token }}"
+    system_admin_setting:
+      gui_theme: "{{ gui_theme }}"
+      idle_timeout: "{{ idle_timeout }}"
+      idle_timeout_gui: "{{ idle_timeout_gui }}"

@@ -1,0 +1,106 @@
+---
+- name: 'Prefix List6 Client6-inner-addresses'
+  fortinet.fortimanager.fmgr_generic:
+    access_token: "{{ access_token }}"
+    method: set
+    params:
+      - url: "pm/config/device/{{ item.name }}/vdom/{{ secgws.region1_traffic_vdom }}/router/prefix-list6"
+        data:
+          - name: 'Client6-inner-addresses'
+            rule:
+              - id: 1
+                le: 128
+                prefix6: 'fd00::30:cafe:0/112'
+  loop:
+    - "{{ secgws.seg1 }}"
+    - "{{ secgws.seg2 }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: 'Prefix List6 SecGW6-loopback-addresses'
+  fortinet.fortimanager.fmgr_generic:
+    access_token: "{{ access_token }}"
+    method: set
+    params:
+      - url: "pm/config/device/{{ item.name }}/vdom/{{ secgws.region1_traffic_vdom }}/router/prefix-list6"
+        data:
+          - name: 'SecGW6-loopback-addresses'
+            rule:
+              - id: 1
+                prefix6: 'fd00::20:ff:1/128'
+  loop:
+    - "{{ secgws.seg1 }}"
+    - "{{ secgws.seg2 }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: 'Prefix List6 5G-IPv6-addresses'
+  fortinet.fortimanager.fmgr_generic:
+    access_token: "{{ access_token }}"
+    method: set
+    params:
+      - url: "pm/config/device/{{ item.name }}/vdom/{{ secgws.region1_traffic_vdom }}/router/prefix-list6"
+        data:
+          - name: '5G-IPv6-addresses'
+            rule:
+              - id: 1
+                le: 128
+                prefix6: 'fd00::30:1:6/127'
+  loop:
+    - "{{ secgws.seg1 }}"
+    - "{{ secgws.seg2 }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: 'Prefix List Client-inner-addresses'
+  fortinet.fortimanager.fmgr_generic:
+    access_token: "{{ access_token }}"
+    method: set
+    params:
+      - url: "pm/config/device/{{ item.name }}/vdom/{{ secgws.region1_traffic_vdom }}/router/prefix-list"
+        data:
+          - name: 'Client-inner-addresses'
+            rule:
+              - id: 1
+                le: 32
+                prefix: '10.30.255.0/24'
+  loop:
+    - "{{ secgws.seg1 }}"
+    - "{{ secgws.seg2 }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: 'Prefix List SecGW-loopback-addresses'
+  fortinet.fortimanager.fmgr_generic:
+    access_token: "{{ access_token }}"
+    method: set
+    params:
+      - url: "pm/config/device/{{ item.name }}/vdom/{{ secgws.region1_traffic_vdom }}/router/prefix-list"
+        data:
+          - name: 'SecGW-loopback-addresses'
+            rule:
+              - id: 1
+                prefix: '10.20.255.1/32'
+  loop:
+    - "{{ secgws.seg1 }}"
+    - "{{ secgws.seg2 }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: 'Prefix List 5G-IP-addresses'
+  fortinet.fortimanager.fmgr_generic:
+    access_token: "{{ access_token }}"
+    method: set
+    params:
+      - url: "pm/config/device/{{ item.name }}/vdom/{{ secgws.region1_traffic_vdom }}/router/prefix-list"
+        data:
+          - name: '5G-IP-addresses'
+            rule:
+              - id: 1
+                le: 32
+                prefix: '10.30.0.0/16'
+  loop:
+    - "{{ secgws.seg1 }}"
+    - "{{ secgws.seg2 }}"
+  loop_control:
+    label: "{{ item.name }}"

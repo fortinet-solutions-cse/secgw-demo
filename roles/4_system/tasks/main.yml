@@ -1,0 +1,35 @@
+---
+- name: 5.1 System template
+  ansible.builtin.include_tasks: "1_system_template.yml"
+
+- name: 5.2 System Global
+  ansible.builtin.include_tasks: "2_system_global.yml"
+
+- name: 5.3 VDOMs
+  ansible.builtin.include_tasks: "3_add_vdom.yml"
+
+- name: 5.4 Device Group
+  ansible.builtin.include_tasks: "4_device_group_secgw.yml"
+
+- name: 5.5 Enable BFD
+  ansible.builtin.include_tasks: "5_enable_bfd.yml"
+
+- name: Install devices
+  ansible.builtin.include_role:
+    name: common
+    tasks_from: install_device.yml
+  vars:
+    scope_device_vdom: "{{ system_scope_device_vdom }}"
+
+- name: 5.6 Move unused interfaces
+  ansible.builtin.include_tasks: "6_move_unused_interfaces.yml"
+
+- name: 5.7 Configure SecGW interfaces
+  ansible.builtin.include_tasks: "7_config_secgw_interfaces.yml"
+
+- name: Install devices
+  ansible.builtin.include_role:
+    name: common
+    tasks_from: install_device.yml
+  vars:
+    scope_device_vdom: "{{ system_scope_device_vdom }}"

@@ -1,0 +1,24 @@
+- name: Create device group
+  fortinet.fortimanager.fmgr_dvmdb_group:
+    access_token: "{{ access_token }}"
+    bypass_validation: false
+    adom: "{{ adom_secgw }}"
+    state: present
+    dvmdb_group:
+      desc: "{{ secgws.region1_group }}"
+      name: "{{ secgws.region1_group }}"
+      os_type: 'fos'
+      type: 'normal'
+
+- name: Add SecGW vdoms to group
+  fortinet.fortimanager.fmgr_dvmdb_group_objectmember:
+    access_token: "{{ access_token }}"
+    bypass_validation: true
+    adom: "{{ adom_secgw }}"
+    state: present
+    group: "{{ secgws.region1_group }}"
+    dvmdb_group_objectmember:
+      - name: "{{ secgws.seg1.name }}"
+        vdom: "{{ secgws.region1_traffic_vdom }}"
+      - name: "{{ secgws.seg2.name }}"
+        vdom: "{{ secgws.region1_traffic_vdom }}"

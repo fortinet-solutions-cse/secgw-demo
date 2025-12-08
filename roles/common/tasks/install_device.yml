@@ -1,0 +1,17 @@
+---
+- name: Initiate device installation on FortiManager
+  fortinet.fortimanager.fmgr_securityconsole_install_device:
+    access_token: "{{ access_token }}"
+    securityconsole_install_device:
+      adom: "{{ adom_secgw }}"
+      flags:
+        - none
+      scope: "{{ scope_device_vdom }}"
+  register: common_installing_task
+
+- name: Monitor FortiManager installation task until completion
+  ansible.builtin.include_tasks: _monitor_task.yml
+  vars:
+    fmgr_raw_task_result: "{{ common_installing_task }}"
+
+

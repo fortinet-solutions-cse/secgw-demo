@@ -1,0 +1,20 @@
+- name: 'Create custom services'
+  fortinet.fortimanager.fmgr_generic:
+    access_token: "{{ access_token }}"
+    method: set
+    params:
+      - url: "/pm/config/adom/{{ adom_secgw }}/obj/firewall/service/custom"
+        data:
+          - comment: 'GTP User Plane'
+            name: 'GTP-U'
+            udp-portrange: '2152'
+          - comment: 'S1-AP Control Plane'
+            name: 'S1-AP'
+            sctp-portrange: '36412'
+          - comment: 'NG-AP Control Plane'
+            name: 'NG-AP'
+            sctp-portrange: '38412'
+          - comment: 'F1-AP Control Plane'
+            name: 'F1-AP'
+            sctp-portrange: '38472'
+  changed_when: false

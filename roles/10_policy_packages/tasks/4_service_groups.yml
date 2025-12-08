@@ -1,0 +1,16 @@
+- name: 'Create service groups'
+  fortinet.fortimanager.fmgr_generic:
+    access_token: "{{ access_token }}"
+    method: set
+    params:
+      - url: "/pm/config/adom/{{ adom_secgw }}/obj/firewall/service/group"
+        data:
+          - name: 'LTE-5G-Services'
+            member:
+              - 'GTP-U'
+              - 'F1-AP'
+              - 'NG-AP'
+              - 'S1-AP'
+              - 'ALL_ICMP6'
+              - 'ALL_ICMP'
+  changed_when: false

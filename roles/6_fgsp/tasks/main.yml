@@ -1,0 +1,16 @@
+---
+- name: 6.1 FGSP Static Routes
+  ansible.builtin.include_tasks: "1_fgsp_static_routes.yml"
+
+- name: 6.2 FGSP Standalone cluster
+  ansible.builtin.include_tasks: "2_fgsp_standalone_cluster.yml"
+
+- name: 6.3 FGSP Session Pickup
+  ansible.builtin.include_tasks: "3_session_pickup.yml"
+
+- name: Install devices
+  ansible.builtin.include_role:
+    name: common
+    tasks_from: install_device.yml
+  vars:
+    scope_device_vdom: "{{ fgsp_scope_device_vdom }}"

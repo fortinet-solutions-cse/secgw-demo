@@ -1,0 +1,29 @@
+---
+- name: '10.1 Zones'
+  ansible.builtin.include_tasks: '1_zones.yml'
+
+- name: '10.2 Dynamic interfaces'
+  ansible.builtin.include_tasks: '2_dynamic_interfaces.yml'
+
+- name: '10.3 Service custom'
+  ansible.builtin.include_tasks: '3_service_custom.yml'
+
+- name: '10.4 Service groups'
+  ansible.builtin.include_tasks: '4_service_groups.yml'
+
+- name: '10.5 Firewall policy packages'
+  ansible.builtin.include_tasks: '5_firewall_policy_package.yml'
+
+- name: '10.6 Firewall policies'
+  ansible.builtin.include_tasks: '6_firewall_policies.yml'
+
+- name: '10.7 Firewall DoS policies'
+  ansible.builtin.include_tasks: '7_firewall_dospolicies.yml'
+
+- name: "Install policy package {{ secgws.policy_package }}"
+  ansible.builtin.include_role:
+    name: 'common'
+    tasks_from: 'install_policy_package.yml'
+  vars:
+    scope_device_vdom: "{{ policy_packages_scope_device_vdom }}"
+    policy_package: "{{ secgws.policy_package }}"

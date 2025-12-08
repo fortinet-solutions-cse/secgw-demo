@@ -1,0 +1,26 @@
+- name: "Add device '{{ item.name }}' to FAZ"
+  fortinet.fortianalyzer.faz_dvm_cmd_add_device:
+    access_token: "{{ access_token }}"
+    bypass_validation: false
+    dvm_cmd_add_device:
+      adom: "{{ adom_secgw }}"
+      flags:
+        - create_task
+        - nonblocking
+      device:
+        name: "{{ item.name }}"
+        adm_usr: "{{ username }}"
+        adm_pass: "{{ password }}"
+        desc: 'The device is added via Ansible'
+        ip: "{{ item.mgmtip }}"
+        mgmt_mode: 'faz'
+        sn: "{{ item.sn }}"
+        os_type: 'fos'
+        os_ver: '7.0'
+        mr: 4
+  register: faz_add_secgw_devices_installing_task
+
+- name: Poll FAZ installing task
+  ansible.builtin.include_tasks: "../common/tasks/_monitor_task_faz.yml"
+  vars:
+    fmgr_raw_task_result: "{{ faz_add_secgw_devices_installing_task }}"

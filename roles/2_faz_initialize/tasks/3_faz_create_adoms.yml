@@ -1,0 +1,6 @@
+- name: "FAZ Create ADOM {{ adom_secgw }}"
+  fortinet.fortianalyzer.faz_dvmdb_adom:
+    access_token: "{{ access_token }}"
+    state: present
+    dvmdb_adom:
+      name: "{{ adom_secgw }}"

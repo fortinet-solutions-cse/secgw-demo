@@ -1,0 +1,28 @@
+- name: Route Maps
+  fortinet.fortimanager.fmgr_generic:
+    access_token: "{{ access_token }}"
+    method: set
+    params:
+      - url: "pm/config/device/{{ item.name }}/vdom/{{ secgws.region1_traffic_vdom }}/router/route-map"
+        data:
+          - name: 'SecGW6-loopback-addresses'
+            rule:
+              - id: 1
+                match-ip6-address: 'SecGW6-loopback-addresses'
+          - name: 'RAN_TRUST-eBGP-Check6'
+            rule:
+              - id: 1
+                match-ip6-address: '5G-IPv6-addresses'
+          - name: 'SecGW-loopback-addresses'
+            rule:
+              - id: 1
+                match-ip-address: 'SecGW-loopback-addresses'
+          - name: 'RAN_TRUST-eBGP-Check'
+            rule:
+              - id: 1
+                match-ip-address: '5G-IP-addresses'
+  loop:
+    - "{{ secgws.seg1 }}"
+    - "{{ secgws.seg2 }}"
+  loop_control:
+    label: "{{ item.name }}"

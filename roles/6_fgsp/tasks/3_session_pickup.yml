@@ -1,0 +1,14 @@
+- name: FGSP Session Pickup
+  fortinet.fortimanager.fmgr_generic:
+    access_token: "{{ access_token }}"
+    method: set
+    params:
+      - url: "pm/config/device/{{ item.name }}/global/sys/ha"
+        data:
+          session-pickup: 'enable'
+          session-pickup-expectation: 'enable'
+  loop:
+    - "{{ secgws.seg1 }}"
+    - "{{ secgws.seg2 }}"
+  loop_control:
+    label: "{{ item.name }}"

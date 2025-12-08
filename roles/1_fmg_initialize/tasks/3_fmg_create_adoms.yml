@@ -1,0 +1,19 @@
+- name: 'FMG Create ADOM root'
+  fortinet.fortimanager.fmgr_dvmdb_adom:
+    access_token: "{{ access_token }}"
+    state: present
+    dvmdb_adom:
+      name: 'root'
+      flags:
+        - 'no_vpn_console'
+
+- name: "FMG Create ADOM {{ adom_secgw }}"
+  fortinet.fortimanager.fmgr_dvmdb_adom:
+    access_token: "{{ access_token }}"
+    state: present
+    dvmdb_adom:
+      name: "{{ adom_secgw }}"
+      os_ver: '7.0'
+      mr: '4'
+      flags:
+        - 'no_vpn_console'
