@@ -11,7 +11,7 @@
       content: |
         config vdom
             edit {{ secgws.region1_traffic_vdom }}
-                execute vpn certificate local generate cmp-rsa {{ item.certname }} 2048 {{ cmp_server_ip }}:80 /cert/cmp2/ mno_cmp_server Fortinet_Factory "" "" "C=CA,O=mno,OU=FGT,CN={{ item.sn }}" ""
+                execute vpn certificate local generate cmp-rsa {{ item.certname }} 2048 {{ secgws.cmp_server_ip }}:80 /cert/cmp2/ mno_cmp_server Fortinet_Factory "" "" "C=CA,O=mno,OU=FGT,CN={{ item.sn }}" ""
             end
   loop:
     - "{{ secgws.seg1 }}"
