@@ -16,8 +16,8 @@
       vars:
         # Assemble all the variables the script needs into a single dictionary
         script_vars:
-          fmg_host: "{{ hostvars[groups['fortimanagers'][0]]['host'] }}"
-          faz_host: "{{ hostvars[groups['fortianalyzers'][0]]['host'] }}"
+          fmg_host: "{{ hostvars[groups['fortimanagers'][0]]['ansible_host'] }}"
+          faz_host: "{{ hostvars[groups['fortianalyzers'][0]]['ansible_host'] }}"
           seg1_ip: "{{ hostvars[groups['fortimanagers'][0]]['secgws']['seg1']['mgmtip'] }}"
           seg2_ip: "{{ hostvars[groups['fortimanagers'][0]]['secgws']['seg2']['mgmtip'] }}"
           ssh_port: "{{ ssh_port }}"

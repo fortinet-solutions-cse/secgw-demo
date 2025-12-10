@@ -63,7 +63,7 @@
     devprof: "{{ secgws.system_template_name }}"
     devprof_device_profile_fortianalyzer:
       target_sn: "{{ hostvars[groups['fortianalyzers'][0]]['sn'] }}"
-      target_ip: "{{ hostvars[groups['fortianalyzers'][0]]['host'] }}"
+      target_ip: "{{ hostvars[groups['fortianalyzers'][0]]['ansible_host'] }}"
       target: 'others'
 
 - name: 'System Template FAZ settings'

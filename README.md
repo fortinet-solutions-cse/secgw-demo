@@ -6,6 +6,7 @@ For details refer to the Hands-On-Lab Guide.
 The playbooks are designed to be used in a Fortinet Fabric Studio named "MNO-SecGW-HoL". 
 To get access to the Fabric Studio or the Hands-On-Lab Guide contact your local Fortinet SE or Telco SME.
 
+
 # How to use demo mode
 The demo mode will pre-configure FMG / FAZ / FGT-SEG-1 and FGT-SEG-2 so you quickly can spin up the whole lab. It can be useful as customer demos, self-paced learning, verification of a feature or troubleshooting.
 
@@ -30,9 +31,12 @@ The demo mode will pre-configure FMG / FAZ / FGT-SEG-1 and FGT-SEG-2 so you quic
 1. Repeat the same procedure for gNodeB2.
 1. You now have a fully functioning SecGW solution with traffic running.
 
+# Password to devices
+Device password in set in Fabric studio. Remember to create a `.env` file in the `scripts` directory with the following content:
+DEVICE_PASSWORD='your_password_here'
 
 # Variables
-Variables can be found in `inventory/group_vars`. This directory contains all variables required to provision the Fabric.  
+Variables can be found in `group_vars`. This directory contains all variables required to provision the Fabric.  
 Notices that some variables are initialized during the first task (init) and it creates a number of variables that are store in the ansible fact database. These variables are:
 
 - password
