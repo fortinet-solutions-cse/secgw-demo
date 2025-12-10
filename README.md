@@ -32,7 +32,7 @@ The demo mode will pre-configure FMG / FAZ / FGT-SEG-1 and FGT-SEG-2 so you quic
 1. You now have a fully functioning SecGW solution with traffic running.
 
 # Password to devices
-Device password in set in Fabric studio. Remember to create a `.env` file in the `scripts` directory with the following content:
+Device password in set in Fabric studio. Remember to create a `.env` file in the `scripts` directory with the following content:  
 DEVICE_PASSWORD='your_password_here'
 
 # Variables
