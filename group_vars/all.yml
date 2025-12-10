@@ -12,6 +12,7 @@ ansible_httpapi_validate_certs: false
 ssh_port: 22
 username: 'admin'
 fmc_timezone: 28
+#password: Populated by init play
 
 # FMC vars (FMG and FAZ)
 adom_status: 'enable'

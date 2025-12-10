@@ -4,6 +4,7 @@
   gather_facts: false
   tags:
     - init
+    - init_credentials
   tasks:
     - name: Run init.py to fetch all credentials
       ansible.builtin.command: >
@@ -38,9 +39,11 @@
 
     - name: Parse script output and set facts for all relevant hosts
       ansible.builtin.set_fact:
-        access_token: "{{ fetched_credentials[_cred_prefix + '_ACCESS_TOKEN'] }}"
-        sn: "{{ fetched_credentials[_cred_prefix + '_SN'] }}"
+        access_token: "{{ fetched_credentials.get(_cred_prefix + '_ACCESS_TOKEN', '') }}"
+        ansible_httpapi_access_token: "{{ fetched_credentials.get(_cred_prefix + '_ACCESS_TOKEN', '') }}"
+        sn: "{{ fetched_credentials.get(_cred_prefix + '_SN', '') }}"
         password: "{{ fetched_credentials['DEVICE_PASSWORD'] }}"
+        ansible_password: "{{ fetched_credentials['DEVICE_PASSWORD'] }}"
         secgws: >
           {{
             secgws | combine({
@@ -53,10 +56,11 @@
         cacheable: true
       vars:
         fetched_credentials: "{{ init_script_output.stdout | from_json }}"
-        _cred_prefix: "{{ 'FMG' if item in groups['fortimanagers'] else 'FAZ' }}"
+        _cred_prefix: >-
+          {{ 'FMG' if item in groups['fortimanagers'] else ('FAZ' if item in groups['fortianalyzers'] else 'DEVICE') }}
       delegate_to: "{{ item }}"
       delegate_facts: true
-      loop: "{{ groups['fortimanagers'] + groups['fortianalyzers'] }}"
+      loop: "{{ groups['fortimanagers'] + groups['fortianalyzers'] + groups.get('gnbs', []) }}"
       loop_control:
         loop_var: item
 
@@ -150,3 +154,46 @@
     - policy_packages
   roles:
     - role: 10_policy_packages
+
+- name: Run setup and background ping on clients
+  hosts: gnbs
+  gather_facts: no
+  #become: yes # Use 'become: yes' if these commands require root/sudo access
+  vars:
+    #ansible_password: "{{ gnbs_password }}"
+    ansible_password: "fortinet4A!!"
+  tags:
+    - connect_clients
+    - never
+  
+  tasks:
+    - name: Execute genrsa script
+      ansible.builtin.command:
+        cmd: ./genrsa
+        chdir: /fabric
+
+    - name: Execute CMP IR script
+      ansible.builtin.command:
+        cmd: ./ir
+        chdir: /fabric
+
+    - name: Execute config_ss.sh script
+      ansible.builtin.command:
+        cmd: ./config_ss.sh
+        chdir: /fabric
+
+    - name: Start continuous ping to 10.30.1.1 in the background
+      ansible.builtin.shell: |
+        /bin/bash -c "ping 10.30.1.1 > /tmp/ping_output.log 2>&1 & disown"
+      # Note: We use shell here to manage the background process cleanly.
+      # The /bin/bash -c ... & disown ensures the process continues after Ansible exits.
+      # The output is redirected to a file so it doesn't block stdout.
+      args:
+        chdir: /fabric 
+
+      # The async/poll settings are not strictly required because of 'disown',
+      # but they are good practice if you were managing a long-running process
+      # *without* disown, or if you needed to check the job status later.
+      # In this case, disown is the key.
+      # async: 1 # Run for 1 second before checking status (or returning)
+      # poll: 0  # Do not wait for the job to finish, and return immediately
