@@ -9,9 +9,7 @@
             policyid: 10
             action: 'accept'
             srcaddr: 'all'
-            srcaddr6: 'all'
             srcintf: 'SZ_UNTRUST'
-            dstaddr6: 'all'
             dstaddr: 'all'
             dstintf: 'Lo1-SecGW'
             logtraffic: 'disable'
@@ -19,7 +17,6 @@
             service:
               - 'IKE'
               - 'ESP'
-              - 'ALL_ICMP6'
               - 'ALL_ICMP'
           - name: 'Allow gNodeB inner to 5GC'
             policyid: 30
@@ -54,6 +51,32 @@
             logtraffic-start: 'enable'
             schedule: 'always'
             service: 'LTE-5G-Services'
+  changed_when: false
+
+
+- name: 'IPv6 Create firewall policies'
+  fortinet.fortimanager.fmgr_generic:
+    access_token: "{{ access_token }}"
+    method: update
+    params:
+      - url: "/pm/config/adom/{{ adom_secgw }}/pkg/{{ secgws.policy_package }}/firewall/policy"
+        data:
+          - name: 'Allow RAN VPN'
+            policyid: 10
+            action: 'accept'
+            srcaddr: 'all'
+            srcaddr6: 'all'
+            srcintf: 'SZ_UNTRUST'
+            dstaddr6: 'all'
+            dstaddr: 'all'
+            dstintf: 'Lo1-SecGW'
+            logtraffic: 'disable'
+            schedule: 'always'
+            service:
+              - 'IKE'
+              - 'ESP'
+              - 'ALL_ICMP6'
+              - 'ALL_ICMP'
           - name: 'Allow gNodeB inner to 5GC IPv6'
             policyid: 630
             action: 'accept'
@@ -88,3 +111,4 @@
             schedule: 'always'
             service: 'LTE-5G-Services'
   changed_when: false
+  when: enable_ipv6 is true

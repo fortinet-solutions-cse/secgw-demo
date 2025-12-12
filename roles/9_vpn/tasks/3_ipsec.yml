@@ -28,6 +28,19 @@
             fgsp-sync: "enable"
             dpd: "on-idle"
             dpd-retryinterval: 20
+  loop:
+    - "{{ secgws.seg1 }}"
+    - "{{ secgws.seg2 }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: 'IPv6 IPsec phase1'
+  fortinet.fortimanager.fmgr_generic:
+    access_token: "{{ access_token }}"
+    method: set
+    params:
+      - url: "pm/config/device/{{ item.name }}/vdom/{{ secgws.region1_traffic_vdom }}/vpn/ipsec/phase1-interface"
+        data:
           -
             name: "SecGW6"
             authmethod: "signature"
@@ -55,6 +68,7 @@
     - "{{ secgws.seg2 }}"
   loop_control:
     label: "{{ item.name }}"
+  when: enable_ipv6 is true
 
 - name: IPsec phase2
   fortinet.fortimanager.fmgr_generic:
@@ -68,6 +82,19 @@
             phase1name: "SecGW"
             proposal: "aes128gcm"
             dhgrp: "31"
+  loop:
+    - "{{ secgws.seg1 }}"
+    - "{{ secgws.seg2 }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: 'IPv6 IPsec phase2'
+  fortinet.fortimanager.fmgr_generic:
+    access_token: "{{ access_token }}"
+    method: set
+    params:
+      - url: "pm/config/device/{{ item.name }}/vdom/{{ secgws.region1_traffic_vdom }}/vpn/ipsec/phase2-interface"
+        data:
           -
             name: "SecGW6"
             phase1name: "SecGW6"
@@ -80,4 +107,4 @@
     - "{{ secgws.seg2 }}"
   loop_control:
     label: "{{ item.name }}"
-
+  when: enable_ipv6 is true

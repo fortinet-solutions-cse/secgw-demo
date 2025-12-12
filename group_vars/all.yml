@@ -6,6 +6,7 @@
 # Ansible fact cache for subsequent playbook runs.
 
 # Global variables used in SEG HoL
+enable_ipv6: false
 ansible_httpapi_port: 443
 ansible_httpapi_use_ssl: true
 ansible_httpapi_validate_certs: false

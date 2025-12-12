@@ -1,5 +1,5 @@
 
-- name: 'Create IPv6 DoS policies'
+- name: 'IPv6 Create DoS policies'
   fortinet.fortimanager.fmgr_generic:
     access_token: "{{ access_token }}"
     method: set
@@ -411,6 +411,7 @@
             srcaddr: 'all'
             status: 'enable'
   changed_when: false
+  when: enable_ipv6 is true
 
 
 - name: 'Create IPv4 DoS policies'

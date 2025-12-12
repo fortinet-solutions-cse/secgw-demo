@@ -5,14 +5,6 @@
     params:
       - url: "pm/config/device/{{ item.name }}/vdom/{{ secgws.region1_traffic_vdom }}/router/route-map"
         data:
-          - name: 'SecGW6-loopback-addresses'
-            rule:
-              - id: 1
-                match-ip6-address: 'SecGW6-loopback-addresses'
-          - name: 'RAN_TRUST-eBGP-Check6'
-            rule:
-              - id: 1
-                match-ip6-address: '5G-IPv6-addresses'
           - name: 'SecGW-loopback-addresses'
             rule:
               - id: 1
@@ -26,3 +18,25 @@
     - "{{ secgws.seg2 }}"
   loop_control:
     label: "{{ item.name }}"
+
+- name: Route Maps IPv6
+  fortinet.fortimanager.fmgr_generic:
+    access_token: "{{ access_token }}"
+    method: set
+    params:
+      - url: "pm/config/device/{{ item.name }}/vdom/{{ secgws.region1_traffic_vdom }}/router/route-map"
+        data:
+          - name: 'SecGW6-loopback-addresses'
+            rule:
+              - id: 1
+                match-ip6-address: 'SecGW6-loopback-addresses'
+          - name: 'RAN_TRUST-eBGP-Check6'
+            rule:
+              - id: 1
+                match-ip6-address: '5G-IPv6-addresses'
+  loop:
+    - "{{ secgws.seg1 }}"
+    - "{{ secgws.seg2 }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when: enable_ipv6 is true

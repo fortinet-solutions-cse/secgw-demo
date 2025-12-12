@@ -11,11 +11,6 @@
             name: 'SecGW'
             single-intf: 'enable'
           - default-mapping: 'enable'
-            defmap-intf: 'SecGW6'
-            description: 'IPsec Tunnel'
-            name: 'SecGW6'
-            single-intf: 'enable'
-          - default-mapping: 'enable'
             defmap-intf: 'Lo1-SecGW'
             description: 'IPsec Termination'
             name: 'Lo1-SecGW'
@@ -31,3 +26,18 @@
             name: 'SZ_UNTRUST'
             single-intf: 'enable'
   changed_when: false
+
+- name: 'IPv6 Create dynamic interfaces'
+  fortinet.fortimanager.fmgr_generic:
+    access_token: "{{ access_token }}"
+    method: set
+    params:
+      - url: "/pm/config/adom/{{ adom_secgw }}/obj/dynamic/interface"
+        data:
+          - default-mapping: 'enable'
+            defmap-intf: 'SecGW6'
+            description: 'IPsec Tunnel'
+            name: 'SecGW6'
+            single-intf: 'enable'
+  changed_when: false
+  when: enable_ipv6 is true

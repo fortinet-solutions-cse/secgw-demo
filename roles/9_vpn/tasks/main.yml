@@ -2,14 +2,11 @@
 - name: 9.1 Objects
   ansible.builtin.include_tasks: "1_objects.yml"
 
-- name: 9.2 Objects6
-  ansible.builtin.include_tasks: "2_objects6.yml"
+- name: 9.2 User Peer
+  ansible.builtin.include_tasks: "2_user_peer.yml"
 
-- name: 9.3 User Peer
-  ansible.builtin.include_tasks: "3_user_peer.yml"
-
-- name: 9.4 IPsec
-  ansible.builtin.include_tasks: "4_ipsec.yml"
+- name: 9.3 IPsec
+  ansible.builtin.include_tasks: "3_ipsec.yml"
 
 - name: Install devices
   ansible.builtin.include_role:

@@ -16,6 +16,7 @@
     - "{{ secgws.seg2 }}"
   loop_control:
     label: "{{ item.name }}"
+  when: enable_ipv6 is true
 
 - name: 'Prefix List6 SecGW6-loopback-addresses'
   fortinet.fortimanager.fmgr_generic:
@@ -33,6 +34,7 @@
     - "{{ secgws.seg2 }}"
   loop_control:
     label: "{{ item.name }}"
+  when: enable_ipv6 is true
 
 - name: 'Prefix List6 5G-IPv6-addresses'
   fortinet.fortimanager.fmgr_generic:
@@ -51,6 +53,7 @@
     - "{{ secgws.seg2 }}"
   loop_control:
     label: "{{ item.name }}"
+  when: enable_ipv6 is true
 
 - name: 'Prefix List Client-inner-addresses'
   fortinet.fortimanager.fmgr_generic:

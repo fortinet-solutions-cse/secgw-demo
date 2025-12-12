@@ -1,5 +1,5 @@
 ---
-- name: 7.1 Prefix Lists IPv4 & IPv6
+- name: 7.1 Prefix Lists
   ansible.builtin.include_tasks: "1_prefix_lists.yml"
 
 - name: 7.2 Route Maps

@@ -1,5 +1,5 @@
 ---
-- name: User Peer6
+- name: 'IPv6 User Peer'
   fortinet.fortimanager.fmgr_generic:
     access_token: "{{ access_token }}"
     method: set
@@ -13,6 +13,7 @@
     - "{{ secgws.seg2 }}"
   loop_control:
     label: "{{ item.name }}"
+  when: enable_ipv6 is true
 
 - name: User Peer
   fortinet.fortimanager.fmgr_generic:

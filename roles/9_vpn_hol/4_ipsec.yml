@@ -1,4 +1,4 @@
-- name: IPsec phase1 IPv6
+- name: 'IPv6 IPsec phase1'
   fortinet.fortimanager.fmgr_generic:
     access_token: '{{ fmg_access_token }}'
     method: set
@@ -33,7 +33,7 @@
   loop_control:
     label: "{{ item.name }}"
 
-- name: IPsec phase2 IPv6
+- name: 'IPv6 IPsec phase2'
   fortinet.fortimanager.fmgr_generic:
     access_token: '{{ fmg_access_token }}'
     method: set

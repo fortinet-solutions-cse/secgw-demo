@@ -44,13 +44,10 @@
               advertisement-interval: 0
               bfd: 'enable'
               conditional-advertise:
-                - advertise-routemap: 'SecGW6-loopback-addresses'
-                  condition-routemap: 'RAN_TRUST-eBGP-Check6'
                 - advertise-routemap: 'SecGW-loopback-addresses'
                   condition-routemap: 'RAN_TRUST-eBGP-Check'
               capability-route-refresh: 'enable'
               soft-reconfiguration: 'enable'
-              prefix-list-out6: 'SecGW6-loopback-addresses'
               prefix-list-out: 'SecGW-loopback-addresses'
               remote-as: '65001'
               soft-reconfiguration6: 'enable'
@@ -59,13 +56,10 @@
               advertisement-interval: 0
               bfd: 'enable'
               conditional-advertise:
-                - advertise-routemap: 'SecGW6-loopback-addresses'
-                  condition-routemap: 'RAN_TRUST-eBGP-Check6'
                 - advertise-routemap: 'SecGW-loopback-addresses'
                   condition-routemap: 'RAN_TRUST-eBGP-Check'
               capability-route-refresh: 'enable'
               soft-reconfiguration: 'enable'
-              prefix-list-out6: 'SecGW6-loopback-addresses'
               prefix-list-out: 'SecGW-loopback-addresses'
               remote-as: '65001'
               soft-reconfiguration6: 'enable'
@@ -76,7 +70,6 @@
               capability-route-refresh: 'enable'
               soft-reconfiguration: 'enable'
               prefix-list-out: 'Client-inner-addresses'
-              prefix-list-out6: 'Client6-inner-addresses'
               remote-as: '65001'
               soft-reconfiguration6: 'enable'
               update-source: 'agg1.30'
@@ -86,7 +79,6 @@
               capability-route-refresh: 'enable'
               soft-reconfiguration: 'enable'
               prefix-list-out: 'Client-inner-addresses'
-              prefix-list-out6: 'Client6-inner-addresses'
               remote-as: '65001'
               soft-reconfiguration6: 'enable'
               update-source: 'agg2.30'
@@ -95,11 +87,36 @@
               status: 'enable'
             - name: 'static'
               status: 'enable'
+
+- name: "IPv6 BGP {{ secgws.seg1.name }} VDOM {{ secgws.region1_traffic_vdom }}"
+  fortinet.fortimanager.fmgr_generic:
+    access_token: "{{ access_token }}"
+    method: update
+    params:
+      - url: "pm/config/device/{{ secgws.seg1.name }}/vdom/{{ secgws.region1_traffic_vdom }}/router/bgp"
+        data:
+          router-id: "{{ secgws.seg1.bgp.router_id }}"
+          neighbor:
+            - ip: '10.20.1.0'
+              conditional-advertise:
+                - advertise-routemap: 'SecGW6-loopback-addresses'
+                  condition-routemap: 'RAN_TRUST-eBGP-Check6'
+              prefix-list-out6: 'SecGW6-loopback-addresses'
+            - ip: '10.20.1.2'
+              conditional-advertise:
+                - advertise-routemap: 'SecGW6-loopback-addresses'
+                  condition-routemap: 'RAN_TRUST-eBGP-Check6'
+              prefix-list-out6: 'SecGW6-loopback-addresses'
+            - ip: '10.30.1.0'
+              prefix-list-out6: 'Client6-inner-addresses'
+            - ip: '10.30.1.2'
+              prefix-list-out6: 'Client6-inner-addresses'
           redistribute6:
             - name: 'connected'
               status: 'enable'
             - name: 'static'
               status: 'enable'
+  when: enable_ipv6 is true
 
 - name: "BGP {{ secgws.seg2.name }} vdom: root"
   fortinet.fortimanager.fmgr_generic:
@@ -146,14 +163,11 @@
               advertisement-interval: 0
               bfd: 'enable'
               conditional-advertise:
-                - advertise-routemap: 'SecGW6-loopback-addresses'
-                  condition-routemap: 'RAN_TRUST-eBGP-Check6'
                 - advertise-routemap: 'SecGW-loopback-addresses'
                   condition-routemap: 'RAN_TRUST-eBGP-Check'
               capability-route-refresh: 'enable'
               soft-reconfiguration: 'enable'
               prefix-list-out: 'SecGW-loopback-addresses'
-              prefix-list-out6: 'SecGW6-loopback-addresses'
               remote-as: '65001'
               soft-reconfiguration6: 'enable'
               update-source: 'agg1.20'
@@ -161,14 +175,11 @@
               advertisement-interval: 0
               bfd: 'enable'
               conditional-advertise:
-                - advertise-routemap: 'SecGW6-loopback-addresses'
-                  condition-routemap: 'RAN_TRUST-eBGP-Check6'
                 - advertise-routemap: 'SecGW-loopback-addresses'
                   condition-routemap: 'RAN_TRUST-eBGP-Check'
               capability-route-refresh: 'enable'
               soft-reconfiguration: 'enable'
               prefix-list-out: 'SecGW-loopback-addresses'
-              prefix-list-out6: 'SecGW6-loopback-addresses'
               remote-as: '65001'
               soft-reconfiguration6: 'enable'
               update-source: 'agg2.20'
@@ -178,7 +189,6 @@
               capability-route-refresh: 'enable'
               soft-reconfiguration: 'enable'
               prefix-list-out: 'Client-inner-addresses'
-              prefix-list-out6: 'Client6-inner-addresses'
               remote-as: '65001'
               soft-reconfiguration6: 'enable'
               update-source: 'agg1.30'
@@ -188,7 +198,6 @@
               capability-route-refresh: 'enable'
               soft-reconfiguration: 'enable'
               prefix-list-out: 'Client-inner-addresses'
-              prefix-list-out6: 'Client6-inner-addresses'
               remote-as: '65001'
               soft-reconfiguration6: 'enable'
               update-source: 'agg2.30'
@@ -197,8 +206,32 @@
               status: 'enable'
             - name: 'static'
               status: 'enable'
+
+- name: "IPv6 BGP {{ secgws.seg2.name }} vdom: {{ secgws.region1_traffic_vdom }}"
+  fortinet.fortimanager.fmgr_generic:
+    method: update
+    params:
+      - url: "pm/config/device/{{ secgws.seg2.name }}/vdom/{{ secgws.region1_traffic_vdom }}/router/bgp"
+        data:
+          router-id: "{{ secgws.seg2.bgp.router_id }}"
+          neighbor:
+            - ip: '10.20.2.0'
+              conditional-advertise:
+                - advertise-routemap: 'SecGW6-loopback-addresses'
+                  condition-routemap: 'RAN_TRUST-eBGP-Check6'
+              prefix-list-out6: 'SecGW6-loopback-addresses'
+            - ip: '10.20.2.2'
+              conditional-advertise:
+                - advertise-routemap: 'SecGW6-loopback-addresses'
+                  condition-routemap: 'RAN_TRUST-eBGP-Check6'
+              prefix-list-out6: 'SecGW6-loopback-addresses'
+            - ip: '10.30.2.0'
+              prefix-list-out6: 'Client6-inner-addresses'
+            - ip: '10.30.2.2'
+              prefix-list-out6: 'Client6-inner-addresses'
           redistribute6:
             - name: 'connected'
               status: 'enable'
             - name: 'static'
               status: 'enable'
+  when: enable_ipv6 is true
