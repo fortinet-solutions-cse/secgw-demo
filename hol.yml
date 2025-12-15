@@ -89,6 +89,7 @@
   connection: httpapi
   tags:
     - add_devices_fmg
+    - add_devices
   roles:
     - role: 3_fmg_add_secgw_devices
 
@@ -98,6 +99,7 @@
   connection: httpapi
   tags:
     - system
+    - add_devices
   roles:
     - role: 4_system
 
@@ -107,6 +109,7 @@
   connection: httpapi
   tags:
     - add_devices_faz
+    - add_devices
   roles:
     - role: 5_faz_add_secgw_devices
 
@@ -119,14 +122,14 @@
   roles:
     - role: 6_fgsp
 
-- name: Routing
+- name: Router
   hosts: fortimanagers
   gather_facts: false
   connection: httpapi
   tags:
-    - routing
+    - router
   roles:
-    - role: 7_routing
+    - role: 7_router
 
 - name: Certificates
   hosts: fortimanagers
