@@ -21,7 +21,7 @@
 #            authmethod: "signature"
 #            certificate: '{{ item.certname }}'
 #            ike-version: 2
-#            interface: "Lo1-SecGW"
+#            interface: "Lo1-"
 #            ip-version: "6"
 #            ipv6-end-ip: "fd00::30:cafe:ffff"
 #            ipv6-prefix: 112

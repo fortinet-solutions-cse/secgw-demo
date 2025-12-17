@@ -11,9 +11,9 @@
             name: 'SecGW'
             single-intf: 'enable'
           - default-mapping: 'enable'
-            defmap-intf: 'Lo1-SecGW'
+            defmap-intf: "{{ secgws.ipsec_loopback_interface_name }}"
             description: 'IPsec Termination'
-            name: 'Lo1-SecGW'
+            name: "{{ secgws.ipsec_loopback_interface_name }}"
             single-intf: 'enable'
           - default-mapping: 'enable'
             defmap-intf: 'SZ_TRUST'

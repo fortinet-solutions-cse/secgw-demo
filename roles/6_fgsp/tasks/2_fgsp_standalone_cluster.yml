@@ -12,14 +12,14 @@
               peerip: '10.10.2.1'
               syncvd: "{{ secgws.region1_traffic_vdom }}"
               down-intfs-before-sess-sync:
-                - "Lo1-SecGW"
+                - "{{ secgws.ipsec_loopback_interface_name }}"
               ipsec-tunnel-sync: "enable"
               secondary-add-ipsec-routes: "disable"
             - sync-id: 2
               peerip: '10.10.2.3'
               syncvd: "{{ secgws.region1_traffic_vdom }}"
               down-intfs-before-sess-sync:
-                - 'Lo1-SecGW'
+                - "{{ secgws.ipsec_loopback_interface_name }}"
               ipsec-tunnel-sync: 'enable'
               secondary-add-ipsec-routes: 'disable'
 
@@ -36,7 +36,7 @@
             - sync-id: 1
               peerip: '10.10.1.1'
               down-intfs-before-sess-sync:
-                - 'Lo1-SecGW'
+                - "{{ secgws.ipsec_loopback_interface_name }}"
               syncvd: "{{ secgws.region1_traffic_vdom }}"
               ipsec-tunnel-sync: 'enable'
               secondary-add-ipsec-routes: 'disable'
@@ -44,6 +44,6 @@
               peerip: '10.10.1.3'
               syncvd: "{{ secgws.region1_traffic_vdom }}"
               down-intfs-before-sess-sync:
-                - 'Lo1-SecGW'
+                - "{{ secgws.ipsec_loopback_interface_name }}"
               ipsec-tunnel-sync: 'enable'
               secondary-add-ipsec-routes: 'disable'

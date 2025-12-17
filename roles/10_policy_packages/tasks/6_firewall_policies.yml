@@ -11,7 +11,7 @@
             srcaddr: 'all'
             srcintf: 'SZ_UNTRUST'
             dstaddr: 'all'
-            dstintf: 'Lo1-SecGW'
+            dstintf: "{{ secgws.ipsec_loopback_interface_name }}"
             logtraffic: 'disable'
             schedule: 'always'
             service:
@@ -69,7 +69,7 @@
             srcintf: 'SZ_UNTRUST'
             dstaddr6: 'all'
             dstaddr: 'all'
-            dstintf: 'Lo1-SecGW'
+            dstintf: "{{ secgws.ipsec_loopback_interface_name }}"
             logtraffic: 'disable'
             schedule: 'always'
             service:

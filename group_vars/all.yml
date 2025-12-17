@@ -38,6 +38,7 @@ secgws:
   policy_package: 'PP_SecGW'
   timezone: '28'
   cmp_server_ip: 10.30.2.6
+  ipsec_loopback_interface_name: 'Lo1-SecGW'
   vlans:
     fgspsync: 10
     pki: 11
@@ -76,7 +77,7 @@ secgws:
         status: 'down'
       - name: 'Unused-Ports'
         status: 'down'
-      - name: 'Lo1-SecGW'
+      - name: "{{ secgws.ipsec_loopback_interface_name }}"
         alias: 'IPSEC'
         description: 'IPsec Termination Endpoint'
         type: 'loopback'
@@ -234,7 +235,7 @@ secgws:
         status: 'down'
       - name: 'Unused-Ports'
         status: 'down'
-      - name: 'Lo1-SecGW'
+      - name: "{{ secgws.ipsec_loopback_interface_name }}"
         alias: 'IPSEC'
         description: 'IPsec Termination Endpoint'
         type: 'loopback'

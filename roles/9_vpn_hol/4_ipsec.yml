@@ -10,7 +10,7 @@
             authmethod: "signature"
             certificate: '{{ item.certname }}'
             ike-version: 2
-            interface: "Lo1-SecGW"
+            interface: "{{ secgws.ipsec_loopback_interface_name }}"
             ip-version: "6"
             ipv6-end-ip: "fd00::30:cafe:ffff"
             ipv6-prefix: 112
@@ -67,7 +67,7 @@
             authmethod: "signature"
             certificate: '{{ item.certname }}'
             ike-version: 2
-            interface: "Lo1-SecGW"
+            interface: "{{ secgws.ipsec_loopback_interface_name }}"
             ip-version: "4"
             ipv4-start-ip: "10.30.255.1"
             ipv4-end-ip: "10.30.255.63"
