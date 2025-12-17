@@ -7,27 +7,28 @@
       - url: "pm/config/device/{{ item.name }}/vdom/{{ secgws.region1_traffic_vdom }}/vpn/ipsec/phase1-interface"
         data:
           -
-            name: "SecGW"
-            authmethod: "signature"
+            name: 'SecGW'
+            type: 'dynamic'
+            authmethod: 'signature'
             certificate: '{{ item.certname }}'
             ike-version: 2
             interface: "Lo1-SecGW"
-            ip-version: "4"
-            ipv4-start-ip: "10.30.255.1"
-            ipv4-end-ip: "10.30.255.63"
-            default-gw: "10.20.255.1"
-            ipv4-netmask: "255.255.255.192"
+            ip-version: '4'
+            #ipv4-start-ip: "10.30.255.1"
+            #ipv4-end-ip: "10.30.255.63"
+            default-gw: '10.20.255.1'
+            #ipv4-netmask: "255.255.255.192"
             ipv4-split-include:
               - "5G-Networks"
-            mode-cfg: "enable"
-            peertype: "peer"
-            peer: "mno_ca"
-            dhgrp: "31"
-            proposal: "aes128gcm-prfsha256"
-            type: "dynamic"
-            fgsp-sync: "enable"
-            dpd: "on-idle"
-            dpd-retryinterval: 20
+            #mode-cfg: "enable"
+            mode-cfg: 'disable'
+            peertype: 'peer'
+            peer: 'mno_ca'
+            dhgrp: '31'
+            proposal: 'aes128gcm-prfsha256'
+            fgsp-sync: 'enable'
+            dpd: 'on-idle'
+            dpd-retryinterval: '20'
   loop:
     - "{{ secgws.seg1 }}"
     - "{{ secgws.seg2 }}"

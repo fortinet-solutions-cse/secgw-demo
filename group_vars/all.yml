@@ -21,6 +21,12 @@ adom_secgw: 'SecGW'
 idle_timeout: 28800
 idle_timeout_gui: 28800
 
+ip:
+  client_inner_subnet: '10.30.100.0/24'
+
+routers:
+  as: '65001'
+
 
 # SecGW vars
 secgws:
