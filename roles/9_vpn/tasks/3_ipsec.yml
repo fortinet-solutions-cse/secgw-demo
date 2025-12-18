@@ -14,13 +14,7 @@
             ike-version: 2
             interface: "{{ secgws.ipsec_loopback_interface_name }}"
             ip-version: '4'
-            #ipv4-start-ip: "10.30.255.1"
-            #ipv4-end-ip: "10.30.255.63"
             default-gw: '10.20.255.1'
-            #ipv4-netmask: "255.255.255.192"
-            ipv4-split-include:
-              - "5G-Networks"
-            #mode-cfg: "enable"
             mode-cfg: 'disable'
             peertype: 'peer'
             peer: 'mno_ca'
