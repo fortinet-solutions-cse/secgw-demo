@@ -162,7 +162,7 @@
   hosts: gnbs
   gather_facts: no
   vars:
-    ansible_password: "{{ password }}"
+    ansible_password: "{{ ansible_facts.password }}"
   tags:
     - connect_gnbs
   
