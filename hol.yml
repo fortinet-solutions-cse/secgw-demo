@@ -158,39 +158,12 @@
   roles:
     - role: 10_policy_packages
 
-- name: Run setup and background ping on clients
+- name: Connect gNodeB clients
   hosts: gnbs
-  gather_facts: no
+  gather_facts: false
   vars:
     ansible_password: "{{ ansible_facts.password }}"
   tags:
     - connect_gnbs
-  
-  tasks:
-    - name: Execute genrsa script
-      ansible.builtin.command:
-        cmd: ./genrsa
-        chdir: /fabric
-
-    - name: Execute CMP IR script
-      ansible.builtin.command:
-        cmd: ./ir
-        chdir: /fabric
-
-    - name: Execute config_ss.sh script
-      ansible.builtin.command:
-        cmd: ./config_ss.sh
-        chdir: /fabric
-
-    - name: Start continuous ping to 10.30.1.1 in the background
-      ansible.builtin.shell: |
-        nohup ping 10.30.1.1 -i0.2> /tmp/ping_output.log 2>&1 &
-      args:
-        chdir: /fabric
-      async: 1 # Run for 1 second before checking status (or returning)
-      poll: 0  # Do not wait for the job to finish, and return immediately
-
-    - name: Check if ping log file exists and has content
-      ansible.builtin.stat:
-        path: /tmp/ping_output.log
-      register: ping_log_stat
+  roles:
+    - role: 11_connect_gnbs

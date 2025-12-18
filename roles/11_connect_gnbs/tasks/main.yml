@@ -1,0 +1,29 @@
+---
+# tasks file for 11_connect_gnbs
+- name: Execute genrsa script
+  ansible.builtin.command:
+    cmd: ./genrsa
+    chdir: /fabric
+
+- name: Execute CMP IR script
+  ansible.builtin.command:
+    cmd: ./ir
+    chdir: /fabric
+
+- name: Execute config_ss.sh script
+  ansible.builtin.command:
+    cmd: ./config_ss.sh
+    chdir: /fabric
+
+- name: Start continuous ping to 10.30.1.1 in the background
+  ansible.builtin.shell: |
+    nohup ping 10.30.1.1 -i0.2> /tmp/ping_output.log 2>&1 &
+  args:
+    chdir: /fabric
+  async: 1 # Run for 1 second before checking status (or returning)
+  poll: 0  # Do not wait for the job to finish, and return immediately
+
+- name: Check if ping log file exists and has content
+  ansible.builtin.stat:
+    path: /tmp/ping_output.log
+  register: ping_log_stat
