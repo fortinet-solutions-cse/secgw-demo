@@ -1,6 +1,6 @@
 - name: 'FMG Configure system global'
   fortinet.fortimanager.fmgr_system_global:
-    access_token: "{{ access_token }}"
+    access_token: "{{ ansible_facts.access_token }}"
     system_global:
       adom_status: "{{ adom_status }}"
       hostname: "{{ hostname }}"
@@ -8,7 +8,7 @@
 
 - name: 'FMG Allow FGT-VM'
   fortinet.fortimanager.fmgr_generic:
-    access_token: "{{ access_token }}"
+    access_token: "{{ ansible_facts.access_token }}"
     method: set
     params:
       - url: '/cli/global/system/global'

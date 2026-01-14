@@ -1,0 +1,13 @@
+---
+- name: '12.1 IPsec reauth'
+  ansible.builtin.include_tasks: '1_ipsec.yml'
+
+- name: '12.1 CRL'
+  ansible.builtin.include_tasks: '2_crl.yml'
+
+- name: Install devices
+  ansible.builtin.include_role:
+    name: common
+    tasks_from: install_device.yml
+  vars:
+    scope_device_vdom: "{{ crl_scope_device_vdom }}"

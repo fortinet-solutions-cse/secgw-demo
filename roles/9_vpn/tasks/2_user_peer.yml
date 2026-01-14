@@ -1,7 +1,7 @@
 ---
 - name: 'IPv6 User Peer'
   fortinet.fortimanager.fmgr_generic:
-    access_token: "{{ access_token }}"
+    access_token: "{{ ansible_facts.access_token }}"
     method: set
     params:
       - url: "pm/config/device/{{ item.name }}/vdom/{{ secgws.region1_traffic_vdom }}/user/peer"
@@ -17,7 +17,7 @@
 
 - name: User Peer
   fortinet.fortimanager.fmgr_generic:
-    access_token: "{{ access_token }}"
+    access_token: "{{ ansible_facts.access_token }}"
     method: set
     params:
       - url: "pm/config/device/{{ item.name }}/vdom/{{ secgws.region1_traffic_vdom }}/user/peer"

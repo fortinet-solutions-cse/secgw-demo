@@ -1,0 +1,16 @@
+---
+- name: "Set CRL in vdom {{ ansible_facts.secgws.region1_traffic_vdom }}"
+  fortinet.fortimanager.fmgr_generic:
+    access_token: "{{ ansible_facts.access_token }}"
+    method: set
+    params:
+      - url: "pm/config/device/{{ item.name }}/vdom/{{ ansible_facts.secgws.region1_traffic_vdom }}/vpn/certificate/crl"
+        data:
+          name: 'crl'
+          http-url: "http://10.30.2.6/app/cert/crl/mno_subca.crl"
+          update-interval: 30
+  loop:
+    - "{{ ansible_facts.secgws.seg1 }}"
+    - "{{ ansible_facts.secgws.seg2 }}"
+  loop_control:
+    label: "{{ item.name }}"

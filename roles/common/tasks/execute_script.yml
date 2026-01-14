@@ -4,7 +4,7 @@
 ---
 - name: "Execute script '{{ common_script }}'"
   fortinet.fortimanager.fmgr_dvmdb_script_execute:
-    access_token: "{{ access_token }}"
+    access_token: "{{ ansible_facts.access_token }}"
     bypass_validation: false
     adom: "{{ adom_secgw }}"
     dvmdb_script_execute:

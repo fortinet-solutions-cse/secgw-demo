@@ -1,6 +1,6 @@
 - name: "Set remote certificate mno_cmp_server in vdom {{ secgws.region1_traffic_vdom }}"
   fortinet.fortimanager.fmgr_generic:
-    access_token: "{{ access_token }}"
+    access_token: "{{ ansible_facts.access_token }}"
     method: set
     params:
       - url: "pm/config/device/{{ item.name }}/vdom/{{ secgws.region1_traffic_vdom }}/vpn/certificate/remote"
@@ -17,7 +17,7 @@
 
 - name: "Set remote certificate mno_ca in vdom {{ secgws.region1_traffic_vdom }}"
   fortinet.fortimanager.fmgr_generic:
-    access_token: "{{ access_token }}"
+    access_token: "{{ ansible_facts.access_token }}"
     method: set
     params:
       - url: "pm/config/device/{{ item.name }}/vdom/{{ secgws.region1_traffic_vdom }}/vpn/certificate/ca"
@@ -33,7 +33,7 @@
 
 - name: "Set remote certificate mno_subca in vdom {{ secgws.region1_traffic_vdom }}"
   fortinet.fortimanager.fmgr_generic:
-    access_token: "{{ access_token }}"
+    access_token: "{{ ansible_facts.access_token }}"
     method: set
     params:
       - url: "pm/config/device/{{ item.name }}/vdom/{{ secgws.region1_traffic_vdom }}/vpn/certificate/ca"

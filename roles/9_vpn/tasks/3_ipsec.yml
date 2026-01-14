@@ -1,7 +1,7 @@
 ---
 - name: IPsec phase1
   fortinet.fortimanager.fmgr_generic:
-    access_token: "{{ access_token }}"
+    access_token: "{{ ansible_facts.access_token }}"
     method: set
     params:
       - url: "pm/config/device/{{ item.name }}/vdom/{{ secgws.region1_traffic_vdom }}/vpn/ipsec/phase1-interface"
@@ -31,7 +31,7 @@
 
 - name: 'IPv6 IPsec phase1'
   fortinet.fortimanager.fmgr_generic:
-    access_token: "{{ access_token }}"
+    access_token: "{{ ansible_facts.access_token }}"
     method: set
     params:
       - url: "pm/config/device/{{ item.name }}/vdom/{{ secgws.region1_traffic_vdom }}/vpn/ipsec/phase1-interface"
@@ -67,7 +67,7 @@
 
 - name: IPsec phase2
   fortinet.fortimanager.fmgr_generic:
-    access_token: "{{ access_token }}"
+    access_token: "{{ ansible_facts.access_token }}"
     method: set
     params:
       - url: "pm/config/device/{{ item.name }}/vdom/{{ secgws.region1_traffic_vdom }}/vpn/ipsec/phase2-interface"
@@ -85,7 +85,7 @@
 
 - name: 'IPv6 IPsec phase2'
   fortinet.fortimanager.fmgr_generic:
-    access_token: "{{ access_token }}"
+    access_token: "{{ ansible_facts.access_token }}"
     method: set
     params:
       - url: "pm/config/device/{{ item.name }}/vdom/{{ secgws.region1_traffic_vdom }}/vpn/ipsec/phase2-interface"

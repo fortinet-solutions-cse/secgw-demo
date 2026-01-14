@@ -1,6 +1,6 @@
 - name: Create device group
   fortinet.fortimanager.fmgr_dvmdb_group:
-    access_token: "{{ access_token }}"
+    access_token: "{{ ansible_facts.access_token }}"
     bypass_validation: false
     adom: "{{ adom_secgw }}"
     state: present
@@ -12,7 +12,7 @@
 
 - name: Add SecGW vdoms to group
   fortinet.fortimanager.fmgr_dvmdb_group_objectmember:
-    access_token: "{{ access_token }}"
+    access_token: "{{ ansible_facts.access_token }}"
     bypass_validation: true
     adom: "{{ adom_secgw }}"
     state: present

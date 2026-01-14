@@ -1,0 +1,34 @@
+---
+- name: IPsec phase1 reauth
+  fortinet.fortimanager.fmgr_generic:
+    access_token: "{{ ansible_facts.access_token }}"
+    method: set
+    params:
+      - url: "pm/config/device/{{ item.name }}/vdom/{{ ansible_facts.secgws.region1_traffic_vdom }}/vpn/ipsec/phase1-interface"
+        data:
+          -
+            name: 'SecGW'
+            reauth: 'enable'
+            keylife: '240'
+  loop:
+    - "{{ ansible_facts.secgws.seg1 }}"
+    - "{{ ansible_facts.secgws.seg2 }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: IPsec phase2
+  fortinet.fortimanager.fmgr_generic:
+    access_token: "{{ ansible_facts.access_token }}"
+    method: set
+    params:
+      - url: "pm/config/device/{{ item.name }}/vdom/{{ ansible_facts.secgws.region1_traffic_vdom }}/vpn/ipsec/phase2-interface"
+        data:
+          -
+            name: 'SecGW'
+            phase1name: 'SecGW'
+            keylifeseconds: '120'
+  loop:
+    - "{{ ansible_facts.secgws.seg1 }}"
+    - "{{ ansible_facts.secgws.seg2 }}"
+  loop_control:
+    label: "{{ item.name }}"

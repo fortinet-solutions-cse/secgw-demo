@@ -1,6 +1,6 @@
 - name: "Add device '{{ item.name }}' to FAZ"
   fortinet.fortianalyzer.faz_dvm_cmd_add_device:
-    access_token: "{{ access_token }}"
+    access_token: "{{ ansible_facts.access_token }}"
     bypass_validation: false
     dvm_cmd_add_device:
       adom: "{{ adom_secgw }}"

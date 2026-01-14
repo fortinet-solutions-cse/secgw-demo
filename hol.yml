@@ -18,8 +18,8 @@
         script_vars:
           fmg_host: "{{ hostvars[groups['fortimanagers'][0]]['ansible_host'] }}"
           faz_host: "{{ hostvars[groups['fortianalyzers'][0]]['ansible_host'] }}"
-          seg1_ip: "{{ hostvars[groups['fortimanagers'][0]]['secgws']['seg1']['mgmtip'] }}"
-          seg2_ip: "{{ hostvars[groups['fortimanagers'][0]]['secgws']['seg2']['mgmtip'] }}"
+          seg1_ip: "{{ hostvars[groups['fortimanagers'][0]]['ansible_facts']['secgws']['seg1']['mgmtip'] }}"
+          seg2_ip: "{{ hostvars[groups['fortimanagers'][0]]['ansible_facts']['secgws']['seg2']['mgmtip'] }}"
           ssh_port: "{{ ssh_port }}"
           username: "{{ username }}"
       register: init_script_output
@@ -167,3 +167,13 @@
     - connect_gnbs
   roles:
     - role: 11_connect_gnbs
+
+- name: CRL Configuration
+  hosts: fortimanagers
+  gather_facts: false
+  connection: httpapi
+  tags:
+    - crl
+    - never
+  roles:
+    - role: 12_crl

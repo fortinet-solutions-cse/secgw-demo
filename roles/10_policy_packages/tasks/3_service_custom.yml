@@ -1,6 +1,6 @@
 - name: 'Create custom services'
   fortinet.fortimanager.fmgr_generic:
-    access_token: "{{ access_token }}"
+    access_token: "{{ ansible_facts.access_token }}"
     method: set
     params:
       - url: "/pm/config/adom/{{ adom_secgw }}/obj/firewall/service/custom"

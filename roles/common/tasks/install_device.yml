@@ -1,7 +1,7 @@
 ---
 - name: Initiate device installation on FortiManager
   fortinet.fortimanager.fmgr_securityconsole_install_device:
-    access_token: "{{ access_token }}"
+    access_token: "{{ ansible_facts.access_token }}"
     securityconsole_install_device:
       adom: "{{ adom_secgw }}"
       flags:

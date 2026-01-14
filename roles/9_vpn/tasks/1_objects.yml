@@ -1,7 +1,7 @@
 ---
 - name: Objects Address
   fortinet.fortimanager.fmgr_generic:
-    access_token: "{{ access_token }}"
+    access_token: "{{ ansible_facts.access_token }}"
     method: set
     params:
       - url: "pm/config/adom/{{ adom_secgw }}/obj/firewall/address"
@@ -25,7 +25,7 @@
 
 - name: Objects Groups
   fortinet.fortimanager.fmgr_generic:
-    access_token: "{{ access_token }}"
+    access_token: "{{ ansible_facts.access_token }}"
     method: set
     params:
       - url: "pm/config/adom/{{ adom_secgw }}/obj/firewall/addrgrp"
@@ -39,7 +39,7 @@
 
 - name: 'IPv6 Objects Address'
   fortinet.fortimanager.fmgr_generic:
-    access_token: "{{ access_token }}"
+    access_token: "{{ ansible_facts.access_token }}"
     method: set
     params:
       - url: "pm/config/adom/{{ adom_secgw }}/obj/firewall/address6"
@@ -52,7 +52,7 @@
 
 - name: 'IPv6 Objects Groups'
   fortinet.fortimanager.fmgr_generic:
-    access_token: "{{ access_token }}"
+    access_token: "{{ ansible_facts.access_token }}"
     method: set
     params:
       - url: "pm/config/adom/{{ adom_secgw }}/obj/firewall/addrgrp6"

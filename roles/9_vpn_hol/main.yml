@@ -11,7 +11,7 @@
 #  ansible.builtin.include_tasks: '../common/install_device.yml'
 - name: vpntunnel test
   fortinet.fortimanager.fmgr_generic:
-    access_token: "{{ access_token }}"
+    access_token: "{{ ansible_facts.access_token }}"
     method: get
     params:
       - url: "pm/config/adom/{{ adom_secgw }}/obj/dynamic/vpntunnel"

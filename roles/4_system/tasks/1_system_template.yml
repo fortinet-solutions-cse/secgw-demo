@@ -1,6 +1,6 @@
 - name: "Create system template: {{ secgws.system_template_name }}"
   fortinet.fortimanager.fmgr_pm_devprof_adom:
-    access_token: "{{ access_token }}"
+    access_token: "{{ ansible_facts.access_token }}"
     adom: "{{ adom_secgw }}"
     pm_devprof_adom:
       name: "{{ secgws.system_template_name }}"
@@ -17,7 +17,7 @@
 
 - name: "Set Template parameters: {{ secgws.system_template_name }}"
   fortinet.fortimanager.fmgr_devprof_system_global:
-    access_token: "{{ access_token }}"
+    access_token: "{{ ansible_facts.access_token }}"
     adom: "{{ adom_secgw }}"
     devprof: "{{ secgws.system_template_name }}"
     devprof_system_global:
@@ -33,7 +33,7 @@
 
 - name: "Add DNS settings to system template: {{ secgws.system_template_name }}"
   fortinet.fortimanager.fmgr_generic:
-    access_token: "{{ access_token }}"
+    access_token: "{{ ansible_facts.access_token }}"
     method: set
     params:
       - url: "pm/config/adom/{{ adom_secgw }}/devprof/{{ secgws.system_template_name }}/device/template/widget/dns/action-list"
@@ -49,7 +49,7 @@
 
 - name: "Add NTP settings to system template: {{ secgws.system_template_name }}"
   fortinet.fortimanager.fmgr_generic:
-    access_token: "{{ access_token }}"
+    access_token: "{{ ansible_facts.access_token }}"
     method: set
     params:
       - url: "pm/config/adom/{{ adom_secgw }}/devprof/{{ secgws.system_template_name }}/system/ntp"
@@ -58,7 +58,7 @@
 
 - name: 'System Template FAZ'
   fortinet.fortimanager.fmgr_devprof_device_profile_fortianalyzer:
-    access_token: "{{ access_token }}"
+    access_token: "{{ ansible_facts.access_token }}"
     adom: "{{ adom_secgw }}"
     devprof: "{{ secgws.system_template_name }}"
     devprof_device_profile_fortianalyzer:
@@ -68,7 +68,7 @@
 
 - name: 'System Template FAZ settings'
   fortinet.fortimanager.fmgr_devprof_log_fortianalyzer_setting:
-    access_token: "{{ access_token }}"
+    access_token: "{{ ansible_facts.access_token }}"
     adom: "{{ adom_secgw }}"
     devprof: "{{ secgws.system_template_name }}"
     devprof_log_fortianalyzer_setting:
