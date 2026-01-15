@@ -164,6 +164,7 @@
   vars:
     ansible_password: "{{ ansible_facts.password }}"
   tags:
+    - never
     - connect_gnbs
   roles:
     - role: 11_connect_gnbs
@@ -173,7 +174,7 @@
   gather_facts: false
   connection: httpapi
   tags:
-    - crl
     - never
+    - crl
   roles:
     - role: 12_crl
