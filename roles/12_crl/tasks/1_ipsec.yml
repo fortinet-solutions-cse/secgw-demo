@@ -10,6 +10,10 @@
             name: 'SecGW'
             reauth: 'enable'
             keylife: '240'
+            digital-signature-auth: 'enable'
+            signature-hash-alg:
+              - 'sha2-384'
+              - 'sha2-512'
   loop:
     - "{{ ansible_facts.secgws.seg1 }}"
     - "{{ ansible_facts.secgws.seg2 }}"
