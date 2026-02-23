@@ -1,10 +1,9 @@
 ---
-# PLAY 1: INIT — Run script, write host_vars and group_vars/all/runtime.yml
+#  INIT — Run script, write host_vars and group_vars/all/runtime.yml
 - name: Initialize credentials from script and write to persistent files
   hosts: localhost
   gather_facts: false
   tags: [init]
-  # ADD THIS BLOCK BELOW:
   vars_files:
     - "{{ playbook_dir }}/group_vars/all.yml"
   tasks:
