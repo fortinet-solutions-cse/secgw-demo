@@ -1,6 +1,6 @@
 - name: Enable bfd in vdom root
   fortinet.fortimanager.fmgr_generic:
-    access_token: "{{ ansible_facts.access_token }}"
+    access_token: "{{ ansible_httpapi_access_token }}"
     method: set
     params:
       - url: "pm/config/device/{{ item.name }}/vdom/root/system/settings"
@@ -12,12 +12,13 @@
   loop:
     - "{{ secgws.seg1 }}"
     - "{{ secgws.seg2 }}"
+
   loop_control:
     label: "{{ item.name }}"
 
 - name: "Enable bfd in vdom {{ secgws.region1_traffic_vdom }}"
   fortinet.fortimanager.fmgr_generic:
-    access_token: "{{ ansible_facts.access_token }}"
+    access_token: "{{ ansible_httpapi_access_token }}"
     method: set
     params:
       - url: "/pm/config/device/{{ item.name }}/vdom/{{ secgws.region1_traffic_vdom }}/system/settings"

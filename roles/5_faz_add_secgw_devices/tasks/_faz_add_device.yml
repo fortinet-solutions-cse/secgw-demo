@@ -1,20 +1,16 @@
-- name: "Add device '{{ item.name }}' to FAZ"
+- name: "Add device '{{ secgws[item].name }}' to FAZ"
   fortinet.fortianalyzer.faz_dvm_cmd_add_device:
-    access_token: "{{ ansible_facts.access_token }}"
-    bypass_validation: false
+    access_token: "{{ ansible_httpapi_access_token }}"
     dvm_cmd_add_device:
       adom: "{{ adom_secgw }}"
-      flags:
-        - create_task
-        - nonblocking
+      flags: [create_task, nonblocking]
       device:
-        name: "{{ item.name }}"
+        name: "{{ secgws[item].name }}"
         adm_usr: "{{ username }}"
-        adm_pass: "{{ password }}"
-        desc: 'The device is added via Ansible'
-        ip: "{{ item.mgmtip }}"
-        mgmt_mode: 'faz'
-        sn: "{{ item.sn }}"
+        adm_pass: "{{ ansible_password }}"
+        ip: "{{ secgws[item].mgmtip }}"
+        mgmt_mode: 'faz' 
+        sn: "{{ secgws[item].sn }}"
         os_type: 'fos'
         os_ver: '7.0'
         mr: 4

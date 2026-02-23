@@ -1,7 +1,7 @@
 
 - name: 'IPv6 Create DoS policies'
   fortinet.fortimanager.fmgr_generic:
-    access_token: "{{ ansible_facts.access_token }}"
+    access_token: "{{ ansible_httpapi_access_token }}"
     method: set
     params:
       - url: "/pm/config/adom/{{ adom_secgw }}/pkg/{{ secgws.policy_package }}/firewall/DoS-policy6"
@@ -416,7 +416,7 @@
 
 - name: 'Create IPv4 DoS policies'
   fortinet.fortimanager.fmgr_generic:
-    access_token: "{{ ansible_facts.access_token }}"
+    access_token: "{{ ansible_httpapi_access_token }}"
     method: set
     params:
       - url: "/pm/config/adom/{{ adom_secgw }}/pkg/{{ secgws.policy_package }}/firewall/DoS-policy"

@@ -1,7 +1,7 @@
 ---
 - name: 'Prefix List6 Client6-inner-addresses'
   fortinet.fortimanager.fmgr_generic:
-    access_token: "{{ ansible_facts.access_token }}"
+    access_token: "{{ ansible_httpapi_access_token }}"
     method: set
     params:
       - url: "pm/config/device/{{ item.name }}/vdom/{{ secgws.region1_traffic_vdom }}/router/prefix-list6"
@@ -20,7 +20,7 @@
 
 - name: 'Prefix List6 SecGW6-loopback-addresses'
   fortinet.fortimanager.fmgr_generic:
-    access_token: "{{ ansible_facts.access_token }}"
+    access_token: "{{ ansible_httpapi_access_token }}"
     method: set
     params:
       - url: "pm/config/device/{{ item.name }}/vdom/{{ secgws.region1_traffic_vdom }}/router/prefix-list6"
@@ -38,7 +38,7 @@
 
 - name: 'Prefix List6 5G-IPv6-addresses'
   fortinet.fortimanager.fmgr_generic:
-    access_token: "{{ ansible_facts.access_token }}"
+    access_token: "{{ ansible_httpapi_access_token }}"
     method: set
     params:
       - url: "pm/config/device/{{ item.name }}/vdom/{{ secgws.region1_traffic_vdom }}/router/prefix-list6"
@@ -57,7 +57,7 @@
 
 - name: 'Prefix List Client-inner-addresses'
   fortinet.fortimanager.fmgr_generic:
-    access_token: "{{ ansible_facts.access_token }}"
+    access_token: "{{ ansible_httpapi_access_token }}"
     method: set
     params:
       - url: "pm/config/device/{{ item.name }}/vdom/{{ secgws.region1_traffic_vdom }}/router/prefix-list"
@@ -75,7 +75,7 @@
 
 - name: 'Prefix List SecGW-loopback-addresses'
   fortinet.fortimanager.fmgr_generic:
-    access_token: "{{ ansible_facts.access_token }}"
+    access_token: "{{ ansible_httpapi_access_token }}"
     method: set
     params:
       - url: "pm/config/device/{{ item.name }}/vdom/{{ secgws.region1_traffic_vdom }}/router/prefix-list"
@@ -92,7 +92,7 @@
 
 - name: 'Prefix List 5G-IP-addresses'
   fortinet.fortimanager.fmgr_generic:
-    access_token: "{{ ansible_facts.access_token }}"
+    access_token: "{{ ansible_httpapi_access_token }}"
     method: set
     params:
       - url: "pm/config/device/{{ item.name }}/vdom/{{ secgws.region1_traffic_vdom }}/router/prefix-list"

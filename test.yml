@@ -8,7 +8,7 @@
   tasks:
     - name: Get system status from FortiManager
       fortinet.fortimanager.fmgr_fact:
-        access_token: "{{ fmg_access_token }}"
+        access_token: "{{ ansible_httpapi_access_token }}"
         enable_log: true
         facts:
           selector: "sys_status"

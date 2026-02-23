@@ -1,6 +1,6 @@
 - name: 'FAZ Configure System Global'
   fortinet.fortianalyzer.faz_cli_system_global:
-    access_token: "{{ ansible_facts.access_token }}"
+    access_token: "{{ ansible_httpapi_access_token }}"
     cli_system_global:
       adom_status: "{{ adom_status }}"
       hostname: "{{ hostname }}"

@@ -16,7 +16,7 @@
 
 - name: "Poll FortiAnalyzer task status for task {{ common_fmgr_task_id }}"
   fortinet.fortianalyzer.faz_fact:
-    access_token: "{{ ansible_facts.access_token }}"
+    access_token: "{{ ansible_httpapi_access_token }}"
     facts:
       selector: "task_task"
       params:

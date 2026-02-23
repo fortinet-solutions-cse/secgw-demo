@@ -1,6 +1,6 @@
 - name: 'Create dynamic interfaces'
   fortinet.fortimanager.fmgr_generic:
-    access_token: "{{ ansible_facts.access_token }}"
+    access_token: "{{ ansible_httpapi_access_token }}"
     method: set
     params:
       - url: "/pm/config/adom/{{ adom_secgw }}/obj/dynamic/interface"
@@ -29,7 +29,7 @@
 
 - name: 'IPv6 Create dynamic interfaces'
   fortinet.fortimanager.fmgr_generic:
-    access_token: "{{ ansible_facts.access_token }}"
+    access_token: "{{ ansible_httpapi_access_token }}"
     method: set
     params:
       - url: "/pm/config/adom/{{ adom_secgw }}/obj/dynamic/interface"

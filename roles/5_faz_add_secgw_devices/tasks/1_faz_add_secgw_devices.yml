@@ -2,7 +2,7 @@
 - name: Add SecGWs to FAZ
   ansible.builtin.include_tasks: "_faz_add_device.yml"
   loop:
-    - "{{ secgws.seg1 }}"
-    - "{{ secgws.seg2 }}"
+    - seg1
+    - seg2
   loop_control:
-    label: "{{ item.name }}"
+    label: "{{ secgws[item].name }}"

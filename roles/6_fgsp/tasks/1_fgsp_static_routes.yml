@@ -1,6 +1,6 @@
 - name: FGSP Static routes
   fortinet.fortimanager.fmgr_generic:
-    access_token: "{{ ansible_facts.access_token }}"
+    access_token: "{{ ansible_httpapi_access_token }}"
     method: set
     params:
       - url: "pm/config/device/{{ item.name }}/vdom/root/router/static"

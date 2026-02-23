@@ -1,76 +1,82 @@
 ---
-- name: Gather Credentials and Set Host Facts
+# PLAY 1: INIT — Run script, write host_vars and group_vars/all/runtime.yml
+- name: Initialize credentials from script and write to persistent files
   hosts: localhost
   gather_facts: false
-  tags:
-    - init
-    - init_credentials
+  tags: [init]
+  # ADD THIS BLOCK BELOW:
+  vars_files:
+    - "{{ playbook_dir }}/group_vars/all.yml"
   tasks:
-    - name: Run init.py to fetch all credentials
-      ansible.builtin.command: >
-        ./init.py
+    - name: Run init script to fetch credentials
+      ansible.builtin.command: "./scripts/init.py"
       args:
-        chdir: "{{ playbook_dir }}/scripts"
-        stdin: "{{ script_vars | to_json }}"
+        stdin: >-
+          {{ {
+            'fmg_host': hostvars[groups['fortimanagers'][0]]['ansible_host'],
+            'faz_host': hostvars[groups['fortianalyzers'][0]]['ansible_host'],
+            'seg1_ip': secgws.seg1.mgmtip,
+            'seg2_ip': secgws.seg2.mgmtip,
+            'ssh_port': ssh_port,
+            'username': username
+          } | to_json }}
       changed_when: false
-      vars:
-        # Assemble all the variables the script needs into a single dictionary
-        script_vars:
-          fmg_host: "{{ hostvars[groups['fortimanagers'][0]]['ansible_host'] }}"
-          faz_host: "{{ hostvars[groups['fortianalyzers'][0]]['ansible_host'] }}"
-          seg1_ip: "{{ secgws.seg1.mgmtip }}"
-          seg2_ip: "{{ secgws.seg2.mgmtip }}"
-          ssh_port: "{{ ssh_port }}"
-          username: "{{ username }}"
-      register: init_script_output
+      register: init_output
 
-    - name: Display fetched credentials
-      ansible.builtin.debug:
-        msg: |-
-          Fetched Credentials Summary:
-            - FMG Token: {{ fetched_credentials['FMG_ACCESS_TOKEN'] }}
-            - FMG Serial Number: {{ fetched_credentials['FMG_SN'] }}
-            - FAZ Token: {{ fetched_credentials['FAZ_ACCESS_TOKEN'] }}
-            - FAZ Serial Number: {{ fetched_credentials['FAZ_SN'] }}
-            - SEG1 Serial Number: {{ fetched_credentials['SEG1_SN'] }}
-            - SEG2 Serial Number: {{ fetched_credentials['SEG2_SN'] }}
-      vars:
-        fetched_credentials: "{{ init_script_output.stdout | from_json }}"
-
-    - name: Parse script output and set facts for all relevant hosts
+    - name: Parse init script output
       ansible.builtin.set_fact:
-        access_token: "{{ fetched_credentials.get(_cred_prefix + '_ACCESS_TOKEN', '') }}"
-        ansible_httpapi_access_token: "{{ fetched_credentials.get(_cred_prefix + '_ACCESS_TOKEN', '') }}"
-        sn: "{{ fetched_credentials.get(_cred_prefix + '_SN', '') }}"
-        password: "{{ fetched_credentials['DEVICE_PASSWORD'] }}"
-        ansible_password: "{{ fetched_credentials['DEVICE_PASSWORD'] }}"
-        secgws: >
-          {{
-            secgws | combine({
-              'seg1': {'sn': fetched_credentials['SEG1_SN']},
-              'seg2': {'sn': fetched_credentials['SEG2_SN']}
-            },
-            recursive=true
-          )
-          }}
-        cacheable: true
-      vars:
-        fetched_credentials: "{{ init_script_output.stdout | from_json }}"
-        _cred_prefix: >-
-          {{ 'FMG' if item in groups['fortimanagers'] else ('FAZ' if item in groups['fortianalyzers'] else 'DEVICE') }}
-      delegate_to: "{{ item }}"
-      delegate_facts: true
-      loop: "{{ groups['fortimanagers'] + groups['fortianalyzers'] + groups.get('gnbs', []) }}"
-      loop_control:
-        loop_var: item
+        creds: "{{ init_output.stdout | from_json }}"
 
+    - name: Ensure group_vars/all directory exists
+      ansible.builtin.file:
+        path: "{{ playbook_dir }}/group_vars/all"
+        state: directory
+
+    - name: Write host_vars for fortimanagers
+      ansible.builtin.copy:
+        dest: "{{ playbook_dir }}/host_vars/{{ item }}.yml"
+        content: |
+          ---
+          ansible_httpapi_access_token: "{{ creds.FMG_ACCESS_TOKEN }}"
+          ansible_password: "{{ creds.DEVICE_PASSWORD }}"
+          fmg_sn: "{{ creds.FMG_SN }}"
+      loop: "{{ groups['fortimanagers'] }}"
+
+    - name: Write host_vars for fortianalyzers
+      ansible.builtin.copy:
+        dest: "{{ playbook_dir }}/host_vars/{{ item }}.yml"
+        content: |
+          ---
+          ansible_httpapi_access_token: "{{ creds.FAZ_ACCESS_TOKEN }}"
+          ansible_password: "{{ creds.DEVICE_PASSWORD }}"
+          faz_sn: "{{ creds.FAZ_SN }}"
+      loop: "{{ groups['fortianalyzers'] }}"
+
+    - name: Load base vars from all.yml to perform merge
+      ansible.builtin.include_vars:
+        file: "{{ playbook_dir }}/group_vars/all.yml"
+        name: base_all_vars
+
+    - name: "Write merged runtime vars to group_vars/all/runtime.yml"
+      ansible.builtin.copy:
+        dest: "{{ playbook_dir }}/group_vars/all/runtime.yml"
+        content: |
+          ---
+          # Full Runtime Snapshot: Includes base variables + injected Serial Numbers
+          # Regenerate by running: ansible-playbook hol.yml --tags init
+          
+          {{ (base_all_vars | combine({
+            'secgws': base_all_vars.secgws | combine({
+              'seg1': base_all_vars.secgws.seg1 | combine({'sn': creds.SEG1_SN}),
+              'seg2': base_all_vars.secgws.seg2 | combine({'sn': creds.SEG2_SN})
+            })
+          })) | to_nice_yaml }}
 
 - name: FMG Initialization
   hosts: fortimanagers
   gather_facts: false
   connection: httpapi
-  tags:
-    - init
+  tags: [init]
   roles:
     - role: 1_fmg_initialize
 
@@ -78,8 +84,7 @@
   hosts: fortianalyzers
   gather_facts: false
   connection: httpapi
-  tags:
-    - init
+  tags: [init]
   roles:
     - role: 2_faz_initialize
 
@@ -87,9 +92,7 @@
   hosts: fortimanagers
   gather_facts: false
   connection: httpapi
-  tags:
-    - add_devices_fmg
-    - add_devices
+  tags: [add_devices_fmg, add_devices]
   roles:
     - role: 3_fmg_add_secgw_devices
 
@@ -97,9 +100,7 @@
   hosts: fortimanagers
   gather_facts: false
   connection: httpapi
-  tags:
-    - system
-    - add_devices
+  tags: [system, add_devices]
   roles:
     - role: 4_system
 
@@ -107,9 +108,7 @@
   hosts: fortianalyzers
   gather_facts: false
   connection: httpapi
-  tags:
-    - add_devices_faz
-    - add_devices
+  tags: [add_devices_faz, add_devices]
   roles:
     - role: 5_faz_add_secgw_devices
 
@@ -117,8 +116,7 @@
   hosts: fortimanagers
   gather_facts: false
   connection: httpapi
-  tags:
-    - fgsp
+  tags: [fgsp]
   roles:
     - role: 6_fgsp
 
@@ -126,8 +124,7 @@
   hosts: fortimanagers
   gather_facts: false
   connection: httpapi
-  tags:
-    - router
+  tags: [router]
   roles:
     - role: 7_router
 
@@ -135,8 +132,7 @@
   hosts: fortimanagers
   gather_facts: false
   connection: httpapi
-  tags:
-    - certificates
+  tags: [certificates]
   roles:
     - role: 8_certificates
 
@@ -144,8 +140,7 @@
   hosts: fortimanagers
   gather_facts: false
   connection: httpapi
-  tags:
-    - vpn
+  tags: [vpn]
   roles:
     - role: 9_vpn
 
@@ -153,8 +148,7 @@
   hosts: fortimanagers
   gather_facts: false
   connection: httpapi
-  tags:
-    - policy_packages
+  tags: [policy_packages]
   roles:
     - role: 10_policy_packages
 
@@ -162,10 +156,8 @@
   hosts: gnbs
   gather_facts: false
   vars:
-    ansible_password: "{{ ansible_facts.password }}"
-  tags:
-    - never
-    - connect_gnbs
+    ansible_password: "{{ hostvars[groups['fortianalyzers'][0]]['ansible_password'] }}"
+  tags: [never, connect_gnbs]
   roles:
     - role: 11_connect_gnbs
 
@@ -173,8 +165,6 @@
   hosts: fortimanagers
   gather_facts: false
   connection: httpapi
-  tags:
-    - never
-    - crl
+  tags: [never, crl]
   roles:
     - role: 12_crl

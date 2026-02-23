@@ -1,6 +1,6 @@
 - name: "BGP {{ secgws.seg1.name }} VDOM root"
   fortinet.fortimanager.fmgr_generic:
-    access_token: "{{ ansible_facts.access_token }}"
+    access_token: "{{ ansible_httpapi_access_token }}"
     method: update
     params:
       - url: "pm/config/device/{{ secgws.seg1.name }}/vdom/root/router/bgp"
@@ -29,7 +29,7 @@
 
 - name: "BGP {{ secgws.seg1.name }} VDOM {{ secgws.region1_traffic_vdom }}"
   fortinet.fortimanager.fmgr_generic:
-    access_token: "{{ ansible_facts.access_token }}"
+    access_token: "{{ ansible_httpapi_access_token }}"
     method: update
     params:
       - url: "pm/config/device/{{ secgws.seg1.name }}/vdom/{{ secgws.region1_traffic_vdom }}/router/bgp"
@@ -90,7 +90,7 @@
 
 - name: "IPv6 BGP {{ secgws.seg1.name }} VDOM {{ secgws.region1_traffic_vdom }}"
   fortinet.fortimanager.fmgr_generic:
-    access_token: "{{ ansible_facts.access_token }}"
+    access_token: "{{ ansible_httpapi_access_token }}"
     method: update
     params:
       - url: "pm/config/device/{{ secgws.seg1.name }}/vdom/{{ secgws.region1_traffic_vdom }}/router/bgp"
@@ -120,7 +120,7 @@
 
 - name: "BGP {{ secgws.seg2.name }} vdom: root"
   fortinet.fortimanager.fmgr_generic:
-    access_token: "{{ ansible_facts.access_token }}"
+    access_token: "{{ ansible_httpapi_access_token }}"
     method: update
     params:
       - url: "pm/config/device/{{ secgws.seg2.name }}/vdom/root/router/bgp"

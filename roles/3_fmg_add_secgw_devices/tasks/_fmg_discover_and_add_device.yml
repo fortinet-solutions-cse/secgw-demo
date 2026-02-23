@@ -1,17 +1,17 @@
 - name: "Discover device {{ item.name }}"
   fortinet.fortimanager.fmgr_dvm_cmd_discover_device:
-    access_token: "{{ ansible_facts.access_token }}"
+    access_token: "{{ ansible_httpapi_access_token }}"
     bypass_validation: false
     dvm_cmd_discover_device:
       device:
-        adm_pass: "{{ password }}"
+        adm_pass: "{{ ansible_password }}"
         adm_usr: "{{ username }}"
         ip: "{{ item.mgmtip }}"
   register: fmg_add_secgw_devices_probed_device
 
 - name: "Add device {{ item.name }}"
   fortinet.fortimanager.fmgr_dvm_cmd_add_device:
-    access_token: "{{ ansible_facts.access_token }}"
+    access_token: "{{ ansible_httpapi_access_token }}"
     bypass_validation: false
     dvm_cmd_add_device:
       adom: "{{ adom_secgw }}"
@@ -20,7 +20,7 @@
         - nonblocking
       device:
         adm_usr: "{{ username }}"
-        adm_pass: "{{ password }}"
+        adm_pass: "{{ ansible_password }}"
         desc: 'The device is added via FortiManager Ansible'
         ip: "{{ fmg_add_secgw_devices_probed_device.meta.response_data.device.ip }}"
         mgmt_mode: 'fmg'

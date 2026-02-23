@@ -1,21 +1,54 @@
 ---
+#- name: Debug item structure
+#  debug:
+#    var: item
+#  loop:
+#    - "{{ secgws.seg1 }}"
+#    - "{{ secgws.seg2 }}"
+#  loop_control:
+#    label: "{{ item.name }}"
+#
+#- name: Add scripts to generate CMP IR RSA certificates
+#  fortinet.fortimanager.fmgr_dvmdb_script:
+#    access_token: "{{ ansible_httpapi_access_token }}"
+#    adom: "{{ adom_secgw }}"
+#    state: present
+#    dvmdb_script:
+#      name: "{{ item.name }}_cmp_ir"
+#      type: 'cli'
+#      target: 'remote_device'
+#      content: |
+#        config vdom
+#            edit {{ secgws.region1_traffic_vdom }}
+#                execute vpn certificate local generate cmp-ec {{ item.certname }} secp384r1 {{ secgws.cmp_server_ip }}:80 /cert/cmp2/ mno_cmp_server Fortinet_Factory "" "" "C=CA,O=mno,OU=FGT,CN={{ item.sn }}" ""
+#            end
+#  loop:
+#    - "{{ secgws.seg1 }}"
+#    - "{{ secgws.seg2 }}"
+#  loop_control:
+#    label: "{{ item.name }}"
+
 - name: Add scripts to generate CMP IR RSA certificates
-  fortinet.fortimanager.fmgr_dvmdb_script:
-    access_token: "{{ ansible_facts.access_token }}"
-    adom: "{{ adom_secgw }}"
-    state: present
-    dvmdb_script:
-      name: "{{ item.name }}_cmp_ir"
-      type: 'cli'
-      target: 'remote_device'
-      content: |
-        config vdom
+  fortinet.fortimanager.fmgr_generic:
+    access_token: "{{ ansible_httpapi_access_token }}"
+    method: "set" 
+    params:
+      #- url: "/dvmdb/script"
+      - url: "/dvmdb/adom/{{ adom_secgw }}/script"
+        data:
+          #adom: "{{ adom_secgw }}"
+          name: "{{ item.name }}_cmp_ir"
+          type: 'cli'
+          target: 'remote_device'
+          content: |
+            config vdom
             edit {{ secgws.region1_traffic_vdom }}
-                execute vpn certificate local generate cmp-ec {{ item.certname }} secp384r1 {{ secgws.cmp_server_ip }}:80 /cert/cmp2/ mno_cmp_server Fortinet_Factory "" "" "C=CA,O=mno,OU=FGT,CN={{ item.sn }}" ""
+            execute vpn certificate local generate cmp-ec {{ item.certname }} secp384r1 {{ secgws.cmp_server_ip }}:80 /cert/cmp2/ mno_cmp_server Fortinet_Factory "" "" "C=CA,O=mno,OU=FGT,CN={{ item.sn }}" ""
+            next
             end
+    #workspace_locking_adom: "{{ adom_secgw }}"
   loop:
     - "{{ secgws.seg1 }}"
     - "{{ secgws.seg2 }}"
   loop_control:
     label: "{{ item.name }}"
-

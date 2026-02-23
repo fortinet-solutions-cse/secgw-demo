@@ -1,10 +1,4 @@
 ---
-
-# NOTE: Certain credentials are set and overridden by the 'init' play.
-# After running `ansible-playbook hol.yml --tags init`, the 'password'
-# and device-specific serial numbers ('sn') will be populated from the
-# Ansible fact cache for subsequent playbook runs.
-
 # Global variables used in SEG HoL
 enable_ipv6: false
 ansible_httpapi_port: 443
@@ -13,7 +7,6 @@ ansible_httpapi_validate_certs: false
 ssh_port: 22
 username: 'admin'
 fmc_timezone: 28
-#password: Populated by init play
 
 # FMC vars (FMG and FAZ)
 adom_status: 'enable'
@@ -49,7 +42,6 @@ secgws:
     name: 'FGT-SEG-1'
     mgmtip: '10.254.1.101'
     certname: 'seg1'
-    #sn: Populated by init play 
     static_routes:
       - device: 'agg1.10'
         dst: 
@@ -207,7 +199,6 @@ secgws:
     name: 'FGT-SEG-2'
     mgmtip: '10.254.1.102'
     certname: 'seg2'
-    #sn: Populated by init play 
     static_routes:
       - device: 'agg1.10'
         dst: 

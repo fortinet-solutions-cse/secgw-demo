@@ -1,7 +1,7 @@
 ---
 crl_scope_device_vdom:
-  - name: "{{ ansible_facts.secgws.seg1.name }}"
-    vdom: "{{ ansible_facts.secgws.region1_traffic_vdom }}"
-  - name: "{{ ansible_facts.secgws.seg2.name }}"
-    vdom: "{{ ansible_facts.secgws.region1_traffic_vdom }}"
+  - name: "{{ secgws.seg1.name }}"
+    vdom: "{{ secgws.region1_traffic_vdom }}"
+  - name: "{{ secgws.seg2.name }}"
+    vdom: "{{ secgws.region1_traffic_vdom }}"
 
