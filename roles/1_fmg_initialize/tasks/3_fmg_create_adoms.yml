@@ -14,6 +14,6 @@
     dvmdb_adom:
       name: "{{ adom_secgw }}"
       os_ver: '7.0'
-      mr: '4'
+      mr: '6'
       flags:
         - 'no_vpn_console'
