@@ -143,6 +143,14 @@
   roles:
     - role: 9_vpn
 
+- name: VPN_HOL
+  hosts: fortimanagers
+  gather_facts: false
+  connection: httpapi
+  tags: [never, vpn_hol]
+  roles:
+    - role: 9_vpn_hol
+
 - name: Policy Packages
   hosts: fortimanagers
   gather_facts: false
