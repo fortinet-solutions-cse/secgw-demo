@@ -65,6 +65,7 @@
     label: "{{ item.name }}"
   when: enable_ipv6 is true
 
+
 - name: IPsec phase2
   fortinet.fortimanager.fmgr_generic:
     access_token: "{{ ansible_httpapi_access_token }}"
