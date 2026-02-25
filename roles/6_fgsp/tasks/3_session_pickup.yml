@@ -5,8 +5,9 @@
     params:
       - url: "pm/config/device/{{ item.name }}/global/sys/ha"
         data:
+          sync-packet-balance: 'enable'
           session-pickup: 'enable'
-          session-pickup-expectation: 'enable'
+          session-pickup-connectionless: 'enable'
   loop:
     - "{{ secgws.seg1 }}"
     - "{{ secgws.seg2 }}"
