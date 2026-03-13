@@ -21,7 +21,7 @@ The demo mode will pre-configure FMG / FAZ / FGT-SEG-1 and FGT-SEG-2 so you quic
 1. When playbooks have finished check there are no failed plays.
 1. If it is all super green, then log into gNodeB1 and bring up the tunnel
 
-        cd /fortipoc
+        cd /fabric
         ./genrsa
         ./ir
         ./config_ss.sh
