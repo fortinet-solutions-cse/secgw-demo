@@ -1,4 +1,9 @@
 ---
+- name: Ensure init script is executable
+  ansible.builtin.file:
+    path: "{{ role_path }}/scripts/init.py"
+    mode: '0755'
+
 - name: Run init script to fetch credentials
   ansible.builtin.command: "{{ role_path }}/scripts/init.py"
   args:
