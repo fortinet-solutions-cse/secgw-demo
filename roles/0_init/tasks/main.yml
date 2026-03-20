@@ -1,0 +1,59 @@
+---
+- name: Run init script to fetch credentials
+  ansible.builtin.command: "{{ role_path }}/scripts/init.py"
+  args:
+    stdin: >-
+      {{ {
+        'fmg_host': hostvars[groups['fortimanagers'][0]]['ansible_host'],
+        'faz_host': hostvars[groups['fortianalyzers'][0]]['ansible_host'],
+        'seg1_ip': secgws.seg1.mgmtip,
+        'seg2_ip': secgws.seg2.mgmtip,
+        'ssh_port': ssh_port,
+        'username': username
+      } | to_json }}
+  changed_when: false
+  register: init_output
+
+- name: Parse init script output
+  ansible.builtin.set_fact:
+    creds: "{{ init_output.stdout | from_json }}"
+
+- name: Ensure vars directory exists
+  ansible.builtin.file:
+    path: "{{ playbook_dir }}/vars"
+    state: directory
+
+- name: Write host_vars for fortimanagers
+  ansible.builtin.copy:
+    dest: "{{ playbook_dir }}/host_vars/{{ item }}.yml"
+    content: |
+      ---
+      ansible_httpapi_access_token: "{{ creds.FMG_ACCESS_TOKEN }}"
+      ansible_password: "{{ creds.DEVICE_PASSWORD }}"
+      fmg_sn: "{{ creds.FMG_SN }}"
+  loop: "{{ groups['fortimanagers'] }}"
+
+- name: Write host_vars for fortianalyzers
+  ansible.builtin.copy:
+    dest: "{{ playbook_dir }}/host_vars/{{ item }}.yml"
+    content: |
+      ---
+      ansible_httpapi_access_token: "{{ creds.FAZ_ACCESS_TOKEN }}"
+      ansible_password: "{{ creds.DEVICE_PASSWORD }}"
+      faz_sn: "{{ creds.FAZ_SN }}"
+  loop: "{{ groups['fortianalyzers'] }}"
+
+- name: "Write runtime vars to vars/runtime_vars.yml"
+  ansible.builtin.copy:
+    dest: "{{ playbook_dir }}/vars/runtime_vars.yml"
+    content: |
+      ---
+      # Runtime Variables (Generated)
+      # Regenerate by running: ansible-playbook hol.yml --tags init
+      
+      runtime_vars:
+        seg1_sn: "{{ creds.SEG1_SN }}"
+        seg2_sn: "{{ creds.SEG2_SN }}"
+        fmg_token: "{{ creds.FMG_ACCESS_TOKEN }}"
+        faz_token: "{{ creds.FAZ_ACCESS_TOKEN }}"
+        device_password: "{{ creds.DEVICE_PASSWORD }}"

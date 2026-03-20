@@ -10,7 +10,7 @@
         adm_pass: "{{ ansible_password }}"
         ip: "{{ secgws[item].mgmtip }}"
         mgmt_mode: 'faz' 
-        sn: "{{ secgws[item].sn }}"
+        sn: "{{ runtime_vars[item + '_sn'] }}"
         os_type: 'fos'
         os_ver: '7.0'
         mr: 4

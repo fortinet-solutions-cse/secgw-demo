@@ -1,75 +1,13 @@
 ---
-#  INIT — Run script, write host_vars and group_vars/all/runtime.yml
+#  INIT — Run script, write host_vars and group_vars/all/dynamic.yml
 - name: Initialize credentials from script and write to persistent files
   hosts: localhost
   gather_facts: false
   tags: [init]
   vars_files:
     - "{{ playbook_dir }}/group_vars/all.yml"
-  tasks:
-    - name: Run init script to fetch credentials
-      ansible.builtin.command: "./scripts/init.py"
-      args:
-        stdin: >-
-          {{ {
-            'fmg_host': hostvars[groups['fortimanagers'][0]]['ansible_host'],
-            'faz_host': hostvars[groups['fortianalyzers'][0]]['ansible_host'],
-            'seg1_ip': secgws.seg1.mgmtip,
-            'seg2_ip': secgws.seg2.mgmtip,
-            'ssh_port': ssh_port,
-            'username': username
-          } | to_json }}
-      changed_when: false
-      register: init_output
-
-    - name: Parse init script output
-      ansible.builtin.set_fact:
-        creds: "{{ init_output.stdout | from_json }}"
-
-    - name: Ensure group_vars/all directory exists
-      ansible.builtin.file:
-        path: "{{ playbook_dir }}/group_vars/all"
-        state: directory
-
-    - name: Write host_vars for fortimanagers
-      ansible.builtin.copy:
-        dest: "{{ playbook_dir }}/host_vars/{{ item }}.yml"
-        content: |
-          ---
-          ansible_httpapi_access_token: "{{ creds.FMG_ACCESS_TOKEN }}"
-          ansible_password: "{{ creds.DEVICE_PASSWORD }}"
-          fmg_sn: "{{ creds.FMG_SN }}"
-      loop: "{{ groups['fortimanagers'] }}"
-
-    - name: Write host_vars for fortianalyzers
-      ansible.builtin.copy:
-        dest: "{{ playbook_dir }}/host_vars/{{ item }}.yml"
-        content: |
-          ---
-          ansible_httpapi_access_token: "{{ creds.FAZ_ACCESS_TOKEN }}"
-          ansible_password: "{{ creds.DEVICE_PASSWORD }}"
-          faz_sn: "{{ creds.FAZ_SN }}"
-      loop: "{{ groups['fortianalyzers'] }}"
-
-    - name: Load base vars from all.yml to perform merge
-      ansible.builtin.include_vars:
-        file: "{{ playbook_dir }}/group_vars/all.yml"
-        name: base_all_vars
-
-    - name: "Write merged runtime vars to group_vars/all/runtime.yml"
-      ansible.builtin.copy:
-        dest: "{{ playbook_dir }}/group_vars/all/runtime.yml"
-        content: |
-          ---
-          # Full Runtime Snapshot: Includes base variables + injected Serial Numbers
-          # Regenerate by running: ansible-playbook hol.yml --tags init
-          
-          {{ (base_all_vars | combine({
-            'secgws': base_all_vars.secgws | combine({
-              'seg1': base_all_vars.secgws.seg1 | combine({'sn': creds.SEG1_SN}),
-              'seg2': base_all_vars.secgws.seg2 | combine({'sn': creds.SEG2_SN})
-            })
-          })) | to_nice_yaml }}
+  roles:
+    - role: 0_init
 
 - name: FMG Initialization
   hosts: fortimanagers
@@ -107,6 +45,8 @@
   hosts: fortianalyzers
   gather_facts: false
   connection: httpapi
+  vars_files:
+    - "{{ playbook_dir }}/vars/runtime_vars.yml"
   tags: [add_devices_faz, add_devices]
   roles:
     - role: 5_faz_add_secgw_devices
@@ -131,6 +71,8 @@
   hosts: fortimanagers
   gather_facts: false
   connection: httpapi
+  vars_files:
+    - "{{ playbook_dir }}/vars/runtime_vars.yml"
   tags: [certificates]
   roles:
     - role: 8_certificates
