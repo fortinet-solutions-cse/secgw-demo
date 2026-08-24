@@ -2,7 +2,7 @@
 # tasks file for 11_connect_gnbs
 - name: Execute genrsa script
   ansible.builtin.command:
-    cmd: ./genrsa
+    cmd: ./genecdsa
     chdir: /fabric
 
 - name: Execute CMP IR script
