@@ -8,7 +8,7 @@
         data:
           name: "{{ item.name }}_cmp_ir"
           type: "cli"
-          target: "remote_device"
+          target: "remote"
           content: |
             config vdom
                 edit {{ secgws.region1_traffic_vdom }}
