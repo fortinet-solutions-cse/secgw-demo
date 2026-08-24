@@ -21,7 +21,7 @@
       #lldp_reception: 'enable'
       #lldp_transmission: 'enable'
       #admin_sport: 443
-      timezone: "{{ secgws.timezone }}"
+      #timezone: "{{ secgws.timezone }}"
       admin_ssh_port: "{{ ssh_port }}"
       admintimeout: "{{ secgws.admintimeout }}"
       gui_ipv6: 'enable'
