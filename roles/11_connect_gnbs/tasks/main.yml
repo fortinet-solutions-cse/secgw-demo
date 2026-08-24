@@ -1,6 +1,6 @@
 ---
 # tasks file for 11_connect_gnbs
-- name: Execute genrsa script
+- name: Execute genecdsa script
   ansible.builtin.command:
     cmd: ./genecdsa
     chdir: /fabric
