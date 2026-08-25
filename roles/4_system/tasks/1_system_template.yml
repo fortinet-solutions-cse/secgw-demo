@@ -1,4 +1,4 @@
-- name: "Create system template: {{ secgws.system_template_name }}"
+- name: 'Create system template'
   fortinet.fortimanager.fmgr_pm_devprof_adom:
     access_token: "{{ ansible_httpapi_access_token }}"
     adom: "{{ adom_secgw }}"
@@ -11,7 +11,7 @@
         - name: "{{ secgws.seg1.name }}"
         - name: "{{ secgws.seg2.name }}"
 
-- name: "Set Template parameters: {{secgws.system_template_name }}"
+- name: 'Set Template parameters'
   fortinet.fortimanager.fmgr_devprof_system_global:
     access_token: "{{ ansible_httpapi_access_token }}"
     adom: "{{ adom_secgw }}"
@@ -27,7 +27,7 @@
       gui_ipv6: 'enable'
       gui_theme: 'graphite'
 
-- name: "Add DNS settings to system template: {{ secgws.system_template_name }}"
+- name: 'Add DNS settings to system template'
   fortinet.fortimanager.fmgr_generic:
     access_token: "{{ ansible_httpapi_access_token }}"
     method: set
@@ -39,7 +39,7 @@
           domain: 'mno.com'
           protocol: 'cleartext'
 
-- name: "Add NTP settings to system template: {{ secgws.system_template_name }}"
+- name: 'Add NTP settings to system template'
   fortinet.fortimanager.fmgr_generic:
     access_token: "{{ ansible_httpapi_access_token }}"
     method: set
@@ -67,3 +67,4 @@
       reliable: 'disable'
       upload_option: 'realtime'
       access_config: 'enable'
+      
