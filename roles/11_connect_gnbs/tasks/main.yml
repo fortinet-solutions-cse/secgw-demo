@@ -15,9 +15,9 @@
     cmd: ./config_ss.sh
     chdir: /fabric
 
-- name: Start continuous ping to 10.30.1.1 in the background
+- name: Start continuous ping to 10.30.30.1 in the background
   ansible.builtin.shell: |
-    nohup ping 10.30.1.1 -i0.2> /tmp/ping_output.log 2>&1 &
+    nohup ping 10.30.30.1 -i0.2> /tmp/ping_output.log 2>&1 &
   args:
     chdir: /fabric
   async: 1 # Run for 1 second before checking status (or returning)
