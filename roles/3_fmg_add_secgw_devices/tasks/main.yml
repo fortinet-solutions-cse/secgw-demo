@@ -1,3 +1,7 @@
 ---
 - name: 3.1 Discover and Add devices
   ansible.builtin.include_tasks: "1_discover_and_add_secgws.yml"
+
+- name: Pause to allow FortiManager background database sync to settle
+  ansible.builtin.pause:
+    seconds: 5
