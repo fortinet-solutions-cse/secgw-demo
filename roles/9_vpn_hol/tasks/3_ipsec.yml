@@ -12,9 +12,9 @@
             authmethod: 'signature'
             certificate: '{{ item.certname }}'
             ike-version: 2
-            interface: "{{ secgws.ipsec_loopback_interface_name }}"
+            interface: "{{ secgws.interface_names.lo_secgw }}"
             ip-version: '4'
-            default-gw: '10.20.255.1'
+            default-gw: "{{ (item.interfaces | selectattr('name', 'equalto', secgws.interface_names.lo_secgw) | first).ip[0] }}"
             mode-cfg: 'disable'
             peertype: 'peer'
             peer: 'mno_ca'
