@@ -1,0 +1,31 @@
+- name: "BFD - VDOM {{ secgws.region1_traffic_vdom }}"
+  fortinet.fortimanager.fmgr_generic:
+    access_token: "{{ ansible_httpapi_access_token }}"
+    method: set
+    params:
+      - url: "pm/config/device/{{ item.name }}/vdom/{{ secgws.region1_traffic_vdom }}/router/bfd"
+        data:
+          multihop-template:
+          -
+            id: '1'
+            src: '10.11.255.0 255.255.255.0'
+            dst: '10.11.255.0 255.255.255.0'
+            bfd-desired-min-tx: 750
+            bfd-required-min-rx: 750
+          -
+            id: '2'
+            src: '10.20.255.0 255.255.255.0'
+            dst: '10.20.255.0 255.255.255.0'
+            bfd-desired-min-tx: 750
+            bfd-required-min-rx: 750
+          -
+            id: '3'
+            src: '10.30.255.0 255.255.255.0'
+            dst: '10.30.255.0 255.255.255.0'
+            bfd-desired-min-tx: 750
+            bfd-required-min-rx: 750
+  loop:
+    - "{{ secgws.seg1 }}"
+    - "{{ secgws.seg2 }}"
+  loop_control:
+    label: "{{ item.name }}"

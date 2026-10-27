@@ -4,26 +4,42 @@
   ansible.builtin.command:
     cmd: ./genecdsa
     chdir: /fabric
+  changed_when: false
 
 - name: Execute CMP IR script
   ansible.builtin.command:
     cmd: ./ir
     chdir: /fabric
+  changed_when: false
 
 - name: Execute config_ss.sh script
   ansible.builtin.command:
     cmd: ./config_ss.sh
     chdir: /fabric
+  changed_when: false
 
 - name: Start continuous ping to 10.30.30.1 in the background
   ansible.builtin.shell: |
-    nohup ping 10.30.30.1 -i0.2> /tmp/ping_output.log 2>&1 &
+    nohup ping 10.30.30.1 -i0.2 > /tmp/ping_output.log 2>&1 &
   args:
     chdir: /fabric
   async: 1 # Run for 1 second before checking status (or returning)
   poll: 0  # Do not wait for the job to finish, and return immediately
+  changed_when: false
 
 - name: Check if ping log file exists and has content
   ansible.builtin.stat:
     path: /tmp/ping_output.log
   register: ping_log_stat
+  until: ping_log_stat.stat.exists and ping_log_stat.stat.size > 0
+  retries: 5
+  delay: 1
+  changed_when: false
+
+- name: Assert background ping is running
+  ansible.builtin.assert:
+    that:
+      - ping_log_stat.stat.exists
+      - ping_log_stat.stat.size > 0
+    fail_msg: "Background ping to 10.30.30.1 did not start (/tmp/ping_output.log missing or empty)"
+    success_msg: "Background ping to 10.30.30.1 is running"

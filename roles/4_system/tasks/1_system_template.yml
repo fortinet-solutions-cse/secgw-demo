@@ -24,7 +24,6 @@
       #timezone: "{{ secgws.timezone }}"
       admin_ssh_port: "{{ ssh_port }}"
       admintimeout: "{{ secgws.admintimeout }}"
-      gui_ipv6: 'enable'
       gui_theme: 'graphite'
 
 - name: 'Add DNS settings to system template'

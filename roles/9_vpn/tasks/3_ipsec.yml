@@ -12,9 +12,9 @@
             authmethod: 'signature'
             certificate: '{{ item.certname }}'
             ike-version: 2
-            interface: "{{ secgws.ipsec_loopback_interface_name }}"
+            interface: "{{ secgws.interface_names.lo_secgw }}"
             ip-version: '4'
-            default-gw: '10.20.255.1'
+            default-gw: "{{ (item.interfaces | selectattr('name', 'equalto', secgws.interface_names.lo_secgw) | first).ip[0] }}"
             mode-cfg: 'disable'
             peertype: 'peer'
             peer: 'mno_ca'
@@ -28,42 +28,6 @@
     - "{{ secgws.seg2 }}"
   loop_control:
     label: "{{ item.name }}"
-
-- name: 'IPv6 IPsec phase1'
-  fortinet.fortimanager.fmgr_generic:
-    access_token: "{{ ansible_httpapi_access_token }}"
-    method: set
-    params:
-      - url: "pm/config/device/{{ item.name }}/vdom/{{ secgws.region1_traffic_vdom }}/vpn/ipsec/phase1-interface"
-        data:
-          -
-            name: "SecGW6"
-            authmethod: "signature"
-            certificate: '{{ item.certname }}'
-            ike-version: 2
-            interface: "{{ secgws.ipsec_loopback_interface_name }}"
-            ip-version: "6"
-            ipv6-end-ip: "fd00::30:cafe:ffff"
-            ipv6-prefix: 112
-            ipv6-split-include: "5G-Networks-ipv6"
-            ipv6-start-ip: "fd00::30:cafe:1"
-            local-gw6: "fd00::20:ff:1"
-            mode-cfg: "enable"
-            peertype: "peer"
-            peer: "mno_ca6"
-            dhgrp: "31"
-            proposal: "aes128gcm-prfsha256"
-            type: "dynamic"
-            fgsp-sync: "enable"
-            dpd: "on-idle"
-            dpd-retryinterval: 20
-
-  loop:
-    - "{{ secgws.seg1 }}"
-    - "{{ secgws.seg2 }}"
-  loop_control:
-    label: "{{ item.name }}"
-  when: enable_ipv6 is true
 
 - name: IPsec phase2
   fortinet.fortimanager.fmgr_generic:
@@ -82,24 +46,3 @@
     - "{{ secgws.seg2 }}"
   loop_control:
     label: "{{ item.name }}"
-
-- name: 'IPv6 IPsec phase2'
-  fortinet.fortimanager.fmgr_generic:
-    access_token: "{{ ansible_httpapi_access_token }}"
-    method: set
-    params:
-      - url: "pm/config/device/{{ item.name }}/vdom/{{ secgws.region1_traffic_vdom }}/vpn/ipsec/phase2-interface"
-        data:
-          -
-            name: "SecGW6"
-            phase1name: "SecGW6"
-            src-addr-type: "subnet6"
-            dst-addr-type: "subnet6"
-            proposal: "aes128gcm"
-            dhgrp: "31"
-  loop:
-    - "{{ secgws.seg1 }}"
-    - "{{ secgws.seg2 }}"
-  loop_control:
-    label: "{{ item.name }}"
-  when: enable_ipv6 is true

@@ -11,9 +11,29 @@
             name: 'SecGW'
             single-intf: 'enable'
           - default-mapping: 'enable'
-            defmap-intf: "{{ secgws.ipsec_loopback_interface_name }}"
+            defmap-intf: "{{ secgws.interface_names.lo_secgw }}"
             description: 'IPsec Termination'
-            name: "{{ secgws.ipsec_loopback_interface_name }}"
+            name: "{{ secgws.interface_names.lo_secgw }}"
+            single-intf: 'enable'
+          - name: "{{ secgws.interface_names.lo_untrust }}"
+            default-mapping: 'enable'
+            defmap-intf: "{{ secgws.interface_names.lo_untrust}}"
+            description: 'BGP looopback interface for untrusted side'            
+            single-intf: 'enable'
+          - name: "{{ secgws.interface_names.lo_trust }}"
+            default-mapping: 'enable'
+            defmap-intf: "{{ secgws.interface_names.lo_trust}}"
+            description: 'BGP looopback interface for trusted side'
+            single-intf: 'enable'
+          - name: "{{ secgws.interface_names.lo_pki }}"
+            default-mapping: 'enable'
+            defmap-intf: "{{ secgws.interface_names.lo_pki }}"
+            description: 'BGP loopback interface for PKI side'
+            single-intf: 'enable'
+          - default-mapping: 'enable'
+            defmap-intf: 'SZ_PKI'
+            description: 'PKI'
+            name: 'SZ_PKI'
             single-intf: 'enable'
           - default-mapping: 'enable'
             defmap-intf: 'SZ_TRUST'
@@ -26,18 +46,3 @@
             name: 'SZ_UNTRUST'
             single-intf: 'enable'
   changed_when: false
-
-- name: 'IPv6 Create dynamic interfaces'
-  fortinet.fortimanager.fmgr_generic:
-    access_token: "{{ ansible_httpapi_access_token }}"
-    method: set
-    params:
-      - url: "/pm/config/adom/{{ adom_secgw }}/obj/dynamic/interface"
-        data:
-          - default-mapping: 'enable'
-            defmap-intf: 'SecGW6'
-            description: 'IPsec Tunnel'
-            name: 'SecGW6'
-            single-intf: 'enable'
-  changed_when: false
-  when: enable_ipv6 is true

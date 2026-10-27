@@ -16,6 +16,12 @@
             interface:
               - 'agg1.30'
               - 'agg2.30'
+            intrazone: 'allow'            
+          - name: 'SZ_PKI'
+            description: 'Security Zone PKI'
+            interface:
+              - 'agg1.11'
+              - 'agg2.11'
             intrazone: 'allow'
   loop:
     - "{{ secgws.seg1 }}"

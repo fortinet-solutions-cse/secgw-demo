@@ -5,16 +5,20 @@
     params:
       - url: "/pm/config/adom/{{ adom_secgw }}/obj/firewall/service/custom"
         data:
-          - comment: 'GTP User Plane'
-            name: 'GTP-U'
+          - name: 'GTP-U'
+            comment: 'GTP User Plane'
             udp-portrange: '2152'
-          - comment: 'S1-AP Control Plane'
-            name: 'S1-AP'
+          - name: 'S1-AP'
+            comment: 'S1-AP Control Plane'
             sctp-portrange: '36412'
-          - comment: 'NG-AP Control Plane'
-            name: 'NG-AP'
+          - name: 'NG-AP'
+            comment: 'NG-AP Control Plane'
             sctp-portrange: '38412'
-          - comment: 'F1-AP Control Plane'
-            name: 'F1-AP'
+          - name: 'F1-AP'
+            comment: 'F1-AP Control Plane'
             sctp-portrange: '38472'
+          - name: 'BFD-multihop'
+            comment: 'BFD Multihop'
+            udp-portrange: '4784'
+
   changed_when: false

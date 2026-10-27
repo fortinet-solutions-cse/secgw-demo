@@ -1,12 +1,11 @@
 ---
 # Global variables used in SEG HoL
-enable_ipv6: false
 ansible_httpapi_port: 443
 ansible_httpapi_use_ssl: true
 ansible_httpapi_validate_certs: false
 ssh_port: 22
 username: 'admin'
-fmc_timezone: 28
+fmc_timezone: '28'
 
 # FMC vars (FMG and FAZ)
 adom_status: 'enable'
@@ -15,12 +14,18 @@ idle_timeout: 28800
 idle_timeout_gui: 28800
 
 ip:
+  pki_subnet: '10.11.0.0/16'
+  untrust_ran_subnet: '10.20.0.0/16'
+  ipsec_loopback_address: '10.20.255.1/32'
+  trust_core_subnet: '10.30.0.0/16'
   client_inner_subnet: '10.30.100.0/24'
+  address:
+    cmp_server: '10.11.2.6'
 
-routers:
-  as: '65001'
-
-
+bgp:
+  asn: 
+    routers: '65001'
+  
 # SecGW vars
 secgws:
   # common secgw settings
@@ -30,37 +35,109 @@ secgws:
   system_template_name: 'SecGW'
   policy_package: 'PP_SecGW'
   timezone: '28'
-  cmp_server_ip: 10.30.2.6
-  ipsec_loopback_interface_name: 'Lo1-SecGW'
+
   vlans:
     fgspsync: 10
     pki: 11
     ran_untrust: 20
     ran_trust: 30
 
+  interface_names:
+    lo_secgw: 'lo-secgw'
+    lo_pki: 'lo-pki'
+    lo_untrust: 'lo-untrust'
+    lo_trust: 'lo-trust'
+
   seg1:
     name: 'FGT-SEG-1'
     mgmtip: '10.254.1.101'
     certname: 'seg1'
     static_routes:
-      - device: 'agg1.10'
-        dst: 
-          - '10.10.2.1'
-          - '255.255.255.255'
-        gateway: '10.10.1.0'
-        comment: 'fgsp peering via pe11'
-      - device: 'agg2.10'
-        dst: 
-          - '10.10.2.3'
-          - '255.255.255.255'
-        gateway: '10.10.1.2'
-        comment: 'fgsp peering via pe12'
+      vdom_root:
+        - seq-num: 2
+          device: 'agg1.10'
+          dst:
+            - '10.10.2.1'
+            - '255.255.255.255'
+          gateway: '10.10.1.0'
+          bfd: 'enable'
+          comment: 'fgsp peering via pe11'
+        - seq-num: 3
+          device: 'agg2.10'
+          dst:
+            - '10.10.2.3'
+            - '255.255.255.255'
+          gateway: '10.10.1.2'
+          bfd: 'enable'
+          comment: 'fgsp peering via pe12'
+      vdom_secgw:
+        - seq-num: 2
+          device: 'agg1.20'
+          dst:
+            - '10.20.255.11'
+            - '255.255.255.255'
+          gateway: '10.20.1.0'
+          bfd: 'disable'
+          comment: 'bgp untrust peer pe11'
+        - seq-num: 3
+          device: 'agg2.20'
+          dst:
+            - '10.20.255.12'
+            - '255.255.255.255'
+          gateway: '10.20.1.2'
+          bfd: 'disable'
+          comment: 'bgp untrust peer pe12'
+        - seq-num: 4
+          device: 'agg1.30'
+          dst:
+            - '10.30.255.11'
+            - '255.255.255.255'
+          gateway: '10.30.1.0'
+          bfd: 'disable' 
+          comment: 'bgp trust peer pe11'
+        - seq-num: 5
+          device: 'agg2.30'
+          dst:
+            - '10.30.255.12'
+            - '255.255.255.255'
+          gateway: '10.30.1.2'
+          bfd: 'disable'
+          comment: 'bgp trust peer pe12'
+        - seq-num: 6
+          device: 'agg1.11'
+          dst:
+            - '10.11.255.11'
+            - '255.255.255.255'
+          gateway: '10.11.1.0'
+          bfd: 'disable'
+          comment: 'bgp pki peer pe11'
+        - seq-num: 7
+          device: 'agg2.11'
+          dst:
+            - '10.11.255.12'
+            - '255.255.255.255'
+          gateway: '10.11.1.2'
+          bfd: 'disable'
+          comment: 'bgp pki peer pe12'
     bgp:
         router_id: '10.0.1.3'
         as: '65100'
         ebgp_multipath: 'enable'
         holdtime_timer: 30
         keepalive_timer: 10  
+        neighbors:
+            trust_peer_primary: 
+              ip: '10.30.255.11'
+            untrust_peer_primary: 
+              ip: '10.20.255.11'
+            pki_peer_primary:
+              ip: '10.11.255.11'
+            trust_peer_backup: 
+              ip: '10.30.255.12'
+            untrust_peer_backup: 
+              ip: '10.20.255.12'
+            pki_peer_backup:
+              ip: '10.11.255.12'
     interfaces:
       - name: 'port1'
         allowaccess: ''
@@ -69,17 +146,41 @@ secgws:
         status: 'down'
       - name: 'Unused-Ports'
         status: 'down'
-      - name: "{{ secgws.ipsec_loopback_interface_name }}"
-        alias: 'IPSEC'
+      - name: "{{ secgws.interface_names.lo_secgw }}"
+        alias: ''
         description: 'IPsec Termination Endpoint'
         type: 'loopback'
         allowaccess: 'ping'
         ip: 
             - '10.20.255.1'
             - '255.255.255.255'
-        ipv6:
-            ip6-allowaccess: 'ping'
-            ip6-address: 'fd00::20:ff:1/128'
+        vdom: "{{ secgws.region1_traffic_vdom }}"
+      - name: "{{ secgws.interface_names.lo_pki }}"
+        alias: ''
+        description: 'bgp pki peering interface'
+        type: 'loopback'
+        allowaccess: 'ping'
+        ip: 
+            - '10.11.255.201'
+            - '255.255.255.255'
+        vdom: "{{ secgws.region1_traffic_vdom }}"
+      - name: "{{ secgws.interface_names.lo_untrust }}"
+        alias: ''
+        description: 'BGP ran-untrust peering interface'
+        type: 'loopback'
+        allowaccess: 'ping'
+        ip: 
+            - '10.20.255.201'
+            - '255.255.255.255'
+        vdom: "{{ secgws.region1_traffic_vdom }}"
+      - name: "{{ secgws.interface_names.lo_trust }}"
+        alias: ''
+        description: 'BGP trust peering interface'
+        type: 'loopback'
+        allowaccess: 'ping'
+        ip: 
+            - '10.30.255.201'
+            - '255.255.255.255'
         vdom: "{{ secgws.region1_traffic_vdom }}"
       - name: 'agg1'
         alias: 'agg1_pe11'
@@ -94,7 +195,7 @@ secgws:
             - 'port3'
       - name: 'agg2'
         alias: 'agg2_pe12'
-        description: 'FGT-SEG1 agg1 to pe12 bond1'
+        description: 'FGT-SEG1 agg2 to pe12 bond1'
         type: 'aggregate'
         vdom: 'root'
         lacp-speed: 'fast'
@@ -131,9 +232,6 @@ secgws:
         ip: 
             - '10.20.1.1'
             - '255.255.255.254'
-        ipv6:
-            ip6-allowaccess: 'ping'
-            ip6-address: 'fd00::20:1:1/127'
         vdom: "{{ secgws.region1_traffic_vdom }}"
         vlanid: "{{ secgws.vlans.ran_untrust }}"
       - name: 'agg2.20'
@@ -144,9 +242,6 @@ secgws:
         ip: 
             - '10.20.1.3'
             - '255.255.255.254'
-        ipv6:
-            ip6-allowaccess: 'ping'
-            ip6-address: 'fd00::20:1:3/127'
         vdom: "{{ secgws.region1_traffic_vdom }}"
         vlanid: "{{ secgws.vlans.ran_untrust }}"
       - name: 'agg1.30'
@@ -157,9 +252,6 @@ secgws:
         ip: 
             - '10.30.1.1'
             - '255.255.255.254'
-        ipv6:
-            ip6-allowaccess: 'ping'
-            ip6-address: 'fd00::30:1:1/127'
         vdom: "{{ secgws.region1_traffic_vdom }}"
         vlanid: "{{ secgws.vlans.ran_trust }}"
       - name: 'agg2.30'
@@ -170,9 +262,6 @@ secgws:
         ip: 
             - '10.30.1.3'
             - '255.255.255.254'
-        ipv6:
-            ip6-allowaccess: 'ping'
-            ip6-address: 'fd00::30:1:3/127'
         vdom: "{{ secgws.region1_traffic_vdom }}"
         vlanid: "{{ secgws.vlans.ran_trust }}"
       - name: "agg1.{{ secgws.vlans.pki }}"
@@ -183,11 +272,11 @@ secgws:
         ip: 
             - '10.11.1.1'
             - '255.255.255.254'
-        vdom: 'root'
+        vdom: "{{ secgws.region1_traffic_vdom }}"
         vlanid: "{{ secgws.vlans.pki }}"
       - name: "agg2.{{ secgws.vlans.pki }}"
         alias: 'PKI2'
-        vdom: 'root'
+        vdom: "{{ secgws.region1_traffic_vdom }}"
         vlanid: "{{ secgws.vlans.pki }}"
         description: "FGT-SEG1 agg2.{{ secgws.vlans.pki }} to pe12 agg1.{{ secgws.vlans.pki }} vrf: pki"
         interface: 'agg2'
@@ -195,29 +284,115 @@ secgws:
         ip: 
             - '10.11.1.3'
             - '255.255.255.254'
+    standalone_cluster:
+      standalone-group-id: 200
+      group-member-id: 1
+      cluster-peer:
+        - sync-id: 1
+          peerip: '10.10.2.1'
+          syncvd: "{{ secgws.region1_traffic_vdom }}"
+          down-intfs-before-sess-sync:
+            - "{{ secgws.interface_names.lo_secgw }}"
+          ipsec-tunnel-sync: "enable"
+          secondary-add-ipsec-routes: "disable"
+        - sync-id: 2
+          peerip: '10.10.2.3'
+          syncvd: "{{ secgws.region1_traffic_vdom }}"
+          down-intfs-before-sess-sync:
+            - "{{ secgws.interface_names.lo_secgw }}"
+          ipsec-tunnel-sync: 'enable'
+          secondary-add-ipsec-routes: 'disable'
   seg2:
     name: 'FGT-SEG-2'
     mgmtip: '10.254.1.102'
     certname: 'seg2'
     static_routes:
-      - device: 'agg1.10'
-        dst: 
-          - '10.10.1.1'
-          - '255.255.255.255'
-        gateway: '10.10.2.0'
-        comment: 'fgsp peering via pe21'
-      - device: 'agg2.10'
-        dst: 
-          - '10.10.1.3'
-          - '255.255.255.255'
-        gateway: '10.10.2.2'
-        comment: 'fgsp peering via pe22'
+      vdom_root:
+        - seq-num: 2
+          device: 'agg1.10'
+          dst:
+            - '10.10.1.1'
+            - '255.255.255.255'
+          gateway: '10.10.2.0'
+          bfd: 'enable'
+          comment: 'fgsp peering via pe21'
+        - seq-num: 3
+          device: 'agg2.10'
+          dst:
+            - '10.10.1.3'
+            - '255.255.255.255'
+          gateway: '10.10.2.2'
+          bfd: 'enable'
+          comment: 'fgsp peering via pe22'
+      vdom_secgw:
+        - seq-num: 2
+          device: 'agg1.20'
+          dst:
+            - '10.20.255.21'
+            - '255.255.255.255'
+          gateway: '10.20.2.0'
+          bfd: 'disable'
+          comment: 'bgp untrust peer pe21'
+        - seq-num: 3
+          device: 'agg2.20'
+          dst:
+            - '10.20.255.22'
+            - '255.255.255.255'
+          gateway: '10.20.2.2'
+          bfd: 'disable'
+          comment: 'bgp untrust peer pe22'
+        - seq-num: 4
+          device: 'agg1.30'
+          dst:
+            - '10.30.255.21'
+            - '255.255.255.255'
+          gateway: '10.30.2.0'
+          bfd: 'disable'
+          comment: 'bgp trust peer pe21'
+        - seq-num: 5
+          device: 'agg2.30'
+          dst:
+            - '10.30.255.22'
+            - '255.255.255.255'
+          gateway: '10.30.2.2'
+          bfd: 'disable'
+          comment: 'bgp trust peer pe22'
+        - seq-num: 6
+          device: 'agg1.11'
+          dst:
+            - '10.11.255.21'
+            - '255.255.255.255'
+          gateway: '10.11.2.0'
+          bfd: 'disable'
+          comment: 'bgp pki peer pe21'
+        - seq-num: 7
+          device: 'agg2.11'
+          dst:
+            - '10.11.255.22'
+            - '255.255.255.255'
+          gateway: '10.11.2.2'
+          bfd: 'disable'
+          comment: 'bgp pki peer pe22'
     bgp:
         router_id: '10.0.2.3'
         as: '65200'
         ebgp_multipath: 'enable'
         holdtime_timer: 30
         keepalive_timer: 10
+        neighbors:
+            untrust_peer_primary: 
+              ip: '10.20.255.21'
+            trust_peer_primary: 
+              ip: '10.30.255.21'
+            pki_peer_primary:
+              ip: '10.11.255.21'
+            trust_peer_backup: 
+              ip: '10.30.255.22'
+            untrust_peer_backup: 
+              ip: '10.20.255.22'
+            pki_peer_backup:
+              ip: '10.11.255.22'
+
     interfaces:
       - name: 'port1'
         allowaccess: ''
@@ -226,17 +401,41 @@ secgws:
         status: 'down'
       - name: 'Unused-Ports'
         status: 'down'
-      - name: "{{ secgws.ipsec_loopback_interface_name }}"
-        alias: 'IPSEC'
+      - name: "{{ secgws.interface_names.lo_secgw }}"
+        alias: ''
         description: 'IPsec Termination Endpoint'
         type: 'loopback'
         allowaccess: 'ping'
         ip: 
             - '10.20.255.1'
             - '255.255.255.255'
-        ipv6:
-            ip6-allowaccess: 'ping'
-            ip6-address: 'fd00::20:ff:1/128'
+        vdom: "{{ secgws.region1_traffic_vdom }}"
+      - name: "{{ secgws.interface_names.lo_pki }}"
+        alias: ''
+        description: 'bgp pki peering interface'
+        type: 'loopback'
+        allowaccess: 'ping'
+        ip: 
+            - '10.11.255.202'
+            - '255.255.255.255'
+        vdom: "{{ secgws.region1_traffic_vdom }}"
+      - name: "{{ secgws.interface_names.lo_untrust }}"
+        alias: ''
+        description: 'BGP ran-untrust peering interface'
+        type: 'loopback'
+        allowaccess: 'ping'
+        ip: 
+            - '10.20.255.202'
+            - '255.255.255.255'
+        vdom: "{{ secgws.region1_traffic_vdom }}"
+      - name: "{{ secgws.interface_names.lo_trust }}"
+        alias: ''
+        description: 'BGP trust peering interface'
+        type: 'loopback'
+        allowaccess: 'ping'
+        ip: 
+            - '10.30.255.202'
+            - '255.255.255.255'
         vdom: "{{ secgws.region1_traffic_vdom }}"
       - name: 'agg1'
         alias: 'agg1_pe21'
@@ -288,9 +487,6 @@ secgws:
         ip: 
             - '10.20.2.1'
             - '255.255.255.254'
-        ipv6:
-            ip6-allowaccess: 'ping'
-            ip6-address: 'fd00::20:2:1/127'
         vdom: "{{ secgws.region1_traffic_vdom }}"
         vlanid: "{{ secgws.vlans.ran_untrust }}"
       - name: "agg2.{{ secgws.vlans.ran_untrust }}"
@@ -301,9 +497,6 @@ secgws:
         ip: 
             - '10.20.2.3'
             - '255.255.255.254'
-        ipv6:
-            ip6-allowaccess: 'ping'
-            ip6-address: 'fd00::20:2:3/127'
         vdom: "{{ secgws.region1_traffic_vdom }}"
         vlanid: "{{ secgws.vlans.ran_untrust }}"
       - name: "agg1.{{ secgws.vlans.ran_trust }}"
@@ -314,9 +507,6 @@ secgws:
         ip: 
             - '10.30.2.1'
             - '255.255.255.254'
-        ipv6:
-            ip6-allowaccess: 'ping'
-            ip6-address: 'fd00::30:2:1/127'
         vdom: "{{ secgws.region1_traffic_vdom }}"
         vlanid: "{{ secgws.vlans.ran_trust }}"
       - name: "agg2.{{ secgws.vlans.ran_trust }}"
@@ -327,9 +517,6 @@ secgws:
         ip: 
             - '10.30.2.3'
             - '255.255.255.254'
-        ipv6:
-            ip6-allowaccess: 'ping'
-            ip6-address: 'fd00::30:2:3/127'
         vdom: "{{ secgws.region1_traffic_vdom }}"
         vlanid: "{{ secgws.vlans.ran_trust }}"
       - name: "agg1.{{ secgws.vlans.pki }}"
@@ -340,7 +527,7 @@ secgws:
         ip: 
             - '10.11.2.1'
             - '255.255.255.254'
-        vdom: 'root'
+        vdom: "{{ secgws.region1_traffic_vdom }}"
         vlanid: "{{ secgws.vlans.pki }}"
       - name: "agg2.{{ secgws.vlans.pki }}"
         alias: 'PKI2'
@@ -350,8 +537,26 @@ secgws:
         ip: 
             - '10.11.2.3'
             - '255.255.255.254'
-        vdom: 'root'
+        vdom: "{{ secgws.region1_traffic_vdom }}"
         vlanid: "{{ secgws.vlans.pki }}"
+    standalone_cluster:
+      standalone-group-id: 200
+      group-member-id: 2
+      cluster-peer:
+        - sync-id: 1
+          peerip: '10.10.1.1'
+          syncvd: "{{ secgws.region1_traffic_vdom }}"
+          down-intfs-before-sess-sync:
+            - "{{ secgws.interface_names.lo_secgw }}"
+          ipsec-tunnel-sync: 'enable'
+          secondary-add-ipsec-routes: 'disable'
+        - sync-id: 2
+          peerip: '10.10.1.3'
+          syncvd: "{{ secgws.region1_traffic_vdom }}"
+          down-intfs-before-sess-sync:
+            - "{{ secgws.interface_names.lo_secgw }}"
+          ipsec-tunnel-sync: 'enable'
+          secondary-add-ipsec-routes: 'disable'
 
 certificates: 
   mno_ca:  |

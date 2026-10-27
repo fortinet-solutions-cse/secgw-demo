@@ -1,0 +1,153 @@
+---
+#- name: "BGP VDOM root"
+#  fortinet.fortimanager.fmgr_generic:
+#    access_token: "{{ ansible_httpapi_access_token }}"
+#    method: update
+#    params:
+#      - url: "pm/config/device/{{ item.name }}/vdom/root/router/bgp"
+#        data:
+#          router-id: "{{ item.bgp.router_id }}"
+#          as: "{{ item.bgp.as }}"
+#          ebgp-multipath: "{{ item.bgp.ebgp_multipath }}"
+#          holdtime-timer: "{{ item.bgp.holdtime_timer }}"
+#          keepalive-timer: "{{ item.bgp.keepalive_timer }}"
+#          neighbor:
+#            - ip: "{{ item.bgp.neighbors.pki_peer_primary.ip }}"
+#              advertisement-interval: 0
+#              bfd: 'enable'
+#              ebgp-enforce-multihop: 'enable'
+#              remote-as: "{{ bgp.asn.routers }}"
+#              soft-reconfiguration: 'enable'
+#              update-source: "{{ secgws.interface_names.lo_pki }}"
+#            - ip: "{{ item.bgp.neighbors.pki_peer_backup.ip }}"
+#              advertisement-interval: 0
+#              bfd: 'enable'
+#              ebgp-enforce-multihop: 'enable'
+#              remote-as: "{{ bgp.asn.routers }}"
+#              soft-reconfiguration: 'enable'
+#              update-source: "{{ secgws.interface_names.lo_pki }}"
+#          redistribute:
+#            - name: 'connected'
+#              status: 'enable'
+#  loop:
+#    - "{{ secgws.seg1 }}"
+#    - "{{ secgws.seg2 }}"
+#  loop_control:
+#    label: "{{ item.name }}"
+
+- name: "BGP VDOM {{ secgws.region1_traffic_vdom }}"
+  fortinet.fortimanager.fmgr_generic:
+    access_token: "{{ ansible_httpapi_access_token }}"
+    method: update
+    params:
+      - url: "pm/config/device/{{ item.name }}/vdom/{{ secgws.region1_traffic_vdom }}/router/bgp"
+        data:
+          router-id: "{{ item.bgp.router_id }}"
+          as: "{{ item.bgp.as }}"
+          ebgp-multipath: 'disable'
+          holdtime-timer: "{{ item.bgp.holdtime_timer }}"
+          keepalive-timer: "{{ item.bgp.keepalive_timer }}"
+          network:
+            - id: 1
+              prefix: "{{ ip.ipsec_loopback_address }}"
+          neighbor:
+            # === Untrust PE primary ===
+            - ip: "{{item.bgp.neighbors.untrust_peer_primary.ip}}"
+              remote-as: "{{ bgp.asn.routers }}"
+              update-source: "{{ secgws.interface_names.lo_untrust }}"
+              ebgp-enforce-multihop: 'enable'
+              bfd: 'enable'
+              capability-route-refresh: 'enable'
+              capability-graceful-restart: 'enable'
+              next-hop-self: 'enable'
+              soft-reconfiguration: 'enable'
+              advertisement-interval: 0
+              route-map-in: 'rm-in-from-untrust-primary'
+              route-map-out: 'rm-out-to-untrust'
+              conditional-advertise:
+                - advertise-routemap: 'rm-cond-advertise-ipsec-loopback'
+                  condition-routemap: 'rm-cond-check-trust-core'
+
+            # === Untrust PE backup ===
+            - ip: "{{item.bgp.neighbors.untrust_peer_backup.ip}}"
+              remote-as: "{{ bgp.asn.routers }}"
+              update-source: "{{ secgws.interface_names.lo_untrust }}"
+              ebgp-enforce-multihop: 'enable'
+              bfd: 'enable'
+              capability-route-refresh: 'enable'
+              capability-graceful-restart: 'enable'
+              next-hop-self: 'enable'
+              soft-reconfiguration: 'enable'
+              advertisement-interval: 0
+              route-map-in: 'rm-in-from-untrust-backup'
+              route-map-out: 'rm-out-to-untrust'
+              conditional-advertise:
+                - advertise-routemap: 'rm-cond-advertise-ipsec-loopback'
+                  condition-routemap: 'rm-cond-check-trust-core'
+
+            # === Trust PE primary ===
+            - ip: "{{item.bgp.neighbors.trust_peer_primary.ip}}"
+              remote-as: "{{ bgp.asn.routers }}"
+              update-source: "{{ secgws.interface_names.lo_trust }}"
+              ebgp-enforce-multihop: 'enable'
+              bfd: 'enable'
+              capability-route-refresh: 'enable'
+              capability-graceful-restart: 'enable'
+              next-hop-self: 'enable'
+              soft-reconfiguration: 'enable'
+              advertisement-interval: 0
+              route-map-in: 'rm-in-from-trust-primary'
+              route-map-out: 'rm-out-to-trust'
+
+            # === Trust PE backup ===
+            - ip: "{{item.bgp.neighbors.trust_peer_backup.ip}}"
+              remote-as: "{{ bgp.asn.routers }}"
+              update-source: "{{ secgws.interface_names.lo_trust }}"
+              ebgp-enforce-multihop: 'enable'
+              bfd: 'enable'
+              capability-route-refresh: 'enable'
+              capability-graceful-restart: 'enable'
+              next-hop-self: 'enable'
+              soft-reconfiguration: 'enable'
+              advertisement-interval: 0
+              route-map-in: 'rm-in-from-trust-backup'
+              route-map-out: 'rm-out-to-trust'
+            
+            # === PKI PE primary ===
+            - ip: "{{ item.bgp.neighbors.pki_peer_primary.ip }}"
+              remote-as: "{{ bgp.asn.routers }}"
+              update-source: "{{ secgws.interface_names.lo_pki }}"
+              ebgp-enforce-multihop: 'enable'
+              bfd: 'enable'
+              capability-route-refresh: 'enable'
+              capability-graceful-restart: 'enable'
+              next-hop-self: 'enable'
+              soft-reconfiguration: 'enable'
+              advertisement-interval: 0
+              route-map-in: 'rm-in-from-pki-primary'
+              route-map-out: 'rm-out-to-pki'
+            
+            # === PKI PE backup ===
+            - ip: "{{ item.bgp.neighbors.pki_peer_backup.ip }}"
+              remote-as: "{{ bgp.asn.routers }}"
+              update-source: "{{ secgws.interface_names.lo_pki }}"
+              ebgp-enforce-multihop: 'enable'
+              bfd: 'enable'
+              capability-route-refresh: 'enable'
+              capability-graceful-restart: 'enable'
+              next-hop-self: 'enable'
+              soft-reconfiguration: 'enable'
+              advertisement-interval: 0
+              route-map-in: 'rm-in-from-pki-backup'
+              route-map-out: 'rm-out-to-pki'
+          
+          redistribute:
+            - name: 'connected'
+              status: 'disable'
+            - name: 'static'
+              status: 'enable'
+  loop:
+    - "{{ secgws.seg1 }}"
+    - "{{ secgws.seg2 }}"
+  loop_control:
+    label: "{{ item.name }}"

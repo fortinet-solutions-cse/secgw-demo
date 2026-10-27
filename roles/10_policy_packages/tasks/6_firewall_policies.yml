@@ -5,13 +5,46 @@
     params:
       - url: "/pm/config/adom/{{ adom_secgw }}/pkg/{{ secgws.policy_package }}/firewall/policy"
         data:
+          - name: 'Allow BFD Multihop from Untrust'
+            policyid: 1
+            action: 'accept'
+            srcaddr: 'all'
+            srcintf: 'SZ_UNTRUST'
+            dstaddr: 'all'
+            dstintf: "{{ secgws.interface_names.lo_untrust }}"
+            logtraffic: 'disable'
+            schedule: 'always'
+            service:
+              - 'BFD-multihop'
+          - name: 'Allow BFD Multihop from Trust'
+            policyid: 2
+            action: 'accept'
+            srcaddr: 'all'
+            srcintf: 'SZ_TRUST'
+            dstaddr: 'all'
+            dstintf: "{{ secgws.interface_names.lo_trust }}"
+            logtraffic: 'disable'
+            schedule: 'always'
+            service:
+              - 'BFD-multihop'
+          - name: 'Allow BFD Multihop from PKI'
+            policyid: 3
+            action: 'accept'
+            srcaddr: 'all'
+            srcintf: 'SZ_PKI'
+            dstaddr: 'all'
+            dstintf: "{{ secgws.interface_names.lo_pki }}"
+            logtraffic: 'disable'
+            schedule: 'always'
+            service:
+              - 'BFD-multihop'
           - name: 'Allow RAN VPN'
             policyid: 10
             action: 'accept'
             srcaddr: 'all'
             srcintf: 'SZ_UNTRUST'
             dstaddr: 'all'
-            dstintf: "{{ secgws.ipsec_loopback_interface_name }}"
+            dstintf: "{{ secgws.interface_names.lo_secgw }}"
             logtraffic: 'disable'
             schedule: 'always'
             service:
@@ -52,63 +85,4 @@
             schedule: 'always'
             service: 'LTE-5G-Services'
   changed_when: false
-
-
-- name: 'IPv6 Create firewall policies'
-  fortinet.fortimanager.fmgr_generic:
-    access_token: "{{ ansible_httpapi_access_token }}"
-    method: update
-    params:
-      - url: "/pm/config/adom/{{ adom_secgw }}/pkg/{{ secgws.policy_package }}/firewall/policy"
-        data:
-          - name: 'Allow RAN VPN'
-            policyid: 10
-            action: 'accept'
-            srcaddr: 'all'
-            srcaddr6: 'all'
-            srcintf: 'SZ_UNTRUST'
-            dstaddr6: 'all'
-            dstaddr: 'all'
-            dstintf: "{{ secgws.ipsec_loopback_interface_name }}"
-            logtraffic: 'disable'
-            schedule: 'always'
-            service:
-              - 'IKE'
-              - 'ESP'
-              - 'ALL_ICMP6'
-              - 'ALL_ICMP'
-          - name: 'Allow gNodeB inner to 5GC IPv6'
-            policyid: 630
-            action: 'accept'
-            srcintf: 'SecGW6'
-            srcaddr6: 'N2N3-ran-ipv6'
-            dstintf: 'SZ_TRUST'
-            dstaddr6: 'N2N3-core-ipv6'
-            logtraffic: 'all'
-            logtraffic-start: 'enable'
-            schedule: 'always'
-            service: 'LTE-5G-Services'
-          - name: 'Allow 5GC to inner gNodeB IPv6'
-            policyid: 640
-            action: 'accept'
-            srcintf: 'SZ_TRUST'
-            srcaddr6: 'N2N3-core-ipv6'
-            dstintf: 'SecGW6'
-            dstaddr6: 'N2N3-ran-ipv6'
-            logtraffic: 'all'
-            logtraffic-start: 'enable'
-            schedule: 'always'
-            service: 'LTE-5G-Services'
-          - name: 'Allow Xn gNodeB to gNodeB IPv6'
-            policyid: 650
-            action: 'accept'
-            srcintf: 'SecGW6'
-            srcaddr6: 'N2N3-ran-ipv6'
-            dstintf: 'SecGW6'
-            dstaddr6: 'N2N3-ran-ipv6'
-            logtraffic: 'all'
-            logtraffic-start: 'enable'
-            schedule: 'always'
-            service: 'LTE-5G-Services'
-  changed_when: false
-  when: enable_ipv6 is true
+  

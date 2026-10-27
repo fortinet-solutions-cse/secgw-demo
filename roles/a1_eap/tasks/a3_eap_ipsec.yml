@@ -8,10 +8,6 @@
             eap: 'enable'
             authusrgrp: 'nodebs'
             'assign-ip-from': 'usrgrp'
-          - name: 'SecGW6'
-            eap: 'enable'
-            authusrgrp: 'nodebs'
-            'assign-ip-from': 'usrgrp'
   loop:
     - "{{ secgws.seg1 }}"
     - "{{ secgws.seg2 }}"

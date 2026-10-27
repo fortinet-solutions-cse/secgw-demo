@@ -1,5 +1,5 @@
 ---
-- name: Add scripts to generate CMP IR RSA certificates
+- name: Add scripts to generate CMP IR EC certificates
   fortinet.fortimanager.fmgr_generic:
     access_token: "{{ ansible_httpapi_access_token }}"
     method: set
@@ -12,7 +12,7 @@
           content: |
             config vdom
                 edit {{ secgws.region1_traffic_vdom }}
-                    execute vpn certificate local generate cmp-ec {{ item.certname }} secp384r1 {{ secgws.cmp_server_ip }}:80 /cert/cmp2/ mno_cmp_server Fortinet_Factory "" "" "C=CA,O=mno,OU=FGT,CN={{ runtime_vars[item.certname + '_sn'] }}" ""
+                    execute vpn certificate local generate cmp-ec {{ item.certname }} secp384r1 {{ ip.address.cmp_server }}:80 /cert/cmp2/ mno_cmp_server Fortinet_Factory "" "" "C=CA,O=mno,OU=FGT,CN={{ runtime_vars[item.certname + '_sn'] }}" ""
                 end
   loop:
     - "{{ secgws.seg1 }}"
