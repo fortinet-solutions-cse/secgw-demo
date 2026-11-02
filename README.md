@@ -50,10 +50,10 @@ Notices that some variables are initialized during the first task (init) and it 
 
 # Component versions
 The demo has been verified with the following versions:
-- Fabric Studio v.2.0.4
-- FortiManager v.7.6.4
-- FortiAnalyzer v.7.6.4
-- FortiGate v.7.4.9
-- FortiAuthenticator v.6.6.7
+- Fabric Studio v.2.0.9
+- FortiManager v.7.6.8
+- FortiAnalyzer v.7.6.8
+- FortiGate v.7.6.8
+- FortiAuthenticator v.6.6.10
 
 Enjoy:)
