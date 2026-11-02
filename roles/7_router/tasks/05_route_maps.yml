@@ -1,0 +1,150 @@
+---
+# Route Maps for SecGW BGP policy
+#
+# Preference model:
+#   - ran-trust / ran-untrust: the SecGWs import routes from the PEs and advertise
+#     their own prefixes out (client-inner / IPsec-termination anycast /32).
+#   - pki: the SecGWs are receive-only; the PEs originate all pki routes.
+#
+# Within a SecGW, the primary PE is preferred over the backup PE via local-preference
+# on the inbound route-maps. Both SecGWs are active and advertise the anycast /32
+# identically (no AS-path prepend); site preference is handled on the PEs.
+#
+# INBOUND (per domain; primary/backup differ only in local-preference):
+#   - rm-in-from-trust-*:   accept 10.30.0.0/16 from the trust PEs
+#   - rm-in-from-untrust-*: accept 10.20.0.0/16 from the untrust PEs
+#   - rm-in-from-pki-*:     accept 10.11.0.0/16 from the pki PEs
+#
+# OUTBOUND (one per domain):
+#   - rm-out-to-trust:   advertise client-inner (10.30.100.0/24) only
+#   - rm-out-to-untrust: advertise the IPsec-termination anycast /32 only
+#   - rm-out-to-pki:     deny all (receive-only)
+#
+# Conditional advertisement: the untrust PEs are only told about the anycast /32
+# while the trust-core network is present in the RIB.
+#
+# Apply per neighbor (configured in 06_ebgp.yml):
+#   untrust PE (primary/backup): in=rm-in-from-untrust-*, out=rm-out-to-untrust
+#   trust PE   (primary/backup): in=rm-in-from-trust-*,   out=rm-out-to-trust
+#   pki PE     (primary/backup): in=rm-in-from-pki-*,     out=rm-out-to-pki
+
+- name: 'Route Maps'
+  fortinet.fortimanager.fmgr_generic:
+    access_token: "{{ ansible_httpapi_access_token }}"
+    method: set
+    params:
+      - url: "pm/config/device/{{ item.name }}/vdom/{{ secgws.region1_traffic_vdom }}/router/route-map"
+        data:
+
+          # === INBOUND from TRUST PE (primary) ===
+          - name: 'rm-in-from-trust-primary'
+            comments: 'Inbound from primary trust PE: accept trust-core, prefer primary PE'
+            rule:
+              - id: 10
+                action: permit
+                match-ip-address: 'pl-trust-core-addresses'
+                set-local-preference: '200'
+              - id: 99
+                action: deny
+
+          # === INBOUND from TRUST PE (backup) ===
+          - name: 'rm-in-from-trust-backup'
+            comments: 'Inbound from backup trust PE: accept trust-core, lower preference'
+            rule:
+              - id: 10
+                action: permit
+                match-ip-address: 'pl-trust-core-addresses'
+                set-local-preference: '100'
+              - id: 99
+                action: deny
+
+          # === INBOUND from UNTRUST PE (primary) ===
+          - name: 'rm-in-from-untrust-primary'
+            comments: 'Inbound from primary untrust PE: accept ran-untrust, prefer primary PE'
+            rule:
+              - id: 10
+                action: permit
+                match-ip-address: 'pl-untrust-ran-addresses'
+                set-local-preference: '200'
+              - id: 99
+                action: deny
+
+          # === INBOUND from UNTRUST PE (backup) ===
+          - name: 'rm-in-from-untrust-backup'
+            comments: 'Inbound from backup untrust PE: accept ran-untrust, lower preference'
+            rule:
+              - id: 10
+                action: permit
+                match-ip-address: 'pl-untrust-ran-addresses'
+                set-local-preference: '100'
+              - id: 99
+                action: deny
+
+          # === INBOUND from PKI PE (primary) ===
+          - name: 'rm-in-from-pki-primary'
+            comments: 'Inbound from primary pki PE: accept pki, prefer primary PE'
+            rule:
+              - id: 10
+                action: permit
+                match-ip-address: 'pl-pki-addresses'
+                set-local-preference: '200'
+              - id: 99
+                action: deny
+
+          # === INBOUND from PKI PE (backup) ===
+          - name: 'rm-in-from-pki-backup'
+            comments: 'Inbound from backup pki PE: accept pki, lower preference'
+            rule:
+              - id: 10
+                action: permit
+                match-ip-address: 'pl-pki-addresses'
+                set-local-preference: '100'
+              - id: 99
+                action: deny
+
+          # === OUTBOUND to TRUST PE ===
+          - name: 'rm-out-to-trust'
+            comments: 'Outbound to trust PE: advertise client-inner only'
+            rule:
+              - id: 10
+                action: permit
+                match-ip-address: 'pl-client-inner-addresses'
+              - id: 99
+                action: deny
+
+          # === OUTBOUND to UNTRUST PE (anycast /32) ===
+          - name: 'rm-out-to-untrust'
+            comments: 'Outbound to untrust PE: advertise IPsec-termination anycast /32'
+            rule:
+              - id: 10
+                action: permit
+                match-ip-address: 'pl-ipsec-loopback'
+              - id: 99
+                action: deny
+
+          # === OUTBOUND to PKI PE (receive-only) ===
+          - name: 'rm-out-to-pki'
+            comments: 'Outbound to pki PE: deny all (SecGW is receive-only in pki)'
+            rule:
+              - id: 10
+                action: deny
+
+          - name: 'rm-cond-advertise-ipsec-loopback'
+            comments: 'Conditional-advertise target: IPsec termination anycast /32'
+            rule:
+              - id: 10
+                action: permit
+                match-ip-address: 'pl-ipsec-loopback'
+
+          - name: 'rm-cond-check-trust-core'
+            comments: 'Conditional-advertise condition: trust core network presence in RIB'
+            rule:
+              - id: 10
+                action: permit
+                match-ip-address: 'pl-trust-core-addresses'
+
+  loop:
+    - "{{ secgws.seg1 }}"
+    - "{{ secgws.seg2 }}"
+  loop_control:
+    label: "{{ item.name }}"

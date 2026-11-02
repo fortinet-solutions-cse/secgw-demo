@@ -1,0 +1,9 @@
+---
+- name: 2.1 FAZ admin settings
+  ansible.builtin.include_tasks: "1_faz_admin_settings.yml"
+
+- name: 2.2 FAZ system global
+  ansible.builtin.include_tasks: "2_faz_system_global.yml"
+
+- name: 2.3 FAZ create ADOMs
+  ansible.builtin.include_tasks: "3_faz_create_adoms.yml"

@@ -1,0 +1,22 @@
+---
+- name: 7.1 Static Routes
+  ansible.builtin.include_tasks: "01_static.yml"
+
+- name: 7.2 BFD
+  ansible.builtin.include_tasks: "02_bfd.yml"
+
+- name: 7.3 Prefix Lists
+  ansible.builtin.include_tasks: "03_prefix_lists.yml"
+
+- name: 7.5 Route Maps
+  ansible.builtin.include_tasks: "05_route_maps.yml"
+
+- name: 7.6 BGP
+  ansible.builtin.include_tasks: "06_ebgp.yml"
+
+- name: Install devices
+  ansible.builtin.include_role:
+    name: common
+    tasks_from: install_device.yml
+  vars:
+    scope_device_vdom: "{{ routing_scope_device_vdom }}"

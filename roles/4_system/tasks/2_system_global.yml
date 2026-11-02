@@ -1,0 +1,20 @@
+---
+- name: System Global
+  fortinet.fortimanager.fmgr_generic:
+    access_token: "{{ ansible_httpapi_access_token }}"
+    method: update
+    params:
+      - url: "pm/config/device/{{ item.name }}/global/system/global"
+        data:
+          hostname: "{{ item.name }}"
+          vdom-mode: 'multi-vdom'
+          lldp-reception: 'enable'
+          lldp-transmission: 'enable'
+          admin-sport: 443
+          admin-http-rate-limit-max-requests: 1000
+
+  loop:
+    - "{{ secgws.seg1 }}"
+    - "{{ secgws.seg2 }}"
+  loop_control:
+    label: "{{ item.name }}"

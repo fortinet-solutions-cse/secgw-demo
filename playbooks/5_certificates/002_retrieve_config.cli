@@ -1,2 +1,0 @@
-config global
-    diagnose fdsm cfg-upload 'configuration with operator certificate'

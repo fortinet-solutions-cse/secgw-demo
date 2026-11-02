@@ -1,0 +1,24 @@
+- name: 'Create custom services'
+  fortinet.fortimanager.fmgr_generic:
+    access_token: "{{ ansible_httpapi_access_token }}"
+    method: set
+    params:
+      - url: "/pm/config/adom/{{ adom_secgw }}/obj/firewall/service/custom"
+        data:
+          - name: 'GTP-U'
+            comment: 'GTP User Plane'
+            udp-portrange: '2152'
+          - name: 'S1-AP'
+            comment: 'S1-AP Control Plane'
+            sctp-portrange: '36412'
+          - name: 'NG-AP'
+            comment: 'NG-AP Control Plane'
+            sctp-portrange: '38412'
+          - name: 'F1-AP'
+            comment: 'F1-AP Control Plane'
+            sctp-portrange: '38472'
+          - name: 'BFD-multihop'
+            comment: 'BFD Multihop'
+            udp-portrange: '4784'
+
+  changed_when: false

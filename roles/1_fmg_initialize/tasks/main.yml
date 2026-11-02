@@ -1,0 +1,10 @@
+---
+- name: 1.1 FMG Admin settings
+  ansible.builtin.include_tasks: "1_fmg_admin_settings.yml"
+
+- name: 1.2 FMG system global
+  ansible.builtin.include_tasks: "2_fmg_system_global.yml"
+  
+- name: 1.3 FMG create ADOMs
+  ansible.builtin.include_tasks: "3_fmg_create_adoms.yml"
+

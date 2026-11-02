@@ -1,0 +1,3 @@
+---
+- name: 5.1 Add devices to FAZ
+  ansible.builtin.include_tasks: "1_faz_add_secgw_devices.yml"

@@ -1,0 +1,119 @@
+---
+#  INIT — Run script, write host_vars and group_vars/all/dynamic.yml
+- name: Initialize credentials from script and write to persistent files
+  hosts: localhost
+  gather_facts: false
+  tags: [init]
+  vars_files:
+    - "{{ playbook_dir }}/group_vars/all.yml"
+  roles:
+    - role: 0_init
+
+- name: FMG Initialization
+  hosts: fortimanagers
+  gather_facts: false
+  connection: httpapi
+  tags: [init]
+  roles:
+    - role: 1_fmg_initialize
+
+- name: FAZ Initialization
+  hosts: fortianalyzers
+  gather_facts: false
+  connection: httpapi
+  tags: [init]
+  roles:
+    - role: 2_faz_initialize
+
+- name: FMG Add Devices
+  hosts: fortimanagers
+  gather_facts: false
+  connection: httpapi
+  tags: [add_devices_fmg, add_devices]
+  roles:
+    - role: 3_fmg_add_secgw_devices
+
+- name: Device Provisioning
+  hosts: fortimanagers
+  gather_facts: false
+  connection: httpapi
+  tags: [system, add_devices]
+  roles:
+    - role: 4_system
+
+- name: FAZ Add Devices
+  hosts: fortianalyzers
+  gather_facts: false
+  connection: httpapi
+  vars_files:
+    - "{{ playbook_dir }}/vars/runtime_vars.yml"
+  tags: [add_devices_faz, add_devices]
+  roles:
+    - role: 5_faz_add_secgw_devices
+
+- name: FGSP
+  hosts: fortimanagers
+  gather_facts: false
+  connection: httpapi
+  tags: [fgsp]
+  roles:
+    - role: 6_fgsp
+
+- name: Router
+  hosts: fortimanagers
+  gather_facts: false
+  connection: httpapi
+  tags: [router]
+  roles:
+    - role: 7_router
+
+- name: Certificates
+  hosts: fortimanagers
+  gather_facts: false
+  connection: httpapi
+  vars_files:
+    - "{{ playbook_dir }}/vars/runtime_vars.yml"
+  tags: [certificates]
+  roles:
+    - role: 8_certificates
+
+- name: VPN
+  hosts: fortimanagers
+  gather_facts: false
+  connection: httpapi
+  tags: [vpn]
+  roles:
+    - role: 9_vpn
+
+- name: VPN_HOL
+  hosts: fortimanagers
+  gather_facts: false
+  connection: httpapi
+  tags: [never, vpn_hol]
+  roles:
+    - role: 9_vpn_hol
+
+- name: Policy Packages
+  hosts: fortimanagers
+  gather_facts: false
+  connection: httpapi
+  tags: [policy_packages]
+  roles:
+    - role: 10_policy_packages
+
+- name: Connect gNodeB clients
+  hosts: gnbs
+  gather_facts: false
+  vars:
+    ansible_password: "{{ hostvars[groups['fortianalyzers'][0]]['ansible_password'] }}"
+  tags: [never, connect_gnbs]
+  roles:
+    - role: 11_connect_gnbs
+
+- name: CRL Configuration
+  hosts: fortimanagers
+  gather_facts: false
+  connection: httpapi
+  tags: [never, crl]
+  roles:
+    - role: 12_crl

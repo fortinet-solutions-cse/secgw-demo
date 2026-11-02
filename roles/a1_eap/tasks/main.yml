@@ -1,0 +1,13 @@
+---
+- name: a1.1 eap
+  ansible.builtin.include_tasks: "a1_user_radius.yml"
+- name: a1.2
+  ansible.builtin.include_tasks: "a2_user_group.yml"
+- name: a1.3 eap
+  ansible.builtin.include_tasks: "a3_eap_ipsec.yml"
+- name: Install devices
+  ansible.builtin.include_role:
+    name: common
+    tasks_from: install_device.yml
+  vars:
+    scope_device_vdom: "{{ eap_scope_device_vdom }}"

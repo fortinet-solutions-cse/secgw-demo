@@ -1,0 +1,16 @@
+---
+- name: 9.1 Objects
+  ansible.builtin.include_tasks: "1_objects.yml"
+
+- name: 9.2 User Peer
+  ansible.builtin.include_tasks: "2_user_peer.yml"
+
+- name: 9.3 IPsec
+  ansible.builtin.include_tasks: "3_ipsec.yml"
+
+- name: Install devices
+  ansible.builtin.include_role:
+    name: common
+    tasks_from: install_device.yml
+  vars:
+    scope_device_vdom: "{{ vpn_scope_device_vdom }}"
