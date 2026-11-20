@@ -22,9 +22,7 @@ The demo mode will pre-configure FMG / FAZ / FGT-SEG-1 and FGT-SEG-2 so you quic
 1. If it is all super green, then log into gNodeB1 and bring up the tunnel
 
         cd /fabric
-        ./genrsa
-        ./ir
-        ./config_ss.sh
+        ./enroll.sh
         ping 10.30.2.2 -i0.2
 
     Notice: You don't need to manually bring up the tunnel. Linux routing policies will detect a match to the child-SA and bring up the tunnel.
